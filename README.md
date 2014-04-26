@@ -1,4 +1,6 @@
 neechy
 ======
 
-Lightweight wiki platform written in PHP aimed at individuals and small groups 
+[![Build Status](https://travis-ci.org/klenwell/neechy.svg)](https://travis-ci.org/klenwell/neechy)
+
+Lightweight wiki platform written in PHP aimed at individuals and small groups
