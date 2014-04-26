@@ -11,7 +11,7 @@ The tests here are meant to serve the following goals:
 
 
 ## Setup
-Wikka tests require PhpUnit to be installed. For installation instructions, see [the PhpUnit docs](http://phpunit.de/manual/3.7/en/installation.html).
+Neechy tests require PhpUnit to be installed. For installation instructions, see [the PhpUnit docs](http://phpunit.de/manual/3.7/en/installation.html).
 
 I found the PEAR method simple and straightforward.
 
