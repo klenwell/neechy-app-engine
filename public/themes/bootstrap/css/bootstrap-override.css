@@ -26,8 +26,8 @@ body > .container {
 /*
  * Footer
  */
-div#footer {
-  height: 72px;         /* Set the fixed height of the div#footer here */
+footer {
+  height: 72px;         /* Set the fixed height of the footer here */
   position: absolute;
   bottom: 0;
   width: 100%;
@@ -39,25 +39,25 @@ div#footer {
   color: #999;
 }
 
-div#footer .container {
+footer .container {
   display: table-cell;
   vertical-align: middle;
 }
 
-div#footer p {
+footer p {
   margin: 4px 0;
   line-height: 1.4 em;
 }
 
-div#footer ul {
+footer ul {
   margin:10px 0 0;
 }
 
-div#footer .div#footer-links {
+footer .footer-links {
   padding:0px;
 }
 
-div#footer .div#footer-links li {
+footer .footer-links li {
   display: inline;
   padding: 0 2px;
 }
