@@ -4,7 +4,7 @@ $t = $this;   # templater object
 
 ?>
 
-    <footer>
+    <div id="footer">
       <div class="container">
         <p>
           Template theme built with <?php echo
@@ -15,4 +15,4 @@ $t = $this;   # templater object
             $t->link('https://github.com/klenwell/neechy', 'Neechy'); ?>
         </p>
       </div>
-    </footer>
+    </div>
