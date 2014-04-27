@@ -30,7 +30,7 @@
       src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js">
     </script>
     <script
-      src="templates/bootstrap/js/onload.js">
+      src="themes/bootstrap/js/neechy.js">
     </script>
 
   </body>
