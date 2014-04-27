@@ -23,7 +23,7 @@ Tests are run from the command line using `phpunit`. From the root `neechy` dire
 
 To generate coverage reports, install Xdebug following [installation instructions](http://xdebug.org/docs/install) and run like so:
 
-    phpunit --bootstrap test/bootstrap.php --coverage-html ./test/reports .
+    phpunit --bootstrap test/bootstrap.php --coverage-html test/reports .
 
 HTML reports will be published to the directory `reports` in `test`.
 

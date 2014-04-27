@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
-  {{ head }}
+  <head>
+    {{ head }}
+  </head>
   <body>
-    <div class="container">
-      {{ top }}
+    {{ top }}
 
-      {{ middle }}
-    </div>
+    {{ middle }}
 
     {{ bottom }}
   </body>

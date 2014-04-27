@@ -26,15 +26,36 @@ class NeechyTemplaterTest extends PHPUnit_Framework_TestCase {
     /**
      * Tests
      */
-    public function testRenderWithPartialArray() {
-        $this->templater->partial['head'] = '<head><title>Neechy</title></head>';
-        $this->templater->partial['top'] = '<h1>Neechy</h1>';
-        $this->templater->partial['middle'] = 'middle';
-        $this->templater->partial['bottom'] = '<footer>bottom</footer>';
+    public function testLink() {
+        $link = $this->templater->link('http://github.com/', 'github');
+        $this->assertEquals('<a href="http://github.com/">github</a>', $link);
 
-        $output = $this->templater->render();
+        $link = $this->templater->link('/', 'home', array(
+            'title' => 'go home',
+            'class' => 'link',
+            'id' => 'home-link'
+        ));
+        $expect = '<a href="/" title="go home" class="link" id="home-link">home</a>';
+        $this->assertEquals($expect, $link);
+    }
 
-        foreach ( $this->templater->partial as $partial => $content ) {
+    public function testSetLayoutTokens() {
+        $tokens = array(
+            'head' => '<title>Neechy</title>',
+            'top' => '<h1>Neechy</h1>',
+            'middle' => 'middle',
+            'bottom' => '<footer>bottom</footer>'
+        );
+
+        $templater = new NeechyTemplater('no-theme');
+
+        foreach ( $tokens as $token => $content ) {
+            $templater->set($token, $content);
+        }
+
+        $output = $templater->render();
+
+        foreach ( $tokens as $token => $content ) {
             $this->assertContains($content, $output);
         }
     }

@@ -19,14 +19,14 @@ class NeechyTemplater {
     #
     # Properties
     #
-    public $partial = array();
+    private $partial = array();
     private $theme_path = '';
 
     #
     # Constructor
     #
-    public function __construct() {
-        $this->theme_path = $this->load_theme_path();
+    public function __construct($theme='bootstrap') {
+        $this->theme_path = $this->load_theme_path($theme);
     }
 
     #
@@ -45,13 +45,27 @@ class NeechyTemplater {
         return $layout;
     }
 
-    public function set() {}
+    public function set($id, $value) {
+        $current_value = $this->render_partial_by_id($id);
+        $this->partial[$id] = $value;
+        return $current_value;
+    }
+
+    public function link($href, $text, $options=array()) {
+        $format = '<a %s>%s</a>';
+        $attrs = array(sprintf('href="%s"', $href));
+
+        foreach ( $options as $attr => $value ) {
+            $attrs[] = sprintf('%s="%s"', $attr, $value);
+        }
+
+        return sprintf($format, implode(' ', $attrs), $text);
+    }
 
     #
     # Private Methods
     #
-    private function load_theme_path() {
-        $theme = 'bootstrap';
+    private function load_theme_path($theme) {
         return NeechyPath::join(NEECHY_PUBLIC_PATH, 'themes', $theme);
     }
 
@@ -82,17 +96,29 @@ class NeechyTemplater {
     }
 
     private function render_partial($token) {
+        #
+        # Look for a partial file in the conventional theme html folder. If not
+        # found, check to see if the partial item has been set. Else, return
+        # "block not found" html comment.
+        #
         $id = preg_replace('/[\{\}\s]/', '', $token);
+        $partial_file = sprintf('%s.html.php', $id);
+        $partial_path = NeechyPath::join($this->theme_path, 'html', $partial_file);
 
-        if ( method_exists($this, $id) ) {
-            return $this->$id();
-        }
-        elseif ( isset($this->partial[$id]) ) {
+        if ( isset($this->partial[$id]) ) {
             return $this->partial[$id];
         }
-        else {
-            return sprintf('!-- block %s not found -->', $id);
+        elseif ( file_exists($partial_path) ) {
+            return $this->buffer($partial_path);
         }
+        else {
+            return sprintf('<!-- block %s not found -->', $id);
+        }
+    }
+
+    private function render_partial_by_id($id) {
+        $token = sprintf('{{ %s }}', $id);
+        return $this->render_partial($token);
     }
 
     private function buffer($path) {
