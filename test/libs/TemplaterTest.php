@@ -26,6 +26,19 @@ class NeechyTemplaterTest extends PHPUnit_Framework_TestCase {
     /**
      * Tests
      */
+    public function testRenderWithPartialArray() {
+        $this->templater->partial['head'] = '<head><title>Neechy</title></head>';
+        $this->templater->partial['top'] = '<h1>Neechy</h1>';
+        $this->templater->partial['middle'] = 'middle';
+        $this->templater->partial['bottom'] = '<footer>bottom</footer>';
+
+        $output = $this->templater->render();
+
+        foreach ( $this->templater->partial as $partial => $content ) {
+            $this->assertContains($content, $output);
+        }
+    }
+
     public function testInstantiates() {
         $this->assertInstanceOf('NeechyTemplater', $this->templater);
     }

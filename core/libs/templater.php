@@ -8,6 +8,7 @@
 require_once('../core/libs/constants.php');
 require_once('../core/libs/utilities.php');
 
+
 class NeechyTemplater {
     #
     # Constants
@@ -18,6 +19,7 @@ class NeechyTemplater {
     #
     # Properties
     #
+    public $partial = array();
     private $theme_path = '';
 
     #
@@ -37,10 +39,10 @@ class NeechyTemplater {
 
         foreach ( $partial_tokens as $token ) {
             $content = $this->render_partial($token);
-            $output = str_replace($token, $content, $output);
+            $layout = str_replace($token, $content, $layout);
         }
 
-        return $output;
+        return $layout;
     }
 
     public function set() {}
@@ -65,9 +67,33 @@ class NeechyTemplater {
         return $this->buffer($layout_path);
     }
 
-    private function extract_partial_tokens($layout) {}
+    private function extract_partial_tokens($layout) {
+        $partial_tokens = array();
+        $regex = '/\{\{\s*[^\}]+\}\}/';
 
-    private function render_partial($token) {}
+        $matched = preg_match_all($regex, $layout, $partial_tokens);
+
+        if ( $matched ) {
+            return $partial_tokens[0];
+        }
+        else {
+            return array();
+        }
+    }
+
+    private function render_partial($token) {
+        $id = preg_replace('/[\{\}\s]/', '', $token);
+
+        if ( method_exists($this, $id) ) {
+            return $this->$id();
+        }
+        elseif ( isset($this->partial[$id]) ) {
+            return $this->partial[$id];
+        }
+        else {
+            return sprintf('!-- block %s not found -->', $id);
+        }
+    }
 
     private function buffer($path) {
         ob_start();
