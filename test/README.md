@@ -19,11 +19,11 @@ I found the PEAR method simple and straightforward.
 ## To Run
 Tests are run from the command line using `phpunit`. From the root `neechy` directory, run the following command:
 
-    phpunit test
+    phpunit --bootstrap test/bootstrap.php --colors .
 
 To generate coverage reports, install Xdebug following [installation instructions](http://xdebug.org/docs/install) and run like so:
 
-    phpunit --coverage-html ./test/reports test
+    phpunit --bootstrap test/bootstrap.php --coverage-html ./test/reports .
 
 HTML reports will be published to the directory `reports` in `test`.
 
