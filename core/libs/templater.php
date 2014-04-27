@@ -5,6 +5,8 @@
  * Neechy templating engine. Renders final output.
  *
  */
+require_once('../core/libs/constants.php');
+require_once('../core/libs/utilities.php');
 
 class NeechyTemplater {
     #
