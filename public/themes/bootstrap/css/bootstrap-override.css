@@ -1,0 +1,78 @@
+/*
+ * Overrides Bootstrap Defaults
+ *
+ * Based on Bootstrap example:
+ * http://getbootstrap.com/examples/sticky-footer-navbar/sticky-footer-navbar.css
+ *
+ */
+
+/*
+ * General
+ */
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  margin-bottom: 72px;  /* Margin bottom by footer height */
+}
+
+body > .container {
+  padding: 60px 15px 0;
+}
+
+p {
+  margin: 0px;
+  line-height: 1.4 em;
+}
+
+/*
+ * Main Content
+ */
+div#main-content {
+  padding: 1em;
+  border:2px solid #CCC;
+  border-width: 2px 0;
+}
+
+
+
+/*
+ * Footer
+ */
+footer {
+  height: 72px;         /* Set the fixed height of the footer here */
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  background-color: #f5f5f5;
+
+  display: table;
+  text-align: center;
+  border-top: 1px solid #e5e5e5;
+  color: #999;
+}
+
+footer .container {
+  display: table-cell;
+  vertical-align: middle;
+}
+
+footer p {
+  margin: 4px 0;
+  line-height: 1.4 em;
+}
+
+footer ul {
+  margin:10px 0 0;
+}
+
+footer .footer-links {
+  padding:0px;
+}
+
+footer .footer-links li {
+  display: inline;
+  padding: 0 2px;
+}

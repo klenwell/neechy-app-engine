@@ -1,19 +1,14 @@
 <?php
 
-    $html = <<<HTML5
-<!doctype html>
-<html lang="en">
-<head>
-  <title>Neechy</title>
-</head>
+require_once('../core/libs/templater.php');
 
-<body>
-  <h1>Neechy</h1>
+
+$content = <<<HTML5
   <p>For more information, visit
     <a href="https://github.com/klenwell/neechy">the Neechy Github site</a>.
   </p>
-</body>
-</html>
 HTML5;
 
-    print $html;
+$templater = new NeechyTemplater();
+$templater->set('content', $content);
+print $templater->render();

@@ -28,7 +28,7 @@ class SampleNeechyTests extends PHPUnit_Framework_TestCase {
      */
     public function testNotWrittenYet() {
         # see http://phpunit.de/manual/current/en/incomplete-and-skipped-tests.html
-        $this->markTestIncomplete('For future tests. Will report as incomplete.');
+        #$this->markTestIncomplete('For future tests. Will report as incomplete.');
     }
 
     public function testTruth() {
