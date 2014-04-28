@@ -4,7 +4,7 @@
  *
  */
 
-$neechy_core_conf = array(
+$neechy_core_config = array(
     # Version
     'version'           => '0.1',
 
