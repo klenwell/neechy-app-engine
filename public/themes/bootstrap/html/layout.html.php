@@ -12,7 +12,7 @@
     <div class="container">
       {{ header }}
 
-      <div id="dynamic-content">
+      <div id="main-content">
         {{ content }}
       </div>
     </div>

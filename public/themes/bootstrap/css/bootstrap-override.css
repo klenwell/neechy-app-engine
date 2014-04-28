@@ -22,6 +22,21 @@ body > .container {
   padding: 60px 15px 0;
 }
 
+p {
+  margin: 0px;
+  line-height: 1.4 em;
+}
+
+/*
+ * Main Content
+ */
+div#main-content {
+  padding: 1em;
+  border:2px solid #CCC;
+  border-width: 2px 0;
+}
+
+
 
 /*
  * Footer
