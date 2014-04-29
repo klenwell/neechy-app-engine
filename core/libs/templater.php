@@ -83,9 +83,8 @@ class NeechyTemplater {
 
     private function extract_partial_tokens($layout) {
         $partial_tokens = array();
-        $regex = '/\{\{\s*[^\}]+\}\}/';
 
-        $matched = preg_match_all($regex, $layout, $partial_tokens);
+        $matched = preg_match_all(RE_BRACKET_TOKENS, $layout, $partial_tokens);
 
         if ( $matched ) {
             return $partial_tokens[0];
@@ -101,7 +100,7 @@ class NeechyTemplater {
         # found, check to see if the partial item has been set. Else, return
         # "block not found" html comment.
         #
-        $id = preg_replace('/[\{\}\s]/', '', $token);
+        $id = preg_replace(RE_EXTRACT_BRACKET_TOKEN_ID, '', $token);
         $partial_file = sprintf('%s.html.php', $id);
         $partial_path = NeechyPath::join($this->theme_path, 'html', $partial_file);
 
