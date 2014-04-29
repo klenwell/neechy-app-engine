@@ -8,7 +8,7 @@
 require_once('../core/libs/utilities.php');
 
 #
-# Path Settings
+# Path Constants
 #
 define('NEECHY_ROOT', dirname(dirname(dirname(__FILE__))));
 define('NEECHY_APP_PATH', NeechyPath::join(NEECHY_ROOT, 'app'));
@@ -17,7 +17,7 @@ define('NEECHY_CORE_PATH', NeechyPath::join(NEECHY_ROOT, 'core'));
 define('NEECHY_PUBLIC_PATH', NeechyPath::join(NEECHY_ROOT, 'public'));
 
 #
-# MySQL Settings
+# MySQL / Database Constants
 #
 define('MYSQL_ENGINE', 'MyISAM');
 

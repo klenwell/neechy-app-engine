@@ -7,6 +7,7 @@
  *
  */
 require_once('../core/models/base.php');
+require_once('../test/helper.php');
 
 
 class NeechyModelTest extends PHPUnit_Framework_TestCase {
@@ -15,9 +16,12 @@ class NeechyModelTest extends PHPUnit_Framework_TestCase {
      * Test Fixtures
      */
     public function setUp() {
+        NeechyTestHelper::setUp();
+        #$this->neechy = NeechyModelFixture::init();
     }
 
     public function tearDown() {
+        NeechyTestHelper::tearDown();
     }
 
     /**
@@ -31,8 +35,25 @@ class NeechyModelTest extends PHPUnit_Framework_TestCase {
         $this->markTestIncomplete('TODO');
     }
 
+    public function testSaveWithInvalidField() {
+        return $this->markTestIncomplete('TODO: requires fixture');
+
+        $neechy = NeechyModel::init(array(
+            'neech' => 'foo',
+            'invalid' => 'bar'
+        ));
+        $this->setExpectedException('PDOException');
+        $query = $neechy->save();
+    }
+
     public function testSave() {
-        $this->markTestIncomplete('TODO');
+        return $this->markTestIncomplete('TODO: requires fixture');
+
+        $neechy = NeechyModel::init(array(
+            'neech' => 'foo',
+        ));
+        $query = $neechy->save();
+        $this->assertEquals(1, $query->rowCount());
     }
 
     public function testAll() {
@@ -59,6 +80,7 @@ class NeechyModelTest extends PHPUnit_Framework_TestCase {
     public function testInstantiates() {
         $model = new NeechyModel();
         $this->assertInstanceOf('NeechyModel', $model);
+        $this->assertInstanceOf('PDO', $model->pdo);
         $this->assertEquals('neeches', $model->table);
     }
 }

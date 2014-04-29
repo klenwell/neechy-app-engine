@@ -17,7 +17,7 @@
  *
  */
 require_once('../core/libs/constants.php');
-#require_once('../core/libs/database.php');
+require_once('../core/libs/database.php');
 
 
 
@@ -41,14 +41,14 @@ MYSQL;
      */
     public $fields = array();
     public $table = '';
-    private $pdo = null;
+    public $pdo = null;
 
     /*
      * Constructor
      */
     public function __construct() {
         $this->table = $this->extract_table_name();
-        #$this->pdo = NeechyDatabase::connect_to_db();
+        $this->pdo = NeechyDatabase::connect_to_db();
     }
 
     /*
@@ -86,7 +86,7 @@ MYSQL;
     public function save() {
         $sql_f = 'INSERT INTO %s (%s) VALUES (%s)';
         $sql = sprintf($sql_f,
-            $this->get_table(),
+            $this->table,
             implode(', ', array_keys($this->fields)),
             implode(', ', array_fill(0, count($this->fields), '?'))
         );
