@@ -1,0 +1,25 @@
+<?php
+/**
+ * Neechy Test Configuration File
+ *
+ * To create your wiki config file:
+ *  $ cp -v test/test.conf.php{-dist,}
+ *
+ */
+
+$neechy_config = array(
+    # Database Settings
+    'mysql_database'    => 'NULL',
+    'mysql_host'        => 'NULL',
+    'mysql_password'    => 'NULL',
+    'mysql_user'        => 'NULL',
+
+    # Wiki Settings
+    'title'             => 'NeechyTest',
+    'keywords'          => 'phpunit, testing',
+    'description'       => 'test config file',
+    'theme'             => 'bootstrap',
+
+    # Test Settings
+    'is-testing'        => TRUE
+);
