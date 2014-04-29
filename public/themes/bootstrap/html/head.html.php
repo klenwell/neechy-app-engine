@@ -6,9 +6,9 @@
 
 # Templater object
 $t = $this;
-$t->page_title = "Neechy: Niche Wiki";
-$t->meta_keywords = "wiki, wikka, niche, nietzsche";
-$t->meta_description = "a lightweight wiki platform adapted from WikkaWiki";
+$t->page_title = NeechyConfig::get('title');
+$t->meta_keywords = NeechyConfig::get('keywords');
+$t->meta_description = NeechyConfig::get('description');
 
 ?>
     <meta charset="utf-8">
