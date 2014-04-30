@@ -10,7 +10,7 @@
  *
  *
  * USAGE
- *  require_once('models/base.php');
+ *  require_once('core/models/base.php');
  *
  *  class Page extends NeechyModel {
  *  }
@@ -115,7 +115,7 @@ MYSQL;
     private static function extract_table_name() {
         $regex = '/CREATE TABLE([^\(]+)\(/';
         $matches = array();
-        $matched = preg_match($regex, self::$schema, $matches);
+        $matched = preg_match($regex, static::$schema, $matches);
         return trim($matches[1]);
     }
 }
