@@ -1,0 +1,29 @@
+<?php
+/**
+ * Neechy Main Configuration File
+ *
+ * In your travis.yml file include the following command:
+ *
+ * > cp test/travis-ci.config.php-dist test/test.config.php
+ *
+ * For more information, see: http://docs.travis-ci.com/user/database-setup/#MySQL
+ *
+ */
+
+
+$neechy_config = array(
+    # Database Settings
+    'mysql_database'    => 'myapp_test',
+    'mysql_host'        => 'localhost',
+    'mysql_password'    => 'root',
+    'mysql_user'        => '',
+
+    # Wiki Settings
+    'title'             => 'NeechyTest',
+    'keywords'          => 'phpunit, testig',
+    'description'       => 'test config file',
+    'theme'             => 'bootstrap',
+
+    # Test Settings
+    'is-testing'        => TRUE
+);
