@@ -47,7 +47,7 @@ MYSQL;
      * Constructor
      */
     public function __construct() {
-        $this->table = $this->extract_table_name();
+        $this->table = self::extract_table_name();
         $this->pdo = NeechyDatabase::connect_to_db();
     }
 
@@ -67,8 +67,10 @@ MYSQL;
     }
 
     static public function all() {
-        $sql = sprintf('SELECT * FROM %s', $this->table);
-        return $this->pdo->query($sql);
+        $sql = sprintf('SELECT * FROM %s', self::extract_table_name());
+        $pdo = NeechyDatabase::connect_to_db();
+        $statement = $pdo->query($sql);
+        return $statement->fetchAll();
     }
 
     /*
@@ -99,7 +101,8 @@ MYSQL;
     public function find_by_column_value($column, $value) {
         $sql = sprintf('SELECT * FROM %s WHERE %s = ?', $this->table, $column);
         $query = $this->pdo->prepare($sql);
-        return $query->execute(array($value));
+        $query->execute(array($value));
+        return $query->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function find_by_id($id) {
@@ -109,7 +112,7 @@ MYSQL;
     /*
      * Private Method
      */
-    private function extract_table_name() {
+    private static function extract_table_name() {
         $regex = '/CREATE TABLE([^\(]+)\(/';
         $matches = array();
         $matched = preg_match($regex, self::$schema, $matches);

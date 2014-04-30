@@ -8,6 +8,7 @@
  */
 require_once('../core/models/base.php');
 require_once('../test/helper.php');
+require_once('../test/fixtures/neechy.php');
 
 
 class NeechyModelTest extends PHPUnit_Framework_TestCase {
@@ -17,7 +18,7 @@ class NeechyModelTest extends PHPUnit_Framework_TestCase {
      */
     public function setUp() {
         NeechyTestHelper::setUp();
-        #$this->neechy = NeechyModelFixture::init();
+        NeechyFixture::init();
     }
 
     public function tearDown() {
@@ -28,36 +29,42 @@ class NeechyModelTest extends PHPUnit_Framework_TestCase {
      * Tests
      */
     public function testFindById() {
-        $this->markTestIncomplete('TODO');
+        $neechy = new NeechyModel();
+        $foo_rows = $neechy->find_by_column_value('neech', 'foo');
+        $rows = $neechy->find_by_id($foo_rows[0]['id']);
+        $this->assertEquals($foo_rows[0]['id'], $rows[0]['id']);
     }
 
     public function testFindByColumnValue() {
-        $this->markTestIncomplete('TODO');
+        $neechy = new NeechyModel();
+        $rows = $neechy->find_by_column_value('neech', 'foo');
+        $this->assertCount(1, $rows);
+        $this->assertEquals('foo', $rows[0]['neech']);
+
+        $rows = $neechy->find_by_column_value('neech', 'value not in table');
+        $this->assertCount(0, $rows);
     }
 
     public function testSaveWithInvalidField() {
-        return $this->markTestIncomplete('TODO: requires fixture');
-
         $neechy = NeechyModel::init(array(
-            'neech' => 'foo',
-            'invalid' => 'bar'
+            'neech' => 'testSaveWithInvalidField',
+            'invalid' => 'field'
         ));
         $this->setExpectedException('PDOException');
         $query = $neechy->save();
     }
 
     public function testSave() {
-        return $this->markTestIncomplete('TODO: requires fixture');
-
         $neechy = NeechyModel::init(array(
-            'neech' => 'foo',
+            'neech' => 'testSave',
         ));
         $query = $neechy->save();
         $this->assertEquals(1, $query->rowCount());
     }
 
     public function testAll() {
-        $this->markTestIncomplete('TODO');
+        $rows = NeechyModel::all();
+        $this->assertCount(3, $rows);
     }
 
     public function testInitAndField() {
