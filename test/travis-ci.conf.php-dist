@@ -13,10 +13,10 @@
 
 $neechy_config = array(
     # Database Settings
-    'mysql_database'    => 'myapp_test',
     'mysql_host'        => 'localhost',
-    'mysql_password'    => 'root',
-    'mysql_user'        => '',
+    'mysql_database'    => 'myapp_test',
+    'mysql_user'        => 'root',
+    'mysql_password'    => '',
 
     # Wiki Settings
     'title'             => 'NeechyTest',
