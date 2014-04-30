@@ -7,6 +7,6 @@ php:
   - 5.5
   
 before_script:
-  - cp test/travis-ci.config.php-dist test/test.config.php
+  - cp test/travis-ci.conf.php-dist test/test.conf.php
 
 script: phpunit --bootstrap test/bootstrap.php --colors .
