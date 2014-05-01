@@ -31,15 +31,15 @@ class NeechyModelTest extends PHPUnit_Framework_TestCase {
     public function testFindById() {
         $neechy = new NeechyModel();
         $foo_rows = $neechy->find_by_column_value('neech', 'foo');
-        $rows = $neechy->find_by_id($foo_rows[0]['id']);
-        $this->assertEquals($foo_rows[0]['id'], $rows[0]['id']);
+        $record = $neechy->find_by_id($foo_rows[0]->field('id'));
+        $this->assertEquals($foo_rows[0]->field('id'), $record->field('id'));
     }
 
     public function testFindByColumnValue() {
         $neechy = new NeechyModel();
         $rows = $neechy->find_by_column_value('neech', 'foo');
         $this->assertCount(1, $rows);
-        $this->assertEquals('foo', $rows[0]['neech']);
+        $this->assertEquals('foo', $rows[0]->field('neech'));
 
         $rows = $neechy->find_by_column_value('neech', 'value not in table');
         $this->assertCount(0, $rows);

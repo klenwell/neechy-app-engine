@@ -5,7 +5,7 @@ require_once('../core/models/base.php');
 
 class NeechyFixture {
 
-    static private $model_class = 'NeechyModel';
+    static protected $model_class = 'NeechyModel';
     static private $data = array(
         array(
             'neech' => 'foo'
@@ -24,14 +24,14 @@ class NeechyFixture {
     }
 
     static protected function init_table() {
-        $model = new self::$model_class();
+        $model = new static::$model_class();
         $model_class = get_class($model);
         $model->pdo->exec($model_class::get_schema());
     }
 
     static protected function init_fixture_data() {
-        $model = new self::$model_class();
-        foreach ( self::$data as $record ) {
+        $model = new static::$model_class();
+        foreach ( static::$data as $record ) {
             $model->fields = $record;
             $model->save();
         }

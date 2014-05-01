@@ -46,9 +46,10 @@ MYSQL;
     /*
      * Constructor
      */
-    public function __construct() {
+    public function __construct($fields=array()) {
         $this->table = self::extract_table_name();
         $this->pdo = NeechyDatabase::connect_to_db();
+        $this->fields = $fields;
     }
 
     /*
@@ -56,8 +57,7 @@ MYSQL;
      */
     static public function init($fields=array()) {
         $class = get_called_class();
-        $instance = new $class();
-        $instance->fields = $fields;
+        $instance = new $class($fields);
         return $instance;
     }
 
@@ -76,6 +76,16 @@ MYSQL;
     /*
      * Public Methods
      */
+    public function set($field, $value) {
+        $this->fields[$field] = $value;
+    }
+
+    public function un_set($field) {
+        if ( isset($this->fields[$field]) ) {
+            unset($this->fields[$field]);
+        }
+    }
+
     public function field($name, $default=NULL) {
         if ( isset($this->fields[$name]) ) {
             return $this->fields[$name];
@@ -99,14 +109,30 @@ MYSQL;
     }
 
     public function find_by_column_value($column, $value) {
+        $records = array();
+        $ModelClass = get_class($this);
+
         $sql = sprintf('SELECT * FROM %s WHERE %s = ?', $this->table, $column);
         $query = $this->pdo->prepare($sql);
         $query->execute(array($value));
-        return $query->fetchAll(PDO::FETCH_ASSOC);
+        $rows = $query->fetchAll(PDO::FETCH_ASSOC);
+
+        foreach ( $rows as $row ) {
+            $records[] = new $ModelClass($row);
+        }
+
+        return $records;
     }
 
     public function find_by_id($id) {
-        return $this->find_by_column_value('id', $id);
+        $records = $this->find_by_column_value('id', $id);
+
+        if ( $records ) {
+            return $records[0];
+        }
+        else {
+            return NULL;
+        }
     }
 
     /*

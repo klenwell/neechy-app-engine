@@ -24,9 +24,23 @@ CREATE TABLE pages (
 	KEY idx_editor (editor),
 	KEY idx_tag (tag),
 	FULLTEXT KEY body (body),
-	KEY idx_saved_at (saved_at),
+	KEY idx_saved_at (saved_at)
 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE={{ engine }}
 MYSQL;
+
+    public $primogenitor = NULL;
+
+    /*
+     * Constructor
+     */
+    public function __construct($fields=array()) {
+        parent::__construct($fields);
+
+        # Set primogenitor
+        if ( $this->field('primogenitor_id') ) {
+            $this->primogenitor = $this->find_by_id($this->field('primogenitor_id'));
+        }
+    }
 
     /*
      * Static Methods
@@ -34,23 +48,17 @@ MYSQL;
     public static function find_by_tag($tag) {
         $sql = "SELECT * FROM pages WHERE tag = ? ORDER BY saved_at DESC LIMIT 1";
 
-        $pdo = WikkaRegistry::connect_to_db();
+        $pdo = NeechyDatabase::connect_to_db();
         $query = $pdo->prepare($sql);
         $query->execute(array($tag));
-        $page_exists = $query->fetch(PDO::FETCH_ASSOC);
+        $row = $query->fetch(PDO::FETCH_ASSOC);
 
-        $page = new PageModel();
-
-        if ( $page_exists ) {
-            $page->fields = $result;
+        if ( $row ) {
+            $page = new Page($row);
         }
         else {
-            $page->fields['tag'] = $tag;
+            $page = new Page(array('tag' => $tag));
         }
-
-        # Load original version
-
-        # Load ACLs
 
         return $page;
     }
@@ -61,10 +69,13 @@ MYSQL;
     public function save() {
         $sql_f = 'INSERT INTO pages (%s, saved_at) VALUES (%s, NOW())';
 
-        # Use database time for saved_at
-        if ( isset($this->fields['saved_at']) ) {
-            unset($this->fields['saved_at']);
+        # Set primogenitor
+        if ( $primogenitor = $this->find_primogenitor_by_tag($this->field('tag')) ) {
+            $this->set('primogenitor_id', $primogenitor->field('id'));
         }
+
+        # Use database time for saved_at
+        $this->un_set('saved_at');
 
         $sql = sprintf($sql_f,
             implode(', ', array_keys($this->fields)),
@@ -76,7 +87,21 @@ MYSQL;
         return $query;
     }
 
-    public function exists() {
-        return !(is_null($this->field('id')));
+    public function find_primogenitor_by_tag($tag) {
+        $sql = 'SELECT * FROM pages WHERE tag = ? ORDER BY id ASC LIMIT 1';
+        $query = $this->pdo->prepare($sql);
+        $query->execute(array($tag));
+        $row = $query->fetch(PDO::FETCH_ASSOC);
+
+        if ( $row ) {
+            return new Page($row);
+        }
+        else {
+            return NULL;
+        }
+    }
+
+    public function is_new() {
+        return is_null($this->field('id'));
     }
 }
