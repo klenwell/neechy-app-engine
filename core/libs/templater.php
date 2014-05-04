@@ -62,6 +62,43 @@ class NeechyTemplater {
         return sprintf($format, implode(' ', $attrs), $text);
     }
 
+    public function render_editor() {
+        $default_path = $this->load_theme_path('bootstrap');
+        $default_editor = NeechyPath::join($default_path, 'html/editor.html.php');
+        $theme_editor = NeechyPath::join($this->theme_path, 'html/editor.html.php');
+
+        if ( file_exists($theme_editor) ) {
+            return $this->buffer($theme_editor);
+        }
+        else {
+            return $this->buffer($default_editor);
+        }
+    }
+
+    public function js_link($src) {
+        $format = '<script src="%s"></script>';
+        return sprintf($format, $src);
+    }
+
+    public function css_link($href) {
+        $format = '<link rel="stylesheet" href="%s" />';
+        return sprintf($format, $href);
+    }
+
+    public function append_to_head($markup) {
+        $key = 'head_appendix';
+        $this->partial[$key] = (isset($this->partial[$key])) ? $this->partial[$key] : '';
+        $this->partial[$key] = sprintf("%s\n%s", $this->partial[$key], $markup);
+        return $this;
+    }
+
+    public function append_to_body($markup) {
+        $key = 'body_appendix';
+        $this->partial[$key] = (isset($this->partial[$key])) ? $this->partial[$key] : '';
+        $this->partial[$key] = sprintf("%s\n%s", $this->partial[$key], $markup);
+        return $this;
+    }
+
     #
     # Private Methods
     #

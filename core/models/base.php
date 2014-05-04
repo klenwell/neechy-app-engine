@@ -66,6 +66,28 @@ MYSQL;
         return $schema;
     }
 
+    static public function table_exists() {
+        # http://stackoverflow.com/a/14355475/1093087
+        $sql = sprintf('SELECT 1 FROM %s LIMIT 1', self::extract_table_name());
+        $pdo = NeechyDatabase::connect_to_db();
+
+        try {
+            $found = $pdo->query($sql);
+        } catch (PDOException $e) {
+            return FALSE;
+        }
+
+        return $found !== FALSE;
+    }
+
+    static public function create_table_if_not_exists() {
+        if ( ! self::table_exists() ) {
+            $model_class = get_called_class();
+            $model = new $model_class();
+            $model->pdo->exec($model_class::get_schema());
+        }
+    }
+
     static public function all() {
         $sql = sprintf('SELECT * FROM %s', self::extract_table_name());
         $pdo = NeechyDatabase::connect_to_db();

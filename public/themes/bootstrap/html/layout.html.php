@@ -4,6 +4,8 @@
 
     {{ head }}
 
+    {{ head_appendix }}
+
   </head>
   <body>
 
@@ -32,6 +34,8 @@
     <script
       src="themes/bootstrap/js/neechy.js">
     </script>
+
+    {{ body_appendix }}
 
   </body>
 </html>

@@ -27,4 +27,13 @@ class NeechyPath {
 
         return preg_replace('#/+#', '/', implode('/', $subpaths));
     }
+
+    static public function abspath($path) {
+        return realpath($path);
+    }
+
+    static public function root($sub_path='') {
+        $root = NeechyPath::abspath(NeechyPath::join(__DIR__, '../..'));
+        return NeechyPath::join($root, $sub_path);
+    }
 }

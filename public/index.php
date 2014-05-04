@@ -9,26 +9,35 @@
 require_once('../core/libs/config.php');
 require_once('../core/libs/request.php');
 require_once('../core/libs/templater.php');
+require_once('../core/models/page.php');
 
 
 # Init config here for usage elsewhere
 NeechyConfig::init();
 
 $request = new NeechyRequest();
+$templater = new NeechyTemplater();
+$page = Page::find_by_tag('HomePage');
 
-if ( $request->is('edit') ) {
-    require_once('../core/handlers/edit/handler.php');
-    $handler = new EditHandler($request);
-    $content = $handler->handle();
+# TODO: This is the future
+#require_once('../core/handlers/edit/handler.php');
+#$handler = new EditHandler($request);
+#$content = $handler->handle();
+
+# This is the present
+if ( $request->post('page-action') == 'save' ) {
+    var_dump($_POST);
+    $page->set('body', $request->post('page-body'));
+    #$page->save();
+    $content = $request->post('page-body');
+}
+elseif ( $page->is_new() ) {
+    $content = $templater->render_editor();
 }
 else {
-    $content = <<<HTML5
-  <p>For more information, visit
-    <a href="https://github.com/klenwell/neechy">the Neechy Github site</a>.
-  </p>
-HTML5;
+    $content = $page->field('body');
 }
 
-$templater = new NeechyTemplater();
+# Render web page
 $templater->set('content', $content);
 print $templater->render();
