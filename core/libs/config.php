@@ -5,7 +5,7 @@
  * Neechy config module.
  *
  */
-require_once('../core/libs/utilities.php');
+require_once('../core/libs/path.php');
 
 
 class NeechyConfig {

@@ -1,6 +1,6 @@
 <?php
 /**
- * core/libs/utilities.php
+ * core/libs/path.php
  *
  * Various utility classes.
  *
