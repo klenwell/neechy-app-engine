@@ -13,6 +13,10 @@ $(document).ready(function() {
     console.debug("the preview has been updated");
   });
 
+  // Set page markdown / html
+  var page_markdown = $('textarea#wmd-input').val();
+  var page_html = converter.makeHtml(page_markdown);
+
   // Run editor
   editor.run();
 
@@ -24,9 +28,8 @@ $(document).ready(function() {
     });
 
     $('button.save').click(function() {
-      console.debug('saving page');
-      console.debug($('textarea#wmd-input').val());
-      $('textarea#page-body').val($('textarea#wmd-input').val());
+      var user_edits = $('textarea#wmd-input').val();
+      $('textarea#page-body').val(user_edits);
       $('form.save-page').submit();
     });
   })();
@@ -52,4 +55,11 @@ $(document).ready(function() {
       $('button.preview').show();
     });
   })();
+
+  // Set up tabs / panes
+  (function() {
+    $('div.tab-pane#read').html(page_html);
+  })();
+
+
 });

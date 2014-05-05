@@ -37,6 +37,16 @@ div#main-content {
 }
 
 
+/*
+ * Header
+ */
+div#page-header {}
+
+ul#page-tabs {}
+ul#page-tabs li.title {
+  font-weight: bold;
+}
+
 
 /*
  * Footer

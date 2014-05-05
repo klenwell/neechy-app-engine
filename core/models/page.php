@@ -75,6 +75,7 @@ MYSQL;
         }
 
         # Use database time for saved_at
+        $this->un_set('id');
         $this->un_set('saved_at');
 
         $sql = sprintf($sql_f,

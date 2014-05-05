@@ -19,6 +19,9 @@ class NeechyTemplater {
     #
     # Properties
     #
+    public $page = null;
+
+    private $_data = array();
     private $partial = array();
     private $theme_path = '';
 
@@ -28,6 +31,22 @@ class NeechyTemplater {
     public function __construct($theme='bootstrap') {
         $this->theme_path = $this->load_theme_path($theme);
     }
+
+    #
+    # Static Public Methods
+    #
+    static public function titleize_camel_case($input) {
+        # Based on: http://stackoverflow.com/a/1993772/1093087
+        $regex = '!([A-Z][A-Z0-9]*(?=$|[A-Z][a-z0-9])|[A-Za-z][a-z0-9]+)!';
+        preg_match_all($regex, $input, $matches);
+        $ret = $matches[0];
+
+        foreach ($ret as &$match) {
+          $match = $match == strtoupper($match) ? strtolower($match) : lcfirst($match);
+        }
+
+        return ucwords(implode(' ', $ret));
+      }
 
     #
     # Public Methods
@@ -51,6 +70,17 @@ class NeechyTemplater {
         return $current_value;
     }
 
+    public function data($key, $value=NULL) {
+        if ( ! is_null($value) ) {
+            $this->_data[$key] = $value;
+        }
+        else {
+            $this->_data[$key] = ( isset($this->_data[$key]) ) ? $this->_data[$key] : '';
+        }
+
+        return $this->_data[$key];
+    }
+
     public function link($href, $text, $options=array()) {
         $format = '<a %s>%s</a>';
         $attrs = array(sprintf('href="%s"', $href));
@@ -62,10 +92,12 @@ class NeechyTemplater {
         return sprintf($format, implode(' ', $attrs), $text);
     }
 
-    public function render_editor() {
+    public function render_editor($input='') {
         $default_path = $this->load_theme_path('bootstrap');
         $default_editor = NeechyPath::join($default_path, 'html/editor.html.php');
         $theme_editor = NeechyPath::join($this->theme_path, 'html/editor.html.php');
+
+        $this->data('editor-content', $input);
 
         if ( file_exists($theme_editor) ) {
             return $this->buffer($theme_editor);
@@ -97,6 +129,16 @@ class NeechyTemplater {
         $this->partial[$key] = (isset($this->partial[$key])) ? $this->partial[$key] : '';
         $this->partial[$key] = sprintf("%s\n%s", $this->partial[$key], $markup);
         return $this;
+    }
+
+    public function page_title() {
+        if ( ! $this->page ) {
+            return '<!-- no page found -->';
+        }
+        else {
+            return self::titleize_camel_case($this->page->field('tag',
+                '<!-- no tag found -->'));
+        }
     }
 
     #
