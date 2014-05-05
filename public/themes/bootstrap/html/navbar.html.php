@@ -1,5 +1,5 @@
 
-    <div role="navigation" class="navbar navbar-inverse navbar-fixed-top">
+    <div role="navigation" class="navbar navbar-inverse navbar-static-top">
       <div class="container">
         <div class="navbar-header">
           <button data-target=".navbar-collapse" data-toggle="collapse" class="navbar-toggle" type="button">

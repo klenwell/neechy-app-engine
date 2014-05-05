@@ -1,11 +1,11 @@
 <?php
 /**
- * core/libs/config.php
+ * core/neechy/config.php
  *
  * Neechy config module.
  *
  */
-require_once('../core/libs/utilities.php');
+require_once('../core/neechy/path.php');
 
 
 class NeechyConfig {
