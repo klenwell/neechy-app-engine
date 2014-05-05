@@ -65,12 +65,22 @@ class NeechyTemplater {
     }
 
     public function set($id, $value) {
+        #
+        # This sets values for partials, values which will replace {{ tokens }}
+        # in templates.
+        #
         $current_value = $this->render_partial_by_id($id);
         $this->partial[$id] = $value;
         return $current_value;
     }
 
     public function data($key, $value=NULL) {
+        #
+        # This method provides a method for setting variables that can be
+        # accessed in partials through the templater object. It is comparable
+        # to the way the data method functions in jQuery. For an example, see:
+        # public/themes/bootstrap/html/editor.html.php
+        #
         if ( ! is_null($value) ) {
             $this->_data[$key] = $value;
         }

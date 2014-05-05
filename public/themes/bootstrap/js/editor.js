@@ -3,6 +3,7 @@
  *
  */
 $(document).ready(function() {
+
   // Initialize PageDown editor
   var converter = Markdown.getSanitizingConverter();
   Markdown.Extra.init(converter, {table_class: "table table-striped"});
@@ -36,6 +37,8 @@ $(document).ready(function() {
 
   // Set up editor UI
   (function() {
+    $('div.tab-pane#read').html(page_html);
+
     $('#wmd-preview').hide();
     $('button.edit').hide();
     $('button.save').hide();
@@ -55,11 +58,5 @@ $(document).ready(function() {
       $('button.preview').show();
     });
   })();
-
-  // Set up tabs / panes
-  (function() {
-    $('div.tab-pane#read').html(page_html);
-  })();
-
 
 });
