@@ -1,6 +1,6 @@
 <?php
 /**
- * core/libs/path.php
+ * core/neechy/path.php
  *
  * Various utility classes.
  *

@@ -1,7 +1,7 @@
 <?php
 
-require_once('../core/libs/config.php');
-require_once('../core/libs/database.php');
+require_once('../core/neechy/config.php');
+require_once('../core/neechy/database.php');
 
 
 class NeechyTestHelper {

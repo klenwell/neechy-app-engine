@@ -1,12 +1,12 @@
 <?php
 /**
- * test/libs/TemplaterTest.php
+ * test/neechy/TemplaterTest.php
  *
  * Usage (run from Neechy root dir):
- * > phpunit test/libs/TemplaterTest
+ * > phpunit --bootstrap test/bootstrap.php neechy/TemplaterTest
  *
  */
-require_once('../core/libs/templater.php');
+require_once('../core/neechy/templater.php');
 
 
 class NeechyTemplaterTest extends PHPUnit_Framework_TestCase {

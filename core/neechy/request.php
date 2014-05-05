@@ -1,6 +1,6 @@
 <?php
 /**
- * core/libs/request.php
+ * core/neechy/request.php
  *
  * Neechy Request class.
  *

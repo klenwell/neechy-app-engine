@@ -1,11 +1,11 @@
 <?php
 /**
- * core/libs/database.php
+ * core/neechy/database.php
  *
  * Neechy database module
  *
  */
-require_once('../core/libs/config.php');
+require_once('../core/neechy/config.php');
 
 
 class NeechyDatabase {

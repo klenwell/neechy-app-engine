@@ -16,8 +16,8 @@
  *  }
  *
  */
-require_once('../core/libs/constants.php');
-require_once('../core/libs/database.php');
+require_once('../core/neechy/constants.php');
+require_once('../core/neechy/database.php');
 
 
 

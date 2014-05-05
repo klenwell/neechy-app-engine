@@ -6,9 +6,9 @@
  * made from the browser.
  *
  */
-require_once('../core/libs/config.php');
-require_once('../core/libs/request.php');
-require_once('../core/libs/templater.php');
+require_once('../core/neechy/config.php');
+require_once('../core/neechy/request.php');
+require_once('../core/neechy/templater.php');
 require_once('../core/models/page.php');
 
 

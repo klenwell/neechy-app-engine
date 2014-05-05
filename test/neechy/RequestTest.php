@@ -1,12 +1,12 @@
 <?php
 /**
- * test/libs/RequestTest.php
+ * test/neechy/RequestTest.php
  *
  * Usage (run from Neechy root dir):
- * > phpunit --bootstrap test/bootstrap.php libs/RequestTest
+ * > phpunit --bootstrap test/bootstrap.php neechy/RequestTest
  *
  */
-require_once('../core/libs/request.php');
+require_once('../core/neechy/request.php');
 
 
 class NeechyRequestTest extends PHPUnit_Framework_TestCase {

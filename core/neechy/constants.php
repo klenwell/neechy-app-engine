@@ -1,11 +1,11 @@
 <?php
 /**
- * core/libs/constants.php
+ * core/neechy/constants.php
  *
  * Neechy constants. Use sparingly.
  *
  */
-require_once('../core/libs/path.php');
+require_once('../core/neechy/path.php');
 
 #
 # Path Constants

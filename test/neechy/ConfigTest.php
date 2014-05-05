@@ -1,12 +1,12 @@
 <?php
 /**
- * test/libs/ConfigTest.php
+ * test/neechy/ConfigTest.php
  *
  * Usage (run from Neechy root dir):
- * > phpunit test/libs/ConfigTest
+ * > phpunit --bootstrap test/bootstrap.php neechy/ConfigTest
  *
  */
-require_once('../core/libs/config.php');
+require_once('../core/neechy/config.php');
 
 
 class NeechyConfigTest extends PHPUnit_Framework_TestCase {

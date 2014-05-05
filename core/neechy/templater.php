@@ -1,12 +1,12 @@
 <?php
 /**
- * core/libs/templater.php
+ * core/neechy/templater.php
  *
  * Neechy templating engine. Renders final output.
  *
  */
-require_once('../core/libs/constants.php');
-require_once('../core/libs/path.php');
+require_once('../core/neechy/constants.php');
+require_once('../core/neechy/path.php');
 
 
 class NeechyTemplater {
