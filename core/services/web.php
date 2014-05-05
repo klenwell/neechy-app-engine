@@ -8,26 +8,9 @@
 require_once('../core/services/base.php');
 require_once('../core/neechy/request.php');
 require_once('../core/neechy/templater.php');
+require_once('../core/neechy/response.php');
 require_once('../core/models/page.php');
 
-
-class TemporaryResponse {
-    #
-    # TODO: replace this with NeechyResponse class
-    #
-    private $templater = NULL;
-
-    public function __construct($templater) {
-        $this->templater = $templater;
-    }
-
-    public function send_headers() {
-    }
-
-    public function render() {
-        print $this->templater->render();
-    }
-}
 
 
 class NeechyWebService extends NeechyService {
@@ -99,7 +82,8 @@ HTML5;
         $this->templater->set('content', $content);
 
         # Prepare response
-        $response = new TemporaryResponse($this->templater);
+        $body = $this->templater->render();
+        $response = new NeechyResponse($body, 200);
         return $response;
     }
 }
