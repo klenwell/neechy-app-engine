@@ -5,6 +5,10 @@ require_once('../core/neechy/database.php');
 
 
 class NeechyTestHelper {
+    #
+    # Constants
+    #
+    const TEST_CONF_PATH = '../test/test.conf.php';
 
     /*
      * API
@@ -21,7 +25,7 @@ class NeechyTestHelper {
     }
 
     static public function init_config() {
-        NeechyConfig::init('../test/test.conf.php');
+        NeechyConfig::init(self::TEST_CONF_PATH);
     }
 
     static public function init_server_env() {

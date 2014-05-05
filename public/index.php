@@ -6,49 +6,17 @@
  * made from the browser.
  *
  */
-require_once('../core/neechy/config.php');
-require_once('../core/neechy/request.php');
-require_once('../core/neechy/templater.php');
-require_once('../core/models/page.php');
+require_once('../core/services/web.php');
 
 
-# Init config here for usage elsewhere
-NeechyConfig::init();
+$web_service = new NeechyWebService();
 
-$request = new NeechyRequest();
-$templater = new NeechyTemplater();
-$page = Page::find_by_tag('HomePage');
-
-# TODO: This is the future
-#require_once('../core/handlers/edit/handler.php');
-#$handler = new EditHandler($request);
-#$content = $handler->handle();
-
-$page_tabs_f = <<<HTML5
-<!-- Tab panes -->
-<div class="tab-content">
-  <div class="tab-pane active" id="read"></div>
-  <div class="tab-pane" id="edit">%s</div>
-  <div class="tab-pane" id="discuss">Under development</div>
-  <div class="tab-pane" id="history">Under development</div>
-  <div class="tab-pane" id="access">Under development</div>
-</div>
-HTML5;
-
-# This is the present
-if ( $request->post('page-action') == 'save' ) {
-    $page->set('body', $request->post('page-body'));
-    $page->save();
-    $content = sprintf($page_tabs_f, $templater->render_editor($page->field('body')));
+try {
+    $response = $web_service->serve();
 }
-elseif ( $page->is_new() ) {
-    $content = $templater->render_editor();
-}
-else {
-    $content = sprintf($page_tabs_f, $templater->render_editor($page->field('body')));
+catch (Exception $e) {
+    $response = $webservice->serve_error($e);
 }
 
-# Render web page
-$templater->page = $page;
-$templater->set('content', $content);
-print $templater->render();
+$response->send_headers();
+$response->render();
