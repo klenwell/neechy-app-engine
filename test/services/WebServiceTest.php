@@ -29,7 +29,7 @@ class WebServiceTest extends PHPUnit_Framework_TestCase {
      * Tests
      */
     public function testInstantiates() {
-        $web_service = new NeechyWebService();
+        $web_service = new NeechyWebService(NeechyTestHelper::TEST_CONF_PATH);
         $this->assertInstanceOf('NeechyWebService', $web_service);
     }
 }

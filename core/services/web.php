@@ -39,8 +39,8 @@ class NeechyWebService extends NeechyService {
     #
     # Constructor
     #
-    public function __construct() {
-        parent::__construct();
+    public function __construct($conf_path=NULL) {
+        parent::__construct($conf_path);
 
         $this->request = new NeechyRequest();
         $this->templater = new NeechyTemplater();
