@@ -5,6 +5,7 @@
  * NeechyService base class.
  *
  */
+require_once('../core/neechy/constants.php');
 require_once('../core/neechy/config.php');
 
 
