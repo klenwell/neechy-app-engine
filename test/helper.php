@@ -1,5 +1,6 @@
 <?php
 
+require_once('../core/neechy/constants.php');
 require_once('../core/neechy/config.php');
 require_once('../core/neechy/database.php');
 
