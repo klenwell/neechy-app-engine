@@ -8,6 +8,10 @@
 
 
 class NeechyRequest {
+    #
+    # Constants
+    #
+    const DEFAULT_HANDLER = 'page';
 
     #
     # Properties
@@ -61,7 +65,7 @@ class NeechyRequest {
     #
     private function set_handler() {
         $handler = $this->param('handler');
-        return (! is_null($handler)) ? strtolower($handler) : NULL;
+        return (! is_null($handler)) ? strtolower($handler) : self::DEFAULT_HANDLER;
     }
 
     private function set_action() {

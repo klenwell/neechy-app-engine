@@ -19,6 +19,8 @@ class NeechyTemplater {
     #
     # Properties
     #
+    static private $instance = null;
+
     public $page = null;
 
     private $_data = array();
@@ -35,6 +37,16 @@ class NeechyTemplater {
     #
     # Static Public Methods
     #
+    static public function load($theme='bootstrap') {
+        if ( ! is_null(self::$instance) ) {
+            return self::$instance;
+        }
+        else {
+            self::$instance = new NeechyTemplater($theme);
+            return self::$instance;
+        }
+    }
+
     static public function titleize_camel_case($input) {
         # Based on: http://stackoverflow.com/a/1993772/1093087
         $regex = '!([A-Z][A-Z0-9]*(?=$|[A-Z][a-z0-9])|[A-Za-z][a-z0-9]+)!';

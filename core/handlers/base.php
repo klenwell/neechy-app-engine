@@ -21,6 +21,6 @@ class NeechyHandler {
     #
     # Public Methods
     #
-    public function handler() {
+    public function handle() {
     }
 }

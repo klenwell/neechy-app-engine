@@ -9,12 +9,15 @@
 require_once('../core/services/web.php');
 
 
+class NeechyException extends Exception {}
+
+
 $web_service = new NeechyWebService();
 
 try {
     $response = $web_service->serve();
 }
-catch (Exception $e) {
+catch (NeechyException $e) {
     $response = $webservice->serve_error($e);
 }
 

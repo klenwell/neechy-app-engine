@@ -59,7 +59,7 @@ class NeechyRequestTest extends PHPUnit_Framework_TestCase {
         $request = new NeechyRequest();
 
         $this->assertEquals('Home', $request->page);
-        $this->assertNull($request->handler);
+        $this->assertEquals(NeechyRequest::DEFAULT_HANDLER, $request->handler);
         $this->assertNull($request->action);
     }
 
