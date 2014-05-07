@@ -17,6 +17,8 @@ class NeechyRequest {
     #
     # Properties
     #
+    static private $instance = null;
+
     public $page = NULL;
     public $handler = NULL;
     public $action = NULL;
@@ -33,6 +35,19 @@ class NeechyRequest {
         $this->handler = $this->set_handler();
         $this->action = $this->set_action();
         $this->mod_rewrite_on = array_key_exists('HTTP_MOD_REWRITE', $_SERVER);
+    }
+
+    #
+    # Static Public Methods
+    #
+    static public function load() {
+        if (! is_null(self::$instance)) {
+            return self::$instance;
+        }
+        else {
+            self::$instance = new NeechyRequest();
+            return self::$instance;
+        }
     }
 
     #

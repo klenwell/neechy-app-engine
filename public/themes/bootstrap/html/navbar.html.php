@@ -19,10 +19,18 @@ $t = $this;   # templater object
         <div class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
             <!-- TODO: dynamically build menu -->
-            <li><?php echo $t->neechy_link('Niches'); ?></li>
-            <li><?php echo $t->neechy_link('PageIndex'); ?></li>
-            <li><?php echo $t->neechy_link('RecentChanges'); ?></li>
-            <li><?php echo $t->neechy_link('RecentComments'); ?></li>
+            <li class="<?php echo $t->nav_tab_class('Niches'); ?>">
+              <?php echo $t->neechy_link('Niches'); ?>
+            </li>
+            <li class="<?php echo $t->nav_tab_class('PageIndex'); ?>">
+              <?php echo $t->neechy_link('PageIndex'); ?>
+            </li>
+            <li class="<?php echo $t->nav_tab_class('RecentChanges'); ?>">
+              <?php echo $t->neechy_link('RecentChanges'); ?>
+            </li>
+            <li class="<?php echo $t->nav_tab_class('RecentComments'); ?>">
+              <?php echo $t->neechy_link('RecentComments'); ?>
+            </li>
           </ul>
 
           <ul class="nav navbar-nav navbar-right">

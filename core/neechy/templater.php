@@ -7,6 +7,7 @@
  */
 require_once('../core/neechy/constants.php');
 require_once('../core/neechy/path.php');
+require_once('../core/neechy/request.php');
 
 
 class NeechyTemplater {
@@ -21,6 +22,7 @@ class NeechyTemplater {
     #
     static private $instance = null;
 
+    public $request = null;
     public $page = null;
 
     private $_data = array();
@@ -32,6 +34,7 @@ class NeechyTemplater {
     #
     public function __construct($theme='bootstrap') {
         $this->theme_path = $this->load_theme_path($theme);
+        $this->request = NeechyRequest::load();
     }
 
     #
@@ -195,6 +198,15 @@ class NeechyTemplater {
         else {
             return self::titleize_camel_case($this->page->field('tag',
                 '<!-- no tag found -->'));
+        }
+    }
+
+    public function nav_tab_class($link_page_tag) {
+        if ( strtolower($link_page_tag) == strtolower($this->request->page) ) {
+            return 'active';
+        }
+        else {
+            return 'inactive';
         }
     }
 
