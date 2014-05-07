@@ -6,6 +6,7 @@
  *
  */
 require_once('../core/services/base.php');
+require_once('../core/neechy/errors.php');
 require_once('../core/neechy/request.php');
 require_once('../core/neechy/templater.php');
 require_once('../core/neechy/response.php');
@@ -32,6 +33,21 @@ class NeechyWebService extends NeechyService {
     # Public Methods
     #
     public function serve() {
+        try {
+            $response = $this->dispatch_to_handler();
+        }
+        catch (NeechyError $e) {
+            $response = $this->dispatch_to_error($e);
+        }
+
+        $response->send_headers();
+        $response->render();
+    }
+
+    #
+    # Private Functions
+    #
+    private function dispatch_to_handler() {
         $handler = $this->load_handler($this->request);
         $content = $handler->handle();
 
@@ -46,12 +62,18 @@ class NeechyWebService extends NeechyService {
         return $response;
     }
 
-    public function serve_error() {
+    private function dispatch_to_error($e) {
+        # Render web page
+        $templater = NeechyTemplater::load();
+        $templater->page = $handler->page;
+        $templater->set('content', $e->getMessage());
+        $body = $templater->render();
+
+        # Prepare response
+        $response = new NeechyResponse($body, 200);
+        return $response;
     }
 
-    #
-    # Private Functions
-    #
     private function load_handler($request) {
         $handler_app_path = NeechyPath::join(NEECHY_HANDLER_APP_PATH,
             $request->handler, 'handler.php');
@@ -66,7 +88,8 @@ class NeechyWebService extends NeechyService {
             require_once($handler_core_path);
         }
         else {
-            throw new Exception('invalid handler');
+            throw new NeechyWebServiceError(sprintf('handler %s not found',
+                $request->handler));
         }
 
         $handler = new $HandlerClass($request);
