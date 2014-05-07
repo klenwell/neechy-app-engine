@@ -120,35 +120,8 @@ class NeechyTemplater {
     public function neechy_link($label, $page=NULL, $handler=NULL, $action=NULL,
         $options=array()) {
 
-        $params = array(
-            'page' => (is_null($page)) ? $label : $page,
-            'handler' => $handler,
-            'action' => $action
-        );
-        $keys = array_keys($params);
-
-        # TODO: Detect rewrite mode
-        if ( $rewrite_mode = FALSE ) {
-            $url_parts = array();
-
-            foreach ($keys as $key) {
-                if ( ! is_null($params[$key]) ) {
-                    $url_parts[] = $params[$key];
-                }
-            }
-
-            $href = implode('/', $url_parts);
-        }
-        else {
-            foreach ($keys as $key) {
-                if ( is_null($params[$key]) ) {
-                    unset($params[$key]);
-                }
-            }
-
-            $href = sprintf('?%s', http_build_query($params));
-        }
-
+        $page = (is_null($page)) ? $label : $page;
+        $href = NeechyPath::url($page, $handler, $action);
         return $this->link($href, $label, $options);
     }
 

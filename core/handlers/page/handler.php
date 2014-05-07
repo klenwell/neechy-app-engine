@@ -6,6 +6,8 @@
  *
  */
 require_once('../core/handlers/base.php');
+require_once('../core/neechy/templater.php');
+require_once('../core/neechy/response.php');
 
 
 class PageHandler extends NeechyHandler {
@@ -47,8 +49,7 @@ HTML5;
         if ( $this->request->action_is('save') ) {
             $this->page->set('body', $this->request->post('page-body'));
             $this->page->save();
-            $content = sprintf($page_tabs_f, $templater->render_editor(
-                $this->page->field('body')));
+            NeechyResponse::redirect($this->page->url());
         }
         elseif ( $this->page->is_new() ) {
             $content = $templater->render_editor();
