@@ -25,6 +25,16 @@ class NeechyResponse {
     }
 
     #
+    # Public Static Methods
+    #
+    static public function redirect($url, $status_code=303) {
+        # See http://stackoverflow.com/a/768472/1093087
+        $location = sprintf('Location: %s', $url);
+        header($location, true, $status_code);
+        die();
+    }
+
+    #
     # Public Methods
     #
     public function render() {

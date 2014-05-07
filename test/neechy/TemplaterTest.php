@@ -26,6 +26,24 @@ class NeechyTemplaterTest extends PHPUnit_Framework_TestCase {
     /**
      * Tests
      */
+    public function testNeechyLink() {
+        $link = $this->templater->neechy_link('HomePage');
+        $this->assertEquals('<a href="?page=HomePage">HomePage</a>', $link);
+
+        $link = $this->templater->neechy_link('label',
+            'HomePage',
+            'handler',
+            'action',
+            array(
+              'title' => 'home',
+              'class' => 'link',
+              'id' => 'home-link'
+        ));
+        $expect = '<a href="?page=HomePage&handler=handler&action=action" ' .
+            'title="home" class="link" id="home-link">label</a>';
+        $this->assertEquals($expect, $link);
+    }
+
     public function testLink() {
         $link = $this->templater->link('http://github.com/', 'github');
         $this->assertEquals('<a href="http://github.com/">github</a>', $link);

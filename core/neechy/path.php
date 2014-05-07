@@ -36,4 +36,37 @@ class NeechyPath {
         $root = NeechyPath::abspath(NeechyPath::join(__DIR__, '../..'));
         return NeechyPath::join($root, $sub_path);
     }
+
+    static public function url($page, $handler=NULL, $action=NULL, $params=array()) {
+        # TODO: Detect rewrite mode; Add query param support
+        $parts = array(
+            'page' => $page,
+            'handler' => $handler,
+            'action' => $action
+        );
+        $keys = array_keys($parts);
+
+        if ( $rewrite_mode = FALSE ) {
+            $url_parts = array();
+
+            foreach ($keys as $key) {
+                if ( ! is_null($parts[$key]) ) {
+                    $url_parts[] = $parts[$key];
+                }
+            }
+
+            $url = implode('/', $url_parts);
+        }
+        else {
+            foreach ($keys as $key) {
+                if ( is_null($parts[$key]) ) {
+                    unset($parts[$key]);
+                }
+            }
+
+            $url = sprintf('?%s', http_build_query($parts));
+        }
+
+        return $url;
+    }
 }

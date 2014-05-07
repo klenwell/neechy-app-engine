@@ -6,6 +6,7 @@
  *
  */
 require_once('../core/models/base.php');
+require_once('../core/neechy/path.php');
 
 
 class Page extends NeechyModel {
@@ -105,4 +106,8 @@ MYSQL;
     public function is_new() {
         return is_null($this->field('id'));
     }
+
+	public function url($handler=NULL, $action=NULL, $params=array()) {
+		return NeechyPath::url($this->field('tag'), $handler, $action, $params);
+	}
 }

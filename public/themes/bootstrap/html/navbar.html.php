@@ -1,3 +1,8 @@
+<?php
+
+$t = $this;   # templater object
+
+?>
 
     <div role="navigation" class="navbar navbar-inverse navbar-static-top">
       <div class="container">
@@ -14,11 +19,18 @@
         <div class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
             <!-- TODO: dynamically build menu -->
-            <li class="active"><a href="#">Home</a></li>
-            <li><a href="#">Categories</a></li>
-            <li><a href="#">PageIndex</a></li>
-            <li><a href="#">RecentChanges</a></li>
-            <li><a href="#">RecentComments</a></li>
+            <li class="<?php echo $t->nav_tab_class('Niches'); ?>">
+              <?php echo $t->neechy_link('Niches'); ?>
+            </li>
+            <li class="<?php echo $t->nav_tab_class('PageIndex'); ?>">
+              <?php echo $t->neechy_link('PageIndex'); ?>
+            </li>
+            <li class="<?php echo $t->nav_tab_class('RecentChanges'); ?>">
+              <?php echo $t->neechy_link('RecentChanges'); ?>
+            </li>
+            <li class="<?php echo $t->nav_tab_class('RecentComments'); ?>">
+              <?php echo $t->neechy_link('RecentComments'); ?>
+            </li>
           </ul>
 
           <ul class="nav navbar-nav navbar-right">

@@ -7,6 +7,7 @@
  */
 require_once('../core/neechy/constants.php');
 require_once('../core/neechy/path.php');
+require_once('../core/neechy/request.php');
 
 
 class NeechyTemplater {
@@ -19,6 +20,9 @@ class NeechyTemplater {
     #
     # Properties
     #
+    static private $instance = null;
+
+    public $request = null;
     public $page = null;
 
     private $_data = array();
@@ -30,11 +34,22 @@ class NeechyTemplater {
     #
     public function __construct($theme='bootstrap') {
         $this->theme_path = $this->load_theme_path($theme);
+        $this->request = NeechyRequest::load();
     }
 
     #
     # Static Public Methods
     #
+    static public function load($theme='bootstrap') {
+        if ( ! is_null(self::$instance) ) {
+            return self::$instance;
+        }
+        else {
+            self::$instance = new NeechyTemplater($theme);
+            return self::$instance;
+        }
+    }
+
     static public function titleize_camel_case($input) {
         # Based on: http://stackoverflow.com/a/1993772/1093087
         $regex = '!([A-Z][A-Z0-9]*(?=$|[A-Z][a-z0-9])|[A-Za-z][a-z0-9]+)!';
@@ -102,6 +117,14 @@ class NeechyTemplater {
         return sprintf($format, implode(' ', $attrs), $text);
     }
 
+    public function neechy_link($label, $page=NULL, $handler=NULL, $action=NULL,
+        $options=array()) {
+
+        $page = (is_null($page)) ? $label : $page;
+        $href = NeechyPath::url($page, $handler, $action);
+        return $this->link($href, $label, $options);
+    }
+
     public function render_editor($input='') {
         $default_path = $this->load_theme_path('bootstrap');
         $default_editor = NeechyPath::join($default_path, 'html/editor.html.php');
@@ -148,6 +171,15 @@ class NeechyTemplater {
         else {
             return self::titleize_camel_case($this->page->field('tag',
                 '<!-- no tag found -->'));
+        }
+    }
+
+    public function nav_tab_class($link_page_tag) {
+        if ( strtolower($link_page_tag) == strtolower($this->request->page) ) {
+            return 'active';
+        }
+        else {
+            return 'inactive';
         }
     }
 

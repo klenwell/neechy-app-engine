@@ -28,6 +28,11 @@ class PageModelTest extends PHPUnit_Framework_TestCase {
     /**
      * Tests
      */
+    public function testUrl() {
+        $page = Page::find_by_tag('NeechyPage');
+        $this->assertEquals('?page=NeechyPage', $page->url());
+    }
+
     public function testFindByTag() {
         $page = Page::find_by_tag('NewPage');   # page does not exist yet
         $this->assertEquals('NewPage', $page->field('tag'));
