@@ -114,6 +114,41 @@ class NeechyTemplater {
         return sprintf($format, implode(' ', $attrs), $text);
     }
 
+    public function neechy_link($label, $page=NULL, $handler=NULL, $action=NULL,
+        $options=array()) {
+
+        $params = array(
+            'page' => (is_null($page)) ? $label : $page,
+            'handler' => $handler,
+            'action' => $action
+        );
+        $keys = array_keys($params);
+
+        # TODO: Detect rewrite mode
+        if ( $rewrite_mode = FALSE ) {
+            $url_parts = array();
+
+            foreach ($keys as $key) {
+                if ( ! is_null($params[$key]) ) {
+                    $url_parts[] = $params[$key];
+                }
+            }
+
+            $href = implode('/', $url_parts);
+        }
+        else {
+            foreach ($keys as $key) {
+                if ( is_null($params[$key]) ) {
+                    unset($params[$key]);
+                }
+            }
+
+            $href = sprintf('?%s', http_build_query($params));
+        }
+
+        return $this->link($href, $label, $options);
+    }
+
     public function render_editor($input='') {
         $default_path = $this->load_theme_path('bootstrap');
         $default_editor = NeechyPath::join($default_path, 'html/editor.html.php');
