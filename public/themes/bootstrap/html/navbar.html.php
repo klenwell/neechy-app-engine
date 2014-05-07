@@ -14,7 +14,6 @@
         <div class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
             <!-- TODO: dynamically build menu -->
-            <li class="active"><a href="#">Home</a></li>
             <li><a href="#">Categories</a></li>
             <li><a href="#">PageIndex</a></li>
             <li><a href="#">RecentChanges</a></li>
