@@ -11,6 +11,7 @@ class NeechyRequest {
     #
     # Constants
     #
+    const DEFAULT_PAGE = 'HomePage';
     const DEFAULT_HANDLER = 'page';
 
     #
@@ -28,7 +29,7 @@ class NeechyRequest {
     #
     public function __construct() {
         $this->params = array_merge($_GET, $_POST);
-        $this->page = $this->param('page', 'Home');
+        $this->page = $this->set_page();
         $this->handler = $this->set_handler();
         $this->action = $this->set_action();
         $this->mod_rewrite_on = array_key_exists('HTTP_MOD_REWRITE', $_SERVER);
@@ -44,6 +45,15 @@ class NeechyRequest {
         }
         else {
             return ($this->handler == strtolower($handler));
+        }
+    }
+
+    public function action_is($value) {
+        if ( is_null($this->action) ) {
+            return FALSE;
+        }
+        else {
+            return $this->action == $value;
         }
     }
 
@@ -63,6 +73,10 @@ class NeechyRequest {
     #
     # Private Methods
     #
+    private function set_page() {
+        return $this->param('page', self::DEFAULT_PAGE);
+    }
+
     private function set_handler() {
         $handler = $this->param('handler');
         return (! is_null($handler)) ? strtolower($handler) : self::DEFAULT_HANDLER;

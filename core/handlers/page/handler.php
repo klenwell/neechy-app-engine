@@ -24,8 +24,7 @@ class PageHandler extends NeechyHandler {
         $this->request = $request;
 
         # TODO: get page tag from request
-        $tag = 'HomePage';
-        $this->page = Page::find_by_tag($tag);
+        $this->page = Page::find_by_tag($this->request->page);
     }
 
     #
@@ -45,7 +44,7 @@ HTML5;
 
         $templater = NeechyTemplater::load();
 
-        if ( $this->request->post('page-action') == 'save' ) {
+        if ( $this->request->action_is('save') ) {
             $this->page->set('body', $this->request->post('page-body'));
             $this->page->save();
             $content = sprintf($page_tabs_f, $templater->render_editor(

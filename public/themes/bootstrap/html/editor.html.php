@@ -26,6 +26,6 @@ $input = $t->data('editor-content');
         <button class="btn btn-info save">save</button>
           <form class="save-page" method="post">
             <textarea id="page-body" name="page-body" style="display:none;"></textarea>
-            <input type="hidden" name="page-action" value="save" />
+            <input type="hidden" name="action" value="save" />
           </form>
       </div>

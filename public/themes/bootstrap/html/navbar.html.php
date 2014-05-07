@@ -14,10 +14,10 @@
         <div class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
             <!-- TODO: dynamically build menu -->
-            <li><a href="#">Categories</a></li>
-            <li><a href="#">PageIndex</a></li>
-            <li><a href="#">RecentChanges</a></li>
-            <li><a href="#">RecentComments</a></li>
+            <li><a href="/?page=Niches">Niches</a></li>
+            <li><a href="/?page=PageIndex">PageIndex</a></li>
+            <li><a href="/?page=RecentChanges">RecentChanges</a></li>
+            <li><a href="/?page=RecentComments">RecentComments</a></li>
           </ul>
 
           <ul class="nav navbar-nav navbar-right">
