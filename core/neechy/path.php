@@ -39,19 +39,19 @@ class NeechyPath {
 
     static public function url($page, $handler=NULL, $action=NULL, $params=array()) {
         # TODO: Detect rewrite mode; Add query param support
-        $params = array(
+        $parts = array(
             'page' => $page,
             'handler' => $handler,
             'action' => $action
         );
-        $keys = array_keys($params);
+        $keys = array_keys($parts);
 
         if ( $rewrite_mode = FALSE ) {
             $url_parts = array();
 
             foreach ($keys as $key) {
-                if ( ! is_null($params[$key]) ) {
-                    $url_parts[] = $params[$key];
+                if ( ! is_null($parts[$key]) ) {
+                    $url_parts[] = $parts[$key];
                 }
             }
 
@@ -59,12 +59,12 @@ class NeechyPath {
         }
         else {
             foreach ($keys as $key) {
-                if ( is_null($params[$key]) ) {
-                    unset($params[$key]);
+                if ( is_null($parts[$key]) ) {
+                    unset($parts[$key]);
                 }
             }
 
-            $url = sprintf('?%s', http_build_query($params));
+            $url = sprintf('?%s', http_build_query($parts));
         }
 
         return $url;
