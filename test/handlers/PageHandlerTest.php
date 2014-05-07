@@ -7,6 +7,7 @@
  *
  */
 require_once('../core/handlers/page/handler.php');
+require_once('../core/neechy/request.php');
 require_once('../test/helper.php');
 require_once('../test/fixtures/page.php');
 
@@ -29,7 +30,8 @@ class PageHandlerTest extends PHPUnit_Framework_TestCase {
      * Tests
      */
     public function testInstantiates() {
-        $handler = new PageHandler(NULL);
+        $request = new NeechyRequest();
+        $handler = new PageHandler($request);
         $this->assertInstanceOf('PageHandler', $handler);
         $this->assertInstanceOf('NeechyHandler', $handler);
     }

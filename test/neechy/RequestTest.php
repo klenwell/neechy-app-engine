@@ -58,7 +58,7 @@ class NeechyRequestTest extends PHPUnit_Framework_TestCase {
         $this->simulate_cgi_request();
         $request = new NeechyRequest();
 
-        $this->assertEquals('Home', $request->page);
+        $this->assertEquals(NeechyRequest::DEFAULT_PAGE, $request->page);
         $this->assertEquals(NeechyRequest::DEFAULT_HANDLER, $request->handler);
         $this->assertNull($request->action);
     }
