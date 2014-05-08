@@ -11,7 +11,7 @@ require_once('../test/helper.php');
 require_once('../test/fixtures/user.php');
 
 
-class PageModelTest extends PHPUnit_Framework_TestCase {
+class UserModelTest extends PHPUnit_Framework_TestCase {
 
     /**
      * Test Fixtures
