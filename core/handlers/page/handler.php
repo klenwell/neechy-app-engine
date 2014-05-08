@@ -15,19 +15,6 @@ class PageHandler extends NeechyHandler {
     # Properties
     #
     public $page = null;
-    public $request = null;
-
-    #
-    # Constructor
-    #
-    public function __construct($request) {
-        parent::__construct();
-
-        $this->request = $request;
-
-        # TODO: get page tag from request
-        $this->page = Page::find_by_tag($this->request->page);
-    }
 
     #
     # Public Methods

@@ -92,7 +92,7 @@ class NeechyWebService extends NeechyService {
                 $request->handler));
         }
 
-        $handler = new $HandlerClass($request);
+        $handler = new $HandlerClass();
         return $handler;
     }
 }
