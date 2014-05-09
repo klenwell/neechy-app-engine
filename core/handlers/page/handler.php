@@ -31,18 +31,16 @@ class PageHandler extends NeechyHandler {
 </div>
 HTML5;
 
-        $templater = NeechyTemplater::load();
-
         if ( $this->request->action_is('save') ) {
             $this->page->set('body', $this->request->post('page-body'));
             $this->page->save();
             NeechyResponse::redirect($this->page->url());
         }
         elseif ( $this->page->is_new() ) {
-            $content = $templater->render_editor();
+            $content = $this->t->render_editor();
         }
         else {
-            $content = sprintf($page_tabs_f, $templater->render_editor(
+            $content = sprintf($page_tabs_f, $this->t->render_editor(
                 $this->page->field('body')));
         }
 
