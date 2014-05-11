@@ -29,6 +29,7 @@ class NeechyHandler {
         $this->request = NeechyRequest::load();
         $this->page = Page::find_by_tag($this->request->page);
         $this->t = NeechyTemplater::load();
+        $this->t->data('handler', get_class($this));
     }
 
     #

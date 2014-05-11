@@ -1,0 +1,33 @@
+/*
+ * Styling for Neechy login/signup view
+ *
+ */
+div#neechy-auth {
+  background: #eeeeee;
+  padding: 20px;
+  color: #3276b1;
+}
+
+div#neechy-auth h2.form-signin-heading {
+  margin: 10px 0;
+}
+
+div#neechy-auth h4 {
+  margin-top: 0px;
+  font-size: 16px;
+  font-weight: normal;
+}
+
+div#neechy-auth input {
+  margin:2px 0;
+}
+
+div#neechy-auth input[type=checkbox] {
+  margin-left: -20px;
+}
+
+div#neechy-auth .well-sm {
+  background-color: white;
+  padding: .4em 1em 1em;
+  border: 1px solid #CCCCFF;
+}

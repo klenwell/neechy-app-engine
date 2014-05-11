@@ -28,12 +28,14 @@ class NeechyTemplater {
     private $_data = array();
     private $partial = array();
     private $theme_path = '';
+    private $theme_url_path = '';
 
     #
     # Constructor
     #
     public function __construct($theme='bootstrap') {
         $this->theme_path = $this->load_theme_path($theme);
+        $this->theme_url_path = sprintf('themes/%s/', $theme);
         $this->request = NeechyRequest::load();
     }
 
@@ -138,6 +140,14 @@ class NeechyTemplater {
         else {
             return $this->buffer($default_editor);
         }
+    }
+
+    public function js_src($fpath='') {
+        return NeechyPath::join($this->theme_url_path, 'js', $fpath);
+    }
+
+    public function css_href($fpath='') {
+        return NeechyPath::join($this->theme_url_path, 'css', $fpath);
     }
 
     public function js_link($src) {

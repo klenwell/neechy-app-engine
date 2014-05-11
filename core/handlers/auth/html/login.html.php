@@ -4,8 +4,8 @@
 # Source: http://getbootstrap.com/examples/signin/
 #
 
-
 $t = $this;   # templater object
+$t->append_to_head($t->css_link($t->css_href('login.css')));
 
 $alert = $t->data('alert');
 $post_url = NeechyPath::url('login', 'auth');
@@ -16,7 +16,7 @@ $post_url = NeechyPath::url('login', 'auth');
       <?php endif; ?>
 
       <div id="neechy-auth" class="row">
-        <div id="neechy-login" class="col-xs-offset-2 col-xs-3">
+        <div id="neechy-login" class="well-sm col-xs-offset-2 col-xs-3">
           <form class="form-login" role="form" method="post"
                 action="<?php echo $post_url; ?>">
             <h2 class="form-signin-heading">Sign In</h2>
@@ -28,16 +28,15 @@ $post_url = NeechyPath::url('login', 'auth');
               <input type="checkbox" value="remember-me"> Remember me
             </label>
             <input name="action" type="hidden" value="login" />
-            <label class="checkbox">
             <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
           </form>
         </div>
 
-        <div id="neechy-signup" class="col-xs-offset-2 col-xs-4">
+        <div id="neechy-signup" class="well-sm col-xs-offset-2 col-xs-3">
           <form class="form-signup" role="form" method="post"
                 action="<?php echo $post_url; ?>">
             <h2 class="form-signin-heading">Sign Up</h2>
-            <p>And get your own wiki page!</p>
+            <h4>And get your own wiki page!</h4>
             <input name="signup-name" type="text"
               placeholder="UserName" class="form-control" required>
             <input name="signup-email" type="email" placeholder="Email address"
