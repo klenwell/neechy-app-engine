@@ -8,6 +8,8 @@ $t = $this;   # templater object
 $t->append_to_head($t->css_link($t->css_href('login.css')));
 
 $alert = $t->data('alert');
+$validation_errors = $t->data('validation-errors');
+
 $post_url = NeechyPath::url('login', 'auth');
 
 ?>
@@ -16,6 +18,19 @@ $post_url = NeechyPath::url('login', 'auth');
       <?php endif; ?>
 
       <div id="neechy-auth" class="row">
+        <?php if (! empty($validation_errors)): ?>
+        <div class="errors">
+          <h4>Please correct the following errors and resubmit:</h4>
+          <ul class="errors">
+            <?php foreach ($validation_errors as $field => $messages): ?>
+              <?php foreach ($messages as $message): ?>
+              <li class="error"><?php echo $message; ?></li>
+              <?php endforeach; ?>
+            <?php endforeach; ?>
+          </ul>
+        </div>
+        <?php endif; ?>
+
         <div id="neechy-login" class="well-sm col-xs-offset-2 col-xs-3">
           <form class="form-login" role="form" method="post"
                 action="<?php echo $post_url; ?>">
