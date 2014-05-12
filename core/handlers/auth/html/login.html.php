@@ -17,9 +17,11 @@ $validation_errors = $t->data('validation-errors');
 #
 # Fields
 $signup_fields = array(
-  'signup-name' => array('text', 'UserName (6 chars min)'),
+  'signup-name' => array('text', sprintf('UserName (%d chars min)',
+                                         SignUpValidator::MIN_USERNAME_LENGTH)),
   'signup-email' => array('email', 'Email Address'),
-  'signup-pass' => array('password', 'Password (8 chars min)'),
+  'signup-pass' => array('password', sprintf('Password (%d chars min)',
+                                             SignUpValidator::MIN_PASSWORD_LENGTH)),
   'signup-pass-confirm' => array('password', 'Password (confirm)')
 );
 
