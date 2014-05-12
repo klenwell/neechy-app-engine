@@ -31,3 +31,7 @@ div#neechy-auth .well-sm {
   padding: .4em 1em 1em;
   border: 1px solid #CCCCFF;
 }
+
+div#neechy-auth div.form-group {
+  margin-bottom: 0px;
+}

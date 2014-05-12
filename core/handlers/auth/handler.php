@@ -37,6 +37,7 @@ class AuthHandler extends NeechyHandler {
             else {
                 $this->t->data('validation-errors', $this->errors);
                 $this->t->data('signup-name', $this->request->post('signup-name'));
+                $this->t->data('signup-email', $this->request->post('signup-email'));
                 $content = $this->render_view('login');
             }
         }
@@ -88,7 +89,6 @@ class AuthHandler extends NeechyHandler {
         $this->validate_registration_email();
         $this->validate_registration_passwords();
         $this->validate_registration_composite();
-        var_dump($this->errors);
         return count($this->errors) < 1;
     }
 
