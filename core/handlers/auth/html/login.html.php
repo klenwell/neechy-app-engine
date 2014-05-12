@@ -12,6 +12,14 @@ $validation_errors = $t->data('validation-errors');
 
 $post_url = NeechyPath::url('login', 'auth');
 
+$signup_name_field = $t->input_field('text', 'signup-name', $t->data('signup-name'),
+  array(
+    'class' => 'form-control',
+    'placeholder' => 'UserName',
+    'required' => NULL
+  )
+);
+
 ?>
       <?php if (! empty($alert)): ?>
         <div class="alert"><?php echo $alert ?></div>
@@ -52,8 +60,7 @@ $post_url = NeechyPath::url('login', 'auth');
                 action="<?php echo $post_url; ?>">
             <h2 class="form-signin-heading">Sign Up</h2>
             <h4>And get your own wiki page!</h4>
-            <input name="signup-name" type="text"
-              placeholder="UserName" class="form-control" required>
+            <?php echo $signup_name_field; ?>
             <input name="signup-email" type="email" placeholder="Email address"
                    class="form-control" required>
             <input name="signup-pass" type="password"

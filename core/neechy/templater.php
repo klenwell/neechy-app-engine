@@ -68,6 +68,9 @@ class NeechyTemplater {
     #
     # Public Methods
     #
+    #
+    # Render Methods
+    #
     public function render() {
         $output = '';
         $layout = $this->load_layout();
@@ -81,50 +84,12 @@ class NeechyTemplater {
         return $layout;
     }
 
-    public function set($id, $value) {
-        #
-        # This sets values for partials, values which will replace {{ tokens }}
-        # in templates.
-        #
-        $current_value = $this->render_partial_by_id($id);
-        $this->partial[$id] = $value;
-        return $current_value;
-    }
-
-    public function data($key, $value=NULL) {
-        #
-        # This method provides a method for setting variables that can be
-        # accessed in partials through the templater object. It is comparable
-        # to the way the data method functions in jQuery. For an example, see:
-        # public/themes/bootstrap/html/editor.html.php
-        #
-        if ( ! is_null($value) ) {
-            $this->_data[$key] = $value;
-        }
-        else {
-            $this->_data[$key] = ( isset($this->_data[$key]) ) ? $this->_data[$key] : '';
-        }
-
-        return $this->_data[$key];
-    }
-
-    public function link($href, $text, $options=array()) {
-        $format = '<a %s>%s</a>';
-        $attrs = array(sprintf('href="%s"', $href));
-
-        foreach ( $options as $attr => $value ) {
-            $attrs[] = sprintf('%s="%s"', $attr, $value);
-        }
-
-        return sprintf($format, implode(' ', $attrs), $text);
-    }
-
-    public function neechy_link($label, $page=NULL, $handler=NULL, $action=NULL,
-        $options=array()) {
-
-        $page = (is_null($page)) ? $label : $page;
-        $href = NeechyPath::url($page, $handler, $action);
-        return $this->link($href, $label, $options);
+    public function buffer($path) {
+        ob_start();
+        include($path);
+        $html = ob_get_contents();
+        ob_end_clean();
+        return $html;
     }
 
     public function render_editor($input='') {
@@ -139,57 +104,6 @@ class NeechyTemplater {
         }
         else {
             return $this->buffer($default_editor);
-        }
-    }
-
-    public function js_src($fpath='') {
-        return NeechyPath::join($this->theme_url_path, 'js', $fpath);
-    }
-
-    public function css_href($fpath='') {
-        return NeechyPath::join($this->theme_url_path, 'css', $fpath);
-    }
-
-    public function js_link($src) {
-        $format = '<script src="%s"></script>';
-        return sprintf($format, $src);
-    }
-
-    public function css_link($href) {
-        $format = '<link rel="stylesheet" href="%s" />';
-        return sprintf($format, $href);
-    }
-
-    public function append_to_head($markup) {
-        $key = 'head_appendix';
-        $this->partial[$key] = (isset($this->partial[$key])) ? $this->partial[$key] : '';
-        $this->partial[$key] = sprintf("%s\n%s", $this->partial[$key], $markup);
-        return $this;
-    }
-
-    public function append_to_body($markup) {
-        $key = 'body_appendix';
-        $this->partial[$key] = (isset($this->partial[$key])) ? $this->partial[$key] : '';
-        $this->partial[$key] = sprintf("%s\n%s", $this->partial[$key], $markup);
-        return $this;
-    }
-
-    public function page_title() {
-        if ( ! $this->page ) {
-            return '<!-- no page found -->';
-        }
-        else {
-            return self::titleize_camel_case($this->page->field('tag',
-                '<!-- no tag found -->'));
-        }
-    }
-
-    public function nav_tab_class($link_page_tag) {
-        if ( strtolower($link_page_tag) == strtolower($this->request->page) ) {
-            return 'active';
-        }
-        else {
-            return 'inactive';
         }
     }
 
@@ -222,12 +136,145 @@ class NeechyTemplater {
         return $this->render_partial($token, $partial_path);
     }
 
-    public function buffer($path) {
-        ob_start();
-        include($path);
-        $html = ob_get_contents();
-        ob_end_clean();
-        return $html;
+    public function append_to_head($markup) {
+        $key = 'head_appendix';
+        $this->partial[$key] = (isset($this->partial[$key])) ? $this->partial[$key] : '';
+        $this->partial[$key] = sprintf("%s\n%s", $this->partial[$key], $markup);
+        return $this;
+    }
+
+    public function append_to_body($markup) {
+        $key = 'body_appendix';
+        $this->partial[$key] = (isset($this->partial[$key])) ? $this->partial[$key] : '';
+        $this->partial[$key] = sprintf("%s\n%s", $this->partial[$key], $markup);
+        return $this;
+    }
+
+    #
+    # Data Methods
+    #
+    public function set($id, $value) {
+        #
+        # This sets values for partials, values which will replace {{ tokens }}
+        # in templates.
+        #
+        $current_value = $this->render_partial_by_id($id);
+        $this->partial[$id] = $value;
+        return $current_value;
+    }
+
+    public function data($key, $value=NULL) {
+        #
+        # This method provides a method for setting variables that can be
+        # accessed in partials through the templater object. It is comparable
+        # to the way the data method functions in jQuery. For an example, see:
+        # public/themes/bootstrap/html/editor.html.php
+        #
+        if ( ! is_null($value) ) {
+            $this->_data[$key] = $value;
+        }
+        else {
+            $this->_data[$key] = ( isset($this->_data[$key]) ) ? $this->_data[$key] : '';
+        }
+
+        return $this->_data[$key];
+    }
+
+    #
+    # Helper Methods
+    #
+    public function link($href, $text, $options=array()) {
+        $format = '<a %s>%s</a>';
+        $attrs = array(sprintf('href="%s"', $href));
+
+        foreach ( $options as $attr => $value ) {
+            $attrs[] = sprintf('%s="%s"', $attr, $value);
+        }
+
+        return sprintf($format, implode(' ', $attrs), $text);
+    }
+
+    public function neechy_link($label, $page=NULL, $handler=NULL, $action=NULL,
+        $options=array()) {
+
+        $page = (is_null($page)) ? $label : $page;
+        $href = NeechyPath::url($page, $handler, $action);
+        return $this->link($href, $label, $options);
+    }
+
+    public function js_src($fpath='') {
+        return NeechyPath::join($this->theme_url_path, 'js', $fpath);
+    }
+
+    public function css_href($fpath='') {
+        return NeechyPath::join($this->theme_url_path, 'css', $fpath);
+    }
+
+    public function js_link($src) {
+        $format = '<script src="%s"></script>';
+        return sprintf($format, $src);
+    }
+
+    public function css_link($href) {
+        $format = '<link rel="stylesheet" href="%s" />';
+        return sprintf($format, $href);
+    }
+
+    public function page_title() {
+        if ( ! $this->page ) {
+            return '<!-- no page found -->';
+        }
+        else {
+            return self::titleize_camel_case($this->page->field('tag',
+                '<!-- no tag found -->'));
+        }
+    }
+
+    public function nav_tab_class($link_page_tag) {
+        if ( strtolower($link_page_tag) == strtolower($this->request->page) ) {
+            return 'active';
+        }
+        else {
+            return 'inactive';
+        }
+    }
+
+    #
+    # Form Helper Methods
+    #
+    public function open_form() {}
+    public function close_form() {}
+
+    public function input_field($type, $name, $value=NULL, $options=array()) {
+        $format = '<input type="%s" name="%s"%s%s />';
+
+        if ( ! is_null($value) ) {
+            $value_attr = sprintf(' value="%s"', str_replace('"', '\"', $value));
+        }
+        else {
+            $value_attr = '';
+        }
+
+        $optional_attr_list = array();
+        foreach( $options as $attr => $val ) {
+            if ( is_null($val) ) {
+                $optional_attr_list[] = $attr;
+            }
+            else {
+                $optional_attr_list[] = sprintf(' %s="%s"',
+                    $attr,
+                    str_replace('"', '\"', $val));
+            }
+        }
+
+        if ($optional_attr_list) {
+            $optional_attrs = ' ' . implode(' ', $optional_attr_list);
+        }
+        else {
+            $optional_attrs = '';
+        }
+
+        return sprintf($format, $type, $name, $value_attr, $optional_attrs);
     }
 
     #

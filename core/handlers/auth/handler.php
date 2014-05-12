@@ -36,6 +36,7 @@ class AuthHandler extends NeechyHandler {
             }
             else {
                 $this->t->data('validation-errors', $this->errors);
+                $this->t->data('signup-name', $this->request->post('signup-name'));
                 $content = $this->render_view('login');
             }
         }
