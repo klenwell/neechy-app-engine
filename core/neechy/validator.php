@@ -44,7 +44,12 @@ class NeechyValidator {
         return $this->errors;
     }
 
+    public function string_is_empty($value) {
+        return strlen($value) < 1;
+    }
+
     public function is_empty($value) {
+        # Careful: '0' is true. Use string_is_empty.
         return empty($value);
     }
 

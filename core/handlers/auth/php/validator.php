@@ -15,6 +15,7 @@ class SignUpValidator extends NeechyValidator {
     #
     # Properties
     #
+    # Based on http://stackoverflow.com/a/1330703/1093087
     const RE_VALID_USERNAME = "/^[A-Za-z][A-Za-z0-9]*(?:_[A-Za-z0-9]+)*$/";
     const MIN_USERNAME_LENGTH = 6;
     const MIN_PASSWORD_LENGTH = 8;
@@ -36,20 +37,21 @@ class SignUpValidator extends NeechyValidator {
         $form_key = 'signup-name';
         $value = $this->request->post($form_key, '');
 
-        # Empty, too short, or invalid format
-        # based on http://stackoverflow.com/a/1330703/1093087
-        if ( $this->is_empty($value) ) {
+        # Rules
+        if ( $this->string_is_empty($value) ) {
             $message = 'User name required';
             $this->add_error($form_key, $message);
             return FALSE;
         }
-        elseif ( $this->string_is_too_short($value, self::MIN_USERNAME_LENGTH) ) {
+
+        if ( $this->string_is_too_short($value, self::MIN_USERNAME_LENGTH) ) {
             $message = sprintf('User name too short: must be at least %d chars',
                 self::MIN_USERNAME_LENGTH);
             $this->add_error($form_key, $message);
             return FALSE;
         }
-        elseif ( ! preg_match(self::RE_VALID_USERNAME, $value) ) {
+
+        if ( ! preg_match(self::RE_VALID_USERNAME, $value) ) {
             $message = 'Invalid format: please use something like neechy' .
                 'neechy_user or NeechyUser';
             $this->add_error($form_key, $message);
@@ -78,7 +80,8 @@ class SignUpValidator extends NeechyValidator {
         $form_key = 'signup-email';
         $value = $this->request->post($form_key, '');
 
-        if ( $this->is_empty($value) ) {
+        # Rules
+        if ( $this->string_is_empty($value) ) {
             $message = 'Email required';
             $this->add_error($form_key, $message);
             return FALSE;
@@ -100,7 +103,7 @@ class SignUpValidator extends NeechyValidator {
         $confirm_value = $this->request->post($confirm_key, '');
 
         # Rules
-        if ( $this->is_empty($value) ) {
+        if ( $this->string_is_empty($value) ) {
             $message = 'Password required';
             $this->add_error($form_key, $message);
             return FALSE;
