@@ -28,11 +28,13 @@ class NeechyValidatorTest extends PHPUnit_Framework_TestCase {
      */
     public function testStringIsEmpty() {
         $this->assertEquals(true, $this->validator->string_is_empty((string) null));
-        $this->assertEquals(false, $this->validator->string_is_empty((string) array()));
         $this->assertEquals(true, $this->validator->string_is_empty((string) false));
         $this->assertEquals(false, $this->validator->string_is_empty((string) 0));
         $this->assertEquals(true, $this->validator->string_is_empty(''));
         $this->assertEquals(false, $this->validator->string_is_empty('0'));
+
+        # Note: this raises an error in PHP 5.4+
+        #$this->assertEquals(false, $this->validator->string_is_empty((string) array()));
     }
 
     public function testIsEmpty() {
@@ -42,6 +44,8 @@ class NeechyValidatorTest extends PHPUnit_Framework_TestCase {
         $this->assertEquals(true, $this->validator->is_empty(false));
         $this->assertEquals(true, $this->validator->is_empty(0));
         $this->assertEquals(true, $this->validator->is_empty('0'));
+        $this->assertEquals(false, $this->validator->is_empty(array('0')));
+        $this->assertEquals(false, $this->validator->is_empty('1'));
     }
 
     public function testInstantiates() {
