@@ -58,7 +58,7 @@ class AuthHandler extends NeechyHandler {
         # Create user page
         $this->t->data('new-user', $user->fields);
         $path = NeechyPath::join($this->html_path(), 'new-page.md.php');
-        $content = $this->t->render_partial_by_id(NULL, $path);
+        $content = $this->t->render_partial_by_path($path);
         $page = Page::find_by_tag($name);
         $page->set('body', $content);
         $page->set('editor', $name);

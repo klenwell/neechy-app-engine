@@ -40,9 +40,17 @@ class NeechyHandler {
     }
 
     public function render_view($id) {
+        # First look for partial file in handler's html folder. If not there,
+        # user theme's html folder.
         $fname = sprintf('%s.html.php', $id);
-        $path = NeechyPath::join($this->html_path(), $fname);
-        return $this->t->render_partial_by_id($id, $path);
+        $handler_view = NeechyPath::join($this->html_path(), $fname);
+
+        if ( file_exists($handler_view) ) {
+            return $this->t->render_partial_by_path($handler_view);
+        }
+        else {
+            return $this->t->render_partial_by_id($id);
+        }
     }
 
     #

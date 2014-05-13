@@ -32,5 +32,3 @@ define('RE_EXTRACT_BRACKET_TOKEN_ID', '/[\{\}\s]/');
 #
 # Miscellaneous
 #
-define('NEECHY_MIN_USERNAME_LENGTH', 6);
-define('NEECHY_MIN_PASSWORD_LENGTH', 8);
