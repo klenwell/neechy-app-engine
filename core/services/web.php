@@ -6,6 +6,7 @@
  *
  */
 require_once('../core/services/base.php');
+require_once('../core/neechy/config.php');
 require_once('../core/neechy/errors.php');
 require_once('../core/neechy/request.php');
 require_once('../core/neechy/templater.php');
@@ -34,6 +35,8 @@ class NeechyWebService extends NeechyService {
     #
     public function serve() {
         try {
+            $this->start_session();
+            $this->enforce_csrf_token();
             $response = $this->dispatch_to_handler();
         }
         catch (NeechyError $e) {
@@ -47,6 +50,42 @@ class NeechyWebService extends NeechyService {
     #
     # Private Functions
     #
+    private function start_session() {
+        $session_name = md5(sprintf('%s.neechy', NeechyConfig::get('title', 'neechy')));
+        session_name($session_name);
+        session_start();
+        return null;
+    }
+
+    private function enforce_csrf_token() {
+        $this->set_csrf_token_if_not_set();
+        $this->authenticate_csrf_token();
+        return null;
+    }
+
+    private function set_csrf_token_if_not_set() {
+        if ( ! isset($_SESSION['csrf_token']) ) {
+            $_SESSION['csrf_token'] = sha1((string) microtime(true));
+        }
+        return $_SESSION['csrf_token'];
+    }
+
+    private function authenticate_csrf_token() {
+        $posted_token = $this->request->post('csrf_token');
+        $session_token = $_SESSION['csrf_token'];
+
+        if ( $_POST ) {
+            if ( ! $posted_token ) {
+                throw new NeechyCsrfError('Authentication failed: No CSRF token');
+            }
+            elseif ( $posted_token != $session_token ) {
+                throw new NeechyCsrfError('Authentication failed: CSRF token mismatch');
+            }
+        }
+
+        return true;
+    }
+
     private function dispatch_to_handler() {
         $handler = $this->load_handler($this->request);
         $content = $handler->handle();

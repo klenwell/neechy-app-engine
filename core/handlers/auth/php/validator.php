@@ -110,7 +110,7 @@ class SignUpValidator extends NeechyValidator {
         }
 
         if ( $this->string_is_too_short($value, self::MIN_PASSWORD_LENGTH) ) {
-            $message = sprintf('User name too short: must be at least %d chars',
+            $message = sprintf('Password too short: must be at least %d chars',
                 self::MIN_PASSWORD_LENGTH);
             $this->add_error($form_key, $message);
             return FALSE;

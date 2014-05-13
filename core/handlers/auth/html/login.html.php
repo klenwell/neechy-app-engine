@@ -92,8 +92,7 @@ foreach ( $signup_fields as $field => $attrs ) {
         </div>
 
         <div id="neechy-signup" class="well-sm col-xs-offset-2 col-xs-3">
-          <form class="form-signup" role="form" method="post"
-                action="<?php echo $post_url; ?>">
+          <?php echo $t->open_form($post_url, 'post', array('class' => 'form-signup')); ?>
             <h2 class="form-signin-heading">Sign Up</h2>
             <h4>And get your own wiki page!</h4>
             <?php echo $signup_html['signup-name']; ?>
