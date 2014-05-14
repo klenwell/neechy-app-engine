@@ -24,7 +24,7 @@ class AuthHandler extends NeechyHandler {
             $this->t->data('alert', 'logging in');
             $content = $this->render_view('login');
         }
-        elseif ( $this->request->action_is('register') ) {
+        elseif ( $this->request->action_is('signup') ) {
             $validator = new SignUpValidator($this->request);
             if ( $validator->is_valid() ) {
                 $user = $this->register_new_user();

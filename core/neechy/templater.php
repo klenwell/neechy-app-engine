@@ -261,7 +261,9 @@ class NeechyTemplater {
         return $form_tag;
     }
 
-    public function close_form() {}
+    public function close_form() {
+        return '</form>';
+    }
 
     public function input_field($type, $name, $value=NULL, $options=array()) {
         $format = '<input type="%s" name="%s"%s%s />';

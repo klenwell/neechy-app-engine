@@ -99,8 +99,8 @@ foreach ( $signup_fields as $field => $attrs ) {
             <?php echo $signup_html['signup-email']; ?>
             <?php echo $signup_html['signup-pass']; ?>
             <?php echo $signup_html['signup-pass-confirm']; ?>
-            <input name="action" type="hidden" value="register" />
+            <?php echo $t->input_field('hidden', 'action', 'signup'); ?>
             <button class="btn btn-lg btn-primary btn-block" type="submit">Sign up</button>
-          </form>
+          <?php echo $t->close_form(); ?>
         </div>
       </div>
