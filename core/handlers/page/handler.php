@@ -12,11 +12,6 @@ require_once('../core/neechy/response.php');
 
 class PageHandler extends NeechyHandler {
     #
-    # Properties
-    #
-    public $page = null;
-
-    #
     # Public Methods
     #
     public function handle() {

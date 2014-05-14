@@ -28,6 +28,7 @@ class NeechyWebService extends NeechyService {
         parent::__construct($conf_path);
 
         $this->request = NeechyRequest::load();
+        $this->page = Page::find_by_tag($this->request->page);
     }
 
     #
@@ -51,12 +52,12 @@ class NeechyWebService extends NeechyService {
     # Private Functions
     #
     private function dispatch_to_handler() {
-        $handler = $this->load_handler($this->request);
+        $handler = $this->load_handler();
         $content = $handler->handle();
 
         # Render web page
         $templater = NeechyTemplater::load();
-        $templater->page = $handler->page;
+        $templater->page = $this->page;
         $templater->set('content', $content);
         $body = $templater->render();
 
@@ -68,7 +69,7 @@ class NeechyWebService extends NeechyService {
     private function dispatch_to_error($e) {
         # Render web page
         $templater = NeechyTemplater::load();
-        $templater->page = $handler->page;
+        $templater->page = $this->page;
         $templater->set('content', $e->getMessage());
         $body = $templater->render();
 
@@ -77,12 +78,12 @@ class NeechyWebService extends NeechyService {
         return $response;
     }
 
-    private function load_handler($request) {
+    private function load_handler() {
         $handler_app_path = NeechyPath::join(NEECHY_HANDLER_APP_PATH,
-            $request->handler, 'handler.php');
+            $this->request->handler, 'handler.php');
         $handler_core_path = NeechyPath::join(NEECHY_HANDLER_CORE_PATH,
-            $request->handler, 'handler.php');
-        $HandlerClass = sprintf('%sHandler', ucwords($request->handler));
+            $this->request->handler, 'handler.php');
+        $HandlerClass = sprintf('%sHandler', ucwords($this->request->handler));
 
         if ( file_exists($handler_app_path) ) {
             require_once($handler_app_path);
@@ -92,10 +93,10 @@ class NeechyWebService extends NeechyService {
         }
         else {
             throw new NeechyWebServiceError(sprintf('handler %s not found',
-                $request->handler));
+                $this->request->handler));
         }
 
-        $handler = new $HandlerClass();
+        $handler = new $HandlerClass($this->request, $this->page);
         return $handler;
     }
 }

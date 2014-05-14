@@ -24,8 +24,8 @@ $input = $t->data('editor-content');
         <button class="btn btn-primary preview">preview</button>
         <button class="btn btn-primary edit">edit</button>
         <button class="btn btn-info save">save</button>
-          <form class="save-page" method="post">
+           <?php echo $t->open_form('', 'post', array('class' => 'save-page')); ?>
             <textarea id="page-body" name="page-body" style="display:none;"></textarea>
             <input type="hidden" name="action" value="save" />
-          </form>
+          <?php echo $t->close_form(); ?>
       </div>

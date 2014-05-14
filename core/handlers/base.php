@@ -25,9 +25,9 @@ class NeechyHandler {
     #
     # Constructor
     #
-    public function __construct() {
-        $this->request = NeechyRequest::load();
-        $this->page = Page::find_by_tag($this->request->page);
+    public function __construct($request=null, $page=null) {
+        $this->request = $request;
+        $this->page = $page;
         $this->t = NeechyTemplater::load();
         $this->t->data('handler', get_class($this));
     }
