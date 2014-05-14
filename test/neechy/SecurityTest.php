@@ -16,7 +16,8 @@ class NeechySecurityTest extends PHPUnit_Framework_TestCase {
      * Test Fixtures
      */
     public function setUp() {
-        NeechySecurity::start_session();
+        # Suppresses error in Travis-CI
+        @NeechySecurity::start_session();
     }
 
     public function tearDown() {
