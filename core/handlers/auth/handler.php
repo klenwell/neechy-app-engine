@@ -52,7 +52,8 @@ class AuthHandler extends NeechyHandler {
         $name = $this->request->post('signup-name');
         $user = User::find_by_name($name);
         $user->set('email', $this->request->post('signup-email'));
-        $user->set('password', 'HASH PASSWORD');
+        $user->set('password',
+            NeechySecurity::hash_password($this->request->post('signup-pass')));
         $user->save();
 
         # Create user page
