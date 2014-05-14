@@ -17,6 +17,9 @@
       <div id="main-content">
         {{ content }}
       </div>
+
+      {{ page-controls }}
+
     </div>
 
     {{ footer }}

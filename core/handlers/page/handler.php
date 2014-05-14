@@ -39,6 +39,29 @@ HTML5;
                 $this->page->field('body')));
         }
 
+        $this->t->set('page-controls', $this->render_page_controls());
         return $content;
+    }
+
+    #
+    # Private Methods
+    #
+    private function render_page_controls() {
+        $format = <<<HTML5
+      <div id="page-controls" class="navbar">
+        <div class="container">
+          <ul class="nav navbar-nav">
+            <li><p class="navbar-text">%s</p></li>
+          </ul>
+        </div>
+      </div>
+HTML5;
+
+        $last_edited = sprintf('Last edited by %s on %s',
+            $this->page->editor_link(),
+            $this->page->field('saved_at')
+        );
+
+        return sprintf($format, $last_edited);
     }
 }

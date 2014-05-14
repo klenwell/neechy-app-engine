@@ -31,7 +31,7 @@ class NeechySecurityTest extends PHPUnit_Framework_TestCase {
         # Create CSRF token (no post yet so doesn't authenticate)
         NeechySecurity::prevent_csrf();
 
-        # Test successful authentication
+        # Test failed authentication
         $this->setExpectedException('NeechyCsrfError');
         $_POST['csrf_token'] = 'invalid-token';
         NeechySecurity::prevent_csrf();

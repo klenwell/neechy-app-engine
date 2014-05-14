@@ -30,6 +30,7 @@ CREATE TABLE pages (
 MYSQL;
 
     public $primogenitor = NULL;
+	public $editor = NULL;
 
     /*
      * Constructor
@@ -41,6 +42,10 @@ MYSQL;
         if ( $this->field('primogenitor_id') ) {
             $this->primogenitor = $this->find_by_id($this->field('primogenitor_id'));
         }
+
+		if ( $this->field('editor') ) {
+			$this->editor = User::find_by_name($this->field('editor'));
+		}
     }
 
     /*
@@ -109,5 +114,16 @@ MYSQL;
 
 	public function url($handler=NULL, $action=NULL, $params=array()) {
 		return NeechyPath::url($this->field('tag'), $handler, $action, $params);
+	}
+
+	public function editor_link() {
+		if ( ! $this->editor ) {
+			return 'N/A';
+		}
+		else {
+			$t = NeechyTemplater::load();
+			$editor_name = $this->editor->field('name');
+			return $t->neechy_link($editor_name);
+		}
 	}
 }
