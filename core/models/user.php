@@ -12,28 +12,28 @@ class User extends NeechyModel {
 
     protected static $schema = <<<MYSQL
 CREATE TABLE users (
-	id int(11) NOT NULL auto_increment,
+    id int(11) NOT NULL auto_increment,
     name varchar(255) NOT NULL default '',
-	email varchar(255) NOT NULL default '',
-	password varchar(255) NOT NULL default '',
-	status varchar(16) NOT NULL default '',
-	challenge varchar(8) default '',
+    email varchar(255) NOT NULL default '',
+    password varchar(255) NOT NULL default '',
+    status varchar(16) NOT NULL default '',
+    challenge varchar(8) default '',
 
-	theme varchar(64) default '',
-	show_comments enum('Y','N') NOT NULL default 'N',
+    theme varchar(64) default '',
+    show_comments enum('Y','N') NOT NULL default 'N',
 
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-	updated_at DATETIME default NULL,
+    updated_at DATETIME default NULL,
 
-	PRIMARY KEY (id),
+    PRIMARY KEY (id),
     KEY idx_name (name),
-	KEY idx_created_at (created_at)
+    KEY idx_created_at (created_at)
 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE={{ engine }}
 MYSQL;
 
-	#
-	# Constants
-	#
+    #
+    # Constants
+    #
 
     /*
      * Constructor
@@ -84,7 +84,7 @@ MYSQL;
         return is_null($this->field('id'));
     }
 
-	public function url($handler=NULL, $action=NULL, $params=array()) {
-		return NeechyPath::url($this->field('name'), $handler, $action, $params);
-	}
+    public function url($handler=NULL, $action=NULL, $params=array()) {
+        return NeechyPath::url($this->field('name'), $handler, $action, $params);
+    }
 }
