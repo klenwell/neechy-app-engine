@@ -28,3 +28,7 @@ define('MYSQL_ENGINE', 'MyISAM');
 #
 define('RE_BRACKET_TOKENS', '/\{\{\s*[^\}]+\}\}/');
 define('RE_EXTRACT_BRACKET_TOKEN_ID', '/[\{\}\s]/');
+
+#
+# Miscellaneous
+#

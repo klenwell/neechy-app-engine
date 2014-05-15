@@ -22,10 +22,6 @@ body > .container {
   padding: 0px 15px;
 }
 
-p {
-  margin: 0px;
-  line-height: 1.4 em;
-}
 
 /*
  * Main Content
@@ -33,7 +29,7 @@ p {
 div#main-content {
   padding: 1em;
   border:2px solid #CCC;
-  border-width: 2px 0;
+  border-width: 2px 0 0;
 }
 
 
@@ -45,6 +41,16 @@ div#page-header {}
 ul#page-tabs {}
 ul#page-tabs li.title {
   font-weight: bold;
+}
+
+/*
+ * Page Controls Navbar
+ */
+div#page-controls {
+  margin: 0px;
+  padding: 8px 0;
+  border-top: 1px solid #CCC;
+  color: #999;
 }
 
 

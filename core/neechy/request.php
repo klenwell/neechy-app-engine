@@ -73,15 +73,15 @@ class NeechyRequest {
     }
 
     public function param($key, $default=NULL) {
-        return (isset($this->params[$key])) ? $this->params[$key] : $default;
+        return (isset($this->params[$key])) ? trim($this->params[$key]) : $default;
     }
 
     public function post($key, $default=NULL) {
-        return (isset($_POST[$key])) ? $_POST[$key] : $default;
+        return (isset($_POST[$key])) ? trim($_POST[$key]) : $default;
     }
 
     public function get($key, $default=NULL) {
-        return (isset($_GET[$key])) ? $_GET[$key] : $default;
+        return (isset($_GET[$key])) ? trim($_GET[$key]) : $default;
     }
 
 

@@ -48,6 +48,13 @@ class NeechyTestHelper {
         $pdo->query(sprintf('USE %s', NeechyConfig::get('mysql_database')));
     }
 
+    static public function destroy_session() {
+        if ( session_id() ) {
+            session_destroy();
+            $_SESSION = array();
+        }
+    }
+
     /*
      * Private Functions
      */
@@ -73,12 +80,5 @@ class NeechyTestHelper {
         $pdo = self::connect_to_database_host();
         $pdo->exec(sprintf('DROP DATABASE IF EXISTS `%s`', $test_database));
         return $pdo;
-    }
-
-    static private function destroy_session() {
-        if ( session_id() ) {
-            session_destroy();
-            $_SESSION = array();
-        }
     }
 }

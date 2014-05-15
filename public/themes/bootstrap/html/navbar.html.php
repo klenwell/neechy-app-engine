@@ -36,7 +36,8 @@ $t = $this;   # templater object
           <ul class="nav navbar-nav navbar-right">
             <li>
                 <div class="a-requires-parent">
-                  <a href="#" class="btn btn-primary navbar-btn">Login / SignUp</a>
+                  <?php echo $t->neechy_link('Login / SignUp', 'login', 'auth', NULL,
+                      array('class' => 'btn btn-primary navbar-btn')); ?>
                 </div>
             </li>
           </ul>

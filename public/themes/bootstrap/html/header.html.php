@@ -3,6 +3,7 @@
 $t = $this;   # templater object
 
 ?>
+    <?php if ($t->data('handler') == 'PageHandler'): ?>
       <div id="page-header">
         <ul id="page-tabs" class="nav nav-tabs">
           <li class="title active"><a href="#read" data-toggle="tab">
@@ -14,3 +15,4 @@ $t = $this;   # templater object
           <li><a href="#access" data-toggle="tab">Access</a></li>
         </ul>
       </div>
+    <?php endif ?>

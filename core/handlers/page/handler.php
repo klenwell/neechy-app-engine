@@ -12,24 +12,6 @@ require_once('../core/neechy/response.php');
 
 class PageHandler extends NeechyHandler {
     #
-    # Properties
-    #
-    public $page = null;
-    public $request = null;
-
-    #
-    # Constructor
-    #
-    public function __construct($request) {
-        parent::__construct();
-
-        $this->request = $request;
-
-        # TODO: get page tag from request
-        $this->page = Page::find_by_tag($this->request->page);
-    }
-
-    #
     # Public Methods
     #
     public function handle() {
@@ -44,21 +26,42 @@ class PageHandler extends NeechyHandler {
 </div>
 HTML5;
 
-        $templater = NeechyTemplater::load();
-
         if ( $this->request->action_is('save') ) {
             $this->page->set('body', $this->request->post('page-body'));
             $this->page->save();
             NeechyResponse::redirect($this->page->url());
         }
         elseif ( $this->page->is_new() ) {
-            $content = $templater->render_editor();
+            $content = $this->t->render_editor();
         }
         else {
-            $content = sprintf($page_tabs_f, $templater->render_editor(
+            $content = sprintf($page_tabs_f, $this->t->render_editor(
                 $this->page->field('body')));
         }
 
+        $this->t->set('page-controls', $this->render_page_controls());
         return $content;
+    }
+
+    #
+    # Private Methods
+    #
+    private function render_page_controls() {
+        $format = <<<HTML5
+      <div id="page-controls" class="navbar">
+        <div class="container">
+          <ul class="nav navbar-nav">
+            <li><p class="navbar-text">%s</p></li>
+          </ul>
+        </div>
+      </div>
+HTML5;
+
+        $last_edited = sprintf('Last edited by %s on %s',
+            $this->page->editor_link(),
+            $this->page->field('saved_at')
+        );
+
+        return sprintf($format, $last_edited);
     }
 }
