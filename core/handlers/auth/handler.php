@@ -6,9 +6,10 @@
  *
  */
 require_once('../core/handlers/base.php');
-require_once('../core/neechy/templater.php');
 require_once('../core/neechy/path.php');
 require_once('../core/neechy/constants.php');
+require_once('../core/neechy/security.php');
+require_once('../core/neechy/templater.php');
 require_once('../core/models/user.php');
 require_once('../core/models/page.php');
 require_once('../core/handlers/auth/php/validator.php');
@@ -20,6 +21,7 @@ class AuthHandler extends NeechyHandler {
     # Public Methods
     #
     public function handle() {
+        # TODO: login user
         if ( $this->request->action_is('login') ) {
             $this->t->data('alert', 'logging in');
             $content = $this->render_view('login');
