@@ -9,6 +9,7 @@
 require_once('../core/models/page.php');
 require_once('../test/helper.php');
 require_once('../test/fixtures/page.php');
+require_once('../test/fixtures/user.php');
 
 
 class PageModelTest extends PHPUnit_Framework_TestCase {
@@ -18,6 +19,7 @@ class PageModelTest extends PHPUnit_Framework_TestCase {
      */
     public function setUp() {
         NeechyTestHelper::setUp();
+        UserFixture::init();
         PageFixture::init();
     }
 

@@ -6,6 +6,7 @@
  *
  */
 require_once('../core/models/base.php');
+require_once('../core/models/user.php');
 require_once('../core/neechy/path.php');
 
 
@@ -13,24 +14,24 @@ class Page extends NeechyModel {
 
     protected static $schema = <<<MYSQL
 CREATE TABLE pages (
-	id int(11) NOT NULL auto_increment,
+    id int(11) NOT NULL auto_increment,
     primogenitor_id int(11) default NULL,
     editor varchar(255) NOT NULL default '',
-	tag varchar(255) NOT NULL default '',
+    tag varchar(255) NOT NULL default '',
     body mediumtext NOT NULL,
     note varchar(255) NOT NULL default '',
     saved_at DATETIME default NULL,
-	PRIMARY KEY (id),
+    PRIMARY KEY (id),
     KEY idx_primogenitor_id (primogenitor_id),
-	KEY idx_editor (editor),
-	KEY idx_tag (tag),
-	FULLTEXT KEY body (body),
-	KEY idx_saved_at (saved_at)
+    KEY idx_editor (editor),
+    KEY idx_tag (tag),
+    FULLTEXT KEY body (body),
+    KEY idx_saved_at (saved_at)
 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE={{ engine }}
 MYSQL;
 
     public $primogenitor = NULL;
-	public $editor = NULL;
+    public $editor = NULL;
 
     /*
      * Constructor
@@ -43,9 +44,9 @@ MYSQL;
             $this->primogenitor = $this->find_by_id($this->field('primogenitor_id'));
         }
 
-		if ( $this->field('editor') ) {
-			$this->editor = User::find_by_name($this->field('editor'));
-		}
+        if ( $this->field('editor') ) {
+            $this->editor = User::find_by_name($this->field('editor'));
+        }
     }
 
     /*
@@ -112,18 +113,18 @@ MYSQL;
         return is_null($this->field('id'));
     }
 
-	public function url($handler=NULL, $action=NULL, $params=array()) {
-		return NeechyPath::url($this->field('tag'), $handler, $action, $params);
-	}
+    public function url($handler=NULL, $action=NULL, $params=array()) {
+        return NeechyPath::url($this->field('tag'), $handler, $action, $params);
+    }
 
-	public function editor_link() {
-		if ( ! $this->editor ) {
-			return 'N/A';
-		}
-		else {
-			$t = NeechyTemplater::load();
-			$editor_name = $this->editor->field('name');
-			return $t->neechy_link($editor_name);
-		}
-	}
+    public function editor_link() {
+        if ( ! $this->editor ) {
+            return 'N/A';
+        }
+        else {
+            $t = NeechyTemplater::load();
+            $editor_name = $this->editor->field('name');
+            return $t->neechy_link($editor_name);
+        }
+    }
 }
