@@ -25,7 +25,7 @@ class AuthHandler extends NeechyHandler {
             $login = new LoginValidator($this->request);
             if ( $login->successful() ) {
                 $this->t->flash('You have been logged in.', 'success');
-                $login->user->signin();
+                $login->user->login();
                 NeechyResponse::redirect($login->user->url());
             }
             else {
@@ -47,6 +47,11 @@ class AuthHandler extends NeechyHandler {
                 $this->t->data('signup-email', $this->request->post('signup-email'));
                 $content = $this->render_view('login');
             }
+        }
+        elseif ( $this->request->page_is('logout') ) {
+            $this->t->flash('You have been logged out.', 'success');
+            User::logout();
+            $content = $this->render_view('login');
         }
         else {
             $content = $this->render_view('login');

@@ -63,6 +63,15 @@ class NeechyRequest {
         }
     }
 
+    public function page_is($value) {
+        if ( is_null($this->page) ) {
+            return FALSE;
+        }
+        else {
+            return strtolower($this->page) == strtolower($value);
+        }
+    }
+
     public function action_is($value) {
         if ( is_null($this->action) ) {
             return FALSE;

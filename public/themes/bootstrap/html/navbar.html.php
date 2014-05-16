@@ -2,6 +2,15 @@
 
 $t = $this;   # templater object
 
+if ( User::is_logged_in() ) {
+  $right_button = $t->neechy_link('Logout', 'logout', 'auth', NULL,
+    array('class' => 'btn btn-primary navbar-btn'));
+}
+else {
+  $right_button = $t->neechy_link('Login / SignUp', 'login', 'auth', NULL,
+    array('class' => 'btn btn-primary navbar-btn'));
+}
+
 ?>
 
     <div role="navigation" class="navbar navbar-inverse navbar-static-top">
@@ -36,8 +45,7 @@ $t = $this;   # templater object
           <ul class="nav navbar-nav navbar-right">
             <li>
                 <div class="a-requires-parent">
-                  <?php echo $t->neechy_link('Login / SignUp', 'login', 'auth', NULL,
-                      array('class' => 'btn btn-primary navbar-btn')); ?>
+                  <?php echo $right_button; ?>
                 </div>
             </li>
           </ul>

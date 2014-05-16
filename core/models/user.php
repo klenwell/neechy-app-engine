@@ -60,6 +60,18 @@ MYSQL;
         return $user;
     }
 
+    public static function is_logged_in() {
+        return isset($_SESSION['logged-in']);
+    }
+
+    public static function logout() {
+        unset($_SESSION['logged-in']);
+        return null;
+    }
+
+    public static function is_admin() {
+    }
+
     /*
      * Instance Methods
      */
@@ -92,6 +104,11 @@ MYSQL;
         return NeechyPath::url($this->field('name'), $handler, $action, $params);
     }
 
-    public function signin() {
+    #
+    # Auth Methods
+    #
+    public function login() {
+        $_SESSION['logged-in'] = microtime(1);
+        return null;
     }
 }
