@@ -84,7 +84,14 @@ MYSQL;
         return is_null($this->field('id'));
     }
 
+    public function exists() {
+        return !($this->is_new());
+    }
+
     public function url($handler=NULL, $action=NULL, $params=array()) {
         return NeechyPath::url($this->field('name'), $handler, $action, $params);
+    }
+
+    public function signin() {
     }
 }

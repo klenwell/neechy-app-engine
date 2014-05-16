@@ -11,6 +11,8 @@
 
     {{ navbar }}
 
+    <?php echo $this->unflash(); ?>
+
     <div class="container">
       {{ header }}
 

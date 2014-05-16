@@ -178,6 +178,39 @@ class NeechyTemplater {
     #
     # Helper Methods
     #
+    public function flash($message, $class='default') {
+        $_SESSION['neechy-flash'] = ( isset($_SESSION['neechy-flash']) ) ?
+            $_SESSION['neechy-flash'] : array();
+
+        if ( isset($_SESSION['neechy-flash'][$class]) ) {
+            $_SESSION['neechy-flash'][$class][] = $message;
+        }
+        else {
+            $_SESSION['neechy-flash'][$class] = array($message);
+        }
+
+        return null;
+    }
+
+    public function unflash() {
+        $alerts = array();;
+        $format = '<div class="alert alert-%s">%s</div>';
+
+        if ( ! isset($_SESSION['neechy-flash']) ) {
+            return '<!-- no flash messages -->';
+        }
+
+        foreach ( $_SESSION['neechy-flash'] as $class => $messages ) {
+            foreach ( $messages as $message ) {
+                $alerts[] = sprintf($format, $class, $message);
+            }
+            unset($_SESSION['neechy-flash'][$class]);
+        }
+
+        unset($_SESSION['neechy-flash']);
+        return implode("\n", $alerts);
+    }
+
     public function link($href, $text, $options=array()) {
         $format = '<a %s>%s</a>';
         $attrs = array(sprintf('href="%s"', $href));

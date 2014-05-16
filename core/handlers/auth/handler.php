@@ -21,10 +21,19 @@ class AuthHandler extends NeechyHandler {
     # Public Methods
     #
     public function handle() {
-        # TODO: login user
         if ( $this->request->action_is('login') ) {
+            $login = new LoginValidator($this->request);
+            if ( $login->successful() ) {
+                $this->t->flash('You have been logged in.', 'success');
+                $login->user->signin();
+                NeechyResponse::redirect($login->user->url());
+            }
+            else {
+                $this->t->data('validation-errors', $login->errors);
+                $this->t->data('login-name', $this->request->post('login-name'));
+                $content = $this->render_view('login');
+            }
             $this->t->data('alert', 'logging in');
-            $content = $this->render_view('login');
         }
         elseif ( $this->request->action_is('signup') ) {
             $validator = new SignUpValidator($this->request);
@@ -62,11 +71,10 @@ class AuthHandler extends NeechyHandler {
         $this->t->data('new-user', $user->fields);
         $path = NeechyPath::join($this->html_path(), 'new-page.md.php');
         $page = Page::find_by_tag($name);
-        $page->set('body', $content);
+        $page->set('body', $this->t->render_partial_by_path($path));
         $page->set('editor', $name);
         $page->save();
 
-        $content = $this->t->render_partial_by_path($path);
         return $user;
     }
 }
