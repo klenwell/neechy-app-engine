@@ -7,8 +7,6 @@
  */
 require_once('../core/handlers/base.php');
 require_once('../core/neechy/path.php');
-require_once('../core/neechy/constants.php');
-require_once('../core/neechy/security.php');
 require_once('../core/neechy/templater.php');
 require_once('../core/models/user.php');
 require_once('../core/models/page.php');
@@ -38,8 +36,13 @@ class AuthHandler extends NeechyHandler {
         elseif ( $this->request->action_is('signup') ) {
             $validator = new SignUpValidator($this->request);
             if ( $validator->is_valid() ) {
-                $user = $this->register_new_user();
-                NeechyResponse::redirect($user->url());
+                $user = User::register(
+                    $this->request->post('signup-name'),
+                    $this->request->post('signup-email'),
+                    $this->request->post('signup-pass')
+                );
+                $page = $this->save_user_page($user);
+                NeechyResponse::redirect($page->url());
             }
             else {
                 $this->t->data('validation-errors', $validator->errors);
@@ -63,23 +66,14 @@ class AuthHandler extends NeechyHandler {
     #
     # Private
     #
-    private function register_new_user() {
-        # Save user
-        $name = $this->request->post('signup-name');
-        $user = User::find_by_name($name);
-        $user->set('email', $this->request->post('signup-email'));
-        $user->set('password',
-            NeechySecurity::hash_password($this->request->post('signup-pass')));
-        $user->save();
-
-        # Create user page
-        $this->t->data('new-user', $user->fields);
+    private function save_user_page($user) {
         $path = NeechyPath::join($this->html_path(), 'new-page.md.php');
-        $page = Page::find_by_tag($name);
+
+        $page = Page::find_by_tag($user->field('name'));
         $page->set('body', $this->t->render_partial_by_path($path));
-        $page->set('editor', $name);
+        $page->set('editor', $user->field('name'));
         $page->save();
 
-        return $user;
+        return $page;
     }
 }

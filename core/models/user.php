@@ -6,6 +6,10 @@
  *
  */
 require_once('../core/models/base.php');
+require_once('../core/models/page.php');
+require_once('../core/neechy/path.php');
+require_once('../core/neechy/templater.php');
+require_once('../core/neechy/security.php');
 
 
 class User extends NeechyModel {
@@ -56,6 +60,16 @@ MYSQL;
         else {
             $user = new User(array('name' => $name));
         }
+
+        return $user;
+    }
+
+    public static function register($name, $email, $password) {
+        # Save user
+        $user = User::find_by_name($name);
+        $user->set('email', $email);
+        $user->set('password', NeechySecurity::hash_password($password));
+        $user->save();
 
         return $user;
     }
