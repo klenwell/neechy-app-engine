@@ -14,14 +14,7 @@
     <?php echo $this->unflash(); ?>
 
     <div class="container">
-      {{ header }}
-
-      <div id="main-content">
-        {{ content }}
-      </div>
-
-      {{ page-controls }}
-
+      {{ content }}
     </div>
 
     {{ footer }}

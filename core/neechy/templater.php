@@ -248,16 +248,6 @@ class NeechyTemplater {
         return sprintf($format, $href);
     }
 
-    public function page_title() {
-        if ( ! $this->page ) {
-            return '<!-- no page found -->';
-        }
-        else {
-            return self::titleize_camel_case($this->page->field('tag',
-                '<!-- no tag found -->'));
-        }
-    }
-
     public function nav_tab_class($link_page_tag) {
         if ( strtolower($link_page_tag) == strtolower($this->request->page) ) {
             return 'active';

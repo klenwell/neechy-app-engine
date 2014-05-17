@@ -15,31 +15,32 @@ class PageHandler extends NeechyHandler {
     # Public Methods
     #
     public function handle() {
-        $page_tabs_f = <<<HTML5
-<!-- Tab panes -->
-<div class="tab-content">
-  <div class="tab-pane active" id="read"></div>
-  <div class="tab-pane" id="edit">%s</div>
-  <div class="tab-pane" id="discuss">Under development</div>
-  <div class="tab-pane" id="history">Under development</div>
-  <div class="tab-pane" id="access">Under development</div>
-</div>
-HTML5;
-
+        # Action tree
         if ( $this->request->action_is('save') ) {
             $this->page->set('body', $this->request->post('page-body'));
             $this->page->save();
             NeechyResponse::redirect($this->page->url());
         }
         elseif ( $this->page->is_new() ) {
-            $content = $this->t->render_editor();
+            $this->t->data('editor', $this->t->render_editor());
         }
         else {
-            $content = sprintf($page_tabs_f, $this->t->render_editor(
-                $this->page->field('body')));
+            $this->t->data('editor', $this->t->render_editor($this->page->field('body')));
         }
 
-        $this->t->set('page-controls', $this->render_page_controls());
+        # Partial variables
+        $last_edited = sprintf('Last edited by %s on %s',
+            $this->page->editor_link(),
+            $this->page->field('saved_at')
+        );
+        $page_title = NeechyTemplater::titleize_camel_case(
+            $this->page->field('tag', 'Page')
+        );
+
+        # Render partial
+        $this->t->data('page-title', $page_title);
+        $this->t->data('last-edited', $last_edited);
+        $content = $this->t->render_partial_by_id('content');
         return $content;
     }
 

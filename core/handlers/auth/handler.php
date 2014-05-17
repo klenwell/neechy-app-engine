@@ -71,7 +71,7 @@ class AuthHandler extends NeechyHandler {
 
         $page = Page::find_by_tag($user->field('name'));
         $page->set('body', $this->t->render_partial_by_path($path));
-        $page->set('editor', $user->field('name'));
+        $page->set('editor', 'NeechySystem');
         $page->save();
 
         return $page;
