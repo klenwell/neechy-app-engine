@@ -88,20 +88,24 @@ foreach ( $signup_fields as $field => $attrs ) {
         <div class="alert"><?php echo $alert; ?></div>
       <?php endif; ?>
 
-      <div id="neechy-auth" class="row">
-        <?php if (! empty($validation_errors)): ?>
-        <div class="errors">
-          <h4>Please correct the following errors and resubmit:</h4>
-          <ul class="errors">
+      <?php if (! empty($validation_errors)): ?>
+      <div id="auth-errors" class="row">
+        <div class="panel panel-danger">
+          <div class="panel-body">
+            <h4>There was a problem:</h4>
+            <ul class="errors">
             <?php foreach ($validation_errors as $field => $messages): ?>
               <?php foreach ($messages as $message): ?>
               <li class="error"><?php echo $message; ?></li>
               <?php endforeach; ?>
             <?php endforeach; ?>
-          </ul>
+            </ul>
+          </div>
         </div>
-        <?php endif; ?>
+      </div>
+      <?php endif; ?>
 
+      <div id="neechy-auth" class="row">
         <div id="neechy-login" class="well-sm col-xs-offset-2 col-xs-3">
           <?php echo $t->open_form($post_url, 'post', array('class' => 'form-login')); ?>
             <h2 class="form-signin-heading">Sign In</h2>
