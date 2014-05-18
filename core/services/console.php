@@ -93,7 +93,7 @@ NEECHY CONSOLE ERROR:
 
 STDERR;
         $output = sprintf($format, $e->getMessage());
-        $response = new NeechyResponse($output);
+        $response = NeechyResponse::stderr($output);
         return $response;
     }
 
