@@ -5,7 +5,6 @@
  * NeechyHandler base class.
  *
  */
-require_once('../core/handlers/base.php');
 require_once('../core/neechy/constants.php');
 require_once('../core/neechy/templater.php');
 require_once('../core/neechy/path.php');

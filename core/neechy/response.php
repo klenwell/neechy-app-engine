@@ -41,6 +41,10 @@ class NeechyResponse {
         print($this->body);
     }
 
+    public function to_console() {
+        printf("\n%s\n\n", trim($this->body));
+    }
+
     public function header($field, $value=NULL) {
         # Sets or returns value for given field.
         #

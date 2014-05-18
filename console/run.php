@@ -5,10 +5,13 @@
  * This is the main Neechy console script. It provides a command line interface
  * for running handlers and tasks.
  *
+ * Need to chdir as first step since, by convention, this script should be
+ * run from the neechy root folder, yet Neechy assumes it will be run from a
+ * subdirectory like public.
+ *
  */
-#require_once('../core/services/console.php');
+chdir(__DIR__);
+require_once('../core/services/console.php');
 
-#$console_service = new NeechyConsoleService();
-#$console_service->serve();
-
-print_r($_SERVER);
+$console_service = new NeechyConsoleService();
+$console_service->serve();

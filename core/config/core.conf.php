@@ -5,9 +5,6 @@
  */
 
 $neechy_core_config = array(
-    # Version
-    'version'           => '0.1',
-
     # Database Settings
     'mysql_database'    => 'NULL',
     'mysql_host'        => 'NULL',
