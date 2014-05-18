@@ -178,7 +178,7 @@ class NeechyTemplater {
     #
     # Helper Methods
     #
-    public function flash($message, $class='default') {
+    public function flash($message, $class='info') {
         $_SESSION['neechy-flash'] = ( isset($_SESSION['neechy-flash']) ) ?
             $_SESSION['neechy-flash'] : array();
 
@@ -192,23 +192,39 @@ class NeechyTemplater {
         return null;
     }
 
-    public function unflash() {
-        $alerts = array();;
-        $format = '<div class="alert alert-%s">%s</div>';
+    public function has_flash() {
+        return isset($_SESSION['neechy-flash']);
+    }
 
-        if ( ! isset($_SESSION['neechy-flash']) ) {
+    public function unflash() {
+        $alerts = array();
+        $alert_format = <<<HTML5
+    <div class="alert alert-%s alert-dismissable">
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
+            &times;
+        </button>
+        %s
+    </div>
+HTML5;
+        $format = <<<HTML5
+<div id="neechy-flash-alerts">
+%s
+</div>
+HTML5;
+
+        if ( ! $this->has_flash() ) {
             return '<!-- no flash messages -->';
         }
 
         foreach ( $_SESSION['neechy-flash'] as $class => $messages ) {
             foreach ( $messages as $message ) {
-                $alerts[] = sprintf($format, $class, $message);
+                $alerts[] = sprintf($alert_format, $class, $message);
             }
             unset($_SESSION['neechy-flash'][$class]);
         }
 
         unset($_SESSION['neechy-flash']);
-        return implode("\n", $alerts);
+        return sprintf($format, implode("\n", $alerts));
     }
 
     public function link($href, $text, $options=array()) {

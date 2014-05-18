@@ -11,7 +11,7 @@ $(document).ready(function() {
 
   // PageDown hooks
   editor.hooks.chain("onPreviewRefresh", function () {
-    console.debug("the preview has been updated");
+    //console.debug("the preview has been updated");
   });
 
   // Set page markdown / html
@@ -25,7 +25,7 @@ $(document).ready(function() {
   (function() {
     $('textarea#wmd-input').on('change keyup paste', function() {
       $('button.save').show();
-      console.debug('change');
+      //console.debug('change');
     });
 
     $('button.save').click(function() {
