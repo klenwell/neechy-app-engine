@@ -6,18 +6,15 @@
 
 # Templater object
 $t = $this;
-$t->page_title = NeechyConfig::get('title');
-$t->meta_keywords = NeechyConfig::get('keywords');
-$t->meta_description = NeechyConfig::get('description');
 
 ?>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title><?php echo $t->page_title; ?></title>
-    <meta name="keywords" content="<?php echo $t->meta_keywords; ?>" />
-    <meta name="description" content="<?php  echo $t->meta_description; ?>" />
+    <title><?php echo NeechyConfig::get('title'); ?></title>
+    <meta name="keywords" content="<?php echo NeechyConfig::get('keywords'); ?>" />
+    <meta name="description" content="<?php echo NeechyConfig::get('description'); ?>" />
     <link rel="icon" type="image/x-icon"
 		  href="themes/bootstrap/images/favicon.ico"  />
     <link rel="shortcut icon" type="image/x-icon"

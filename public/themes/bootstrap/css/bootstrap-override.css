@@ -32,6 +32,22 @@ div#main-content {
   border-width: 2px 0 0;
 }
 
+/*
+ * Flash Messages
+ * Based on http://stackoverflow.com/a/17688741/1093087
+ */
+div#neechy-flash-alerts {
+  position: absolute;
+  top: 40px;
+  left: 20%;
+  right: 20%;
+  opacity: .85;
+  z-index: 1001;  /* Navbar is 1000 */
+}
+
+div#neechy-flash-alerts div.alert {
+  margin-bottom: 4px;
+}
 
 /*
  * Header

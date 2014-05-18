@@ -6,6 +6,10 @@
  *
  */
 require_once('../core/models/base.php');
+require_once('../core/models/page.php');
+require_once('../core/neechy/path.php');
+require_once('../core/neechy/templater.php');
+require_once('../core/neechy/security.php');
 
 
 class User extends NeechyModel {
@@ -60,6 +64,28 @@ MYSQL;
         return $user;
     }
 
+    public static function register($name, $email, $password) {
+        # Save user
+        $user = User::find_by_name($name);
+        $user->set('email', $email);
+        $user->set('password', NeechySecurity::hash_password($password));
+        $user->save();
+
+        return $user;
+    }
+
+    public static function is_logged_in() {
+        return isset($_SESSION['logged-in']);
+    }
+
+    public static function logout() {
+        unset($_SESSION['logged-in']);
+        return null;
+    }
+
+    public static function is_admin() {
+    }
+
     /*
      * Instance Methods
      */
@@ -84,7 +110,19 @@ MYSQL;
         return is_null($this->field('id'));
     }
 
+    public function exists() {
+        return !($this->is_new());
+    }
+
     public function url($handler=NULL, $action=NULL, $params=array()) {
         return NeechyPath::url($this->field('name'), $handler, $action, $params);
+    }
+
+    #
+    # Auth Methods
+    #
+    public function login() {
+        $_SESSION['logged-in'] = microtime(1);
+        return null;
     }
 }

@@ -1,3 +1,6 @@
+<?php
+  $t = $this;   # NeechyTemplater
+?>
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -11,15 +14,10 @@
 
     {{ navbar }}
 
+    <?php echo $t->unflash(); ?>
+
     <div class="container">
-      {{ header }}
-
-      <div id="main-content">
-        {{ content }}
-      </div>
-
-      {{ page-controls }}
-
+      {{ content }}
     </div>
 
     {{ footer }}

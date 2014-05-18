@@ -6,9 +6,81 @@
  *
  */
 require_once('../core/neechy/validator.php');
+require_once('../core/neechy/security.php');
 require_once('../core/models/user.php');
 require_once('../core/models/page.php');
 
+
+class LoginException extends Exception {}
+
+
+class LoginValidator extends NeechyValidator {
+    #
+    # Properties
+    #
+    const FAILURE_MESSAGE = 'The user name or password you entered is incorrect.';
+
+    public $user = NULL;
+
+    #
+    # Public Methods
+    #
+    public function successful() {
+        try {
+            $this->authenticate_user_name();
+            $this->authenticate_user_password();
+            return true;
+        }
+        catch (LoginException $e) {
+            return false;
+        }
+    }
+
+    #
+    # Private Methods
+    #
+    private function authenticate_user_name() {
+        $form_key = 'login-name';
+        $value = $this->request->post($form_key, '');
+
+        # Rules
+        if ( $this->string_is_empty($value) ) {
+            $message = 'Enter your user name';
+            $this->add_error($form_key, $message);
+            throw new LoginException($message);
+        }
+
+        $user = User::find_by_name($value);
+        if ( $user->exists() ) {
+            $this->user = $user;
+            return TRUE;
+        }
+        else {
+            $this->add_error($form_key, self::FAILURE_MESSAGE);
+            throw new LoginException(self::FAILURE_MESSAGE);
+        }
+    }
+
+    private function authenticate_user_password() {
+        $form_key = 'login-pass';
+        $value = $this->request->post($form_key, '');
+
+        # Rules
+        if ( $this->string_is_empty($value) ) {
+            $message = 'Enter your password';
+            $this->add_error($form_key, $message);
+            throw new LoginException($message);
+        }
+
+        if ( NeechySecurity::verify_password($value, $this->user->field('password')) ) {
+            return TRUE;
+        }
+        else {
+            $this->add_error($form_key, self::FAILURE_MESSAGE);
+            throw new LoginException(self::FAILURE_MESSAGE);
+        }
+    }
+}
 
 class SignUpValidator extends NeechyValidator {
 
@@ -60,7 +132,7 @@ class SignUpValidator extends NeechyValidator {
 
         # Name used by another user/page
         $user = User::find_by_name($value);
-        if ( ! $user->is_new() ) {
+        if ( $user->exists() ) {
             $message = 'This user name is not available. Please choose another.';
             $this->add_error($form_key, $message);
             return FALSE;
