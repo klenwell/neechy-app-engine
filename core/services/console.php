@@ -20,15 +20,26 @@ class NeechyConsoleService extends NeechyService {
     #
     # Properties
     #
-    private $request = NULL;
+    var $args = array();
+    var $action = '';
+    var $params = array();
 
     #
     # Constructor
     #
     public function __construct($conf_path=NULL) {
         parent::__construct($conf_path);
-        $this->args = array_splice($_SERVER['argv'], 1);
-        $this->service = 'console';
+        $this->args = array_slice($_SERVER['argv'], 1);
+        $this->type = 'console';
+
+        if ( ! isset($this->args[0]) ) {
+            throw new NeechyConsoleError(
+                'invalid console request: no action (task or handler) provided');
+        }
+        else {
+            $this->action = $this->args[0];
+            $this->params = array_slice($this->args, 1);
+        }
     }
 
     #
@@ -36,11 +47,6 @@ class NeechyConsoleService extends NeechyService {
     #
     public function serve() {
         try {
-            if ( ! isset($this->args[0]) ) {
-                throw new NeechyConsoleError(
-                    'invalid console request: no task provided');
-            }
-
             if ( $this->is_task() ) {
                 $response = $this->dispatch_to_task();
             }
@@ -98,7 +104,7 @@ STDERR;
     }
 
     private function task_path() {
-        $task_name = $this->args[0];
+        $task_name = $this->action;
         $task_app_path = NeechyPath::join(NEECHY_TASK_APP_PATH, $task_name, 'task.php');
         $task_console_path = NeechyPath::join(
             NEECHY_TASK_CONSOLE_PATH, $task_name, 'task.php');
@@ -115,7 +121,7 @@ STDERR;
     }
 
     private function handler_path() {
-        $handler_name = $this->args[0];
+        $handler_name = $this->action;
         $handler_app_path = NeechyPath::join(NEECHY_HANDLER_APP_PATH,
             $handler_name, 'handler.php');
         $handler_core_path = NeechyPath::join(NEECHY_HANDLER_CORE_PATH,
@@ -133,9 +139,8 @@ STDERR;
     }
 
     private function load_task() {
-        $task_name = $this->args[0];
         $task_path = $this->task_path();
-        $TaskClass = sprintf('%sTask', ucwords($task_name));
+        $TaskClass = sprintf('%sTask', ucwords($this->action));
 
         require_once($task_path);
         $task = new $TaskClass($this);

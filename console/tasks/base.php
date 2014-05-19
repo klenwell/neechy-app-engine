@@ -1,8 +1,8 @@
 <?php
 /**
- * core/handlers/base.php
+ * console/tasks/base.php
  *
- * NeechyHandler base class.
+ * Base Neechy task class.
  *
  */
 require_once('../core/neechy/constants.php');
@@ -16,12 +16,14 @@ class NeechyTask {
     # Properties
     #
     public $service = null;
+    public $params = array();
 
     #
     # Constructor
     #
     public function __construct($service=null) {
         $this->service = $service;
+        $this->params = $service->params;
     }
 
     #

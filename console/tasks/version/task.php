@@ -1,8 +1,11 @@
 <?php
 /**
- * core/handlers/base.php
+ * console/tasks/version/task.php
  *
- * NeechyHandler base class.
+ * Simple Neechy task to display version.
+ *
+ * Usage:
+ *  php console/run.php version
  *
  */
 require_once('../console/tasks/base.php');
