@@ -38,17 +38,20 @@ class NeechyHandler {
         throw new NeechyError('NeechyHandler::handler should be overridden');
     }
 
-    public function render_view($id) {
+    public function render_view($id_or_path) {
         # First look for partial file in handler's html folder. If not there,
         # user theme's html folder.
-        $fname = sprintf('%s.html.php', $id);
+        $fname = sprintf('%s.html.php', $id_or_path);
         $handler_view = NeechyPath::join($this->html_path(), $fname);
 
         if ( file_exists($handler_view) ) {
             return $this->t->render_partial_by_path($handler_view);
         }
+        elseif ( file_exists($id_or_path) ) {
+            return $this->t->render_partial_by_path($id_or_path);
+        }
         else {
-            return $this->t->render_partial_by_id($id);
+            return $this->t->render_partial_by_id($id_or_path);
         }
     }
 
