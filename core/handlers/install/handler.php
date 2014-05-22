@@ -13,9 +13,13 @@ require_once('../core/models/user.php');
 
 
 class InstallHandler extends NeechyHandler {
+
     #
     # Properties
     #
+    # Default pages
+    public $default_pages = array('home');
+
     public $service = null;
     public $html_report = array();
     public $is_console = false;
@@ -67,7 +71,21 @@ class InstallHandler extends NeechyHandler {
     }
 
     private function create_default_pages() {
-        $this->println('TODO: create default pages');
+        $this->print_header('Create Default Pages');
+        $pages_created = array();
+
+        foreach ( $this->default_pages as $name ) {
+            $file_name = sprintf('%s.md.php', $name);
+            $path = NeechyPath::join($this->html_path(), $file_name);
+            $page = Page::find_by_tag($name);
+            $page->set('body', $this->t->render_partial_by_path($path));
+            $page->set('editor', 'NeechySystem');
+            $page->save();
+            $pages_created[] = $page;
+            $this->println(sprintf('Created page: %s', $name));
+        }
+
+        $this->println(sprintf('Created %d pages', count($pages_created)));
     }
 
     private function command_line_param($n) {
