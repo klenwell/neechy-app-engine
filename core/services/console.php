@@ -85,7 +85,7 @@ class NeechyConsoleService extends NeechyService {
 
     private function dispatch_to_handler() {
         $handler = $this->load_handler();
-        $content = $handler->handle();
+        $content = $handler->handle($this->is('console'));
         $response = new NeechyResponse($content);
         return $response;
     }
@@ -145,5 +145,15 @@ STDERR;
         require_once($task_path);
         $task = new $TaskClass($this);
         return $task;
+    }
+
+    private function load_handler() {
+        $handler_path = $this->handler_path();
+        $HandlerClass = sprintf('%sHandler', ucwords($this->action));
+
+        require_once($handler_path);
+        $handler = new $HandlerClass();
+        $handler->service = $this;
+        return $handler;
     }
 }
