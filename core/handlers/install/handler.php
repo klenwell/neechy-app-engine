@@ -18,8 +18,6 @@ class InstallHandler extends NeechyHandler {
     # Properties
     #
     # Default pages
-    public $default_pages = array('home');
-
     public $service = null;
     public $html_report = array();
     public $is_console = false;
@@ -73,10 +71,11 @@ class InstallHandler extends NeechyHandler {
     private function create_default_pages() {
         $this->print_header('Create Default Pages');
         $pages_created = array();
+        $glob_target = NeechyPath::join($this->html_path(), '*.md.php');
 
-        foreach ( $this->default_pages as $name ) {
-            $file_name = sprintf('%s.md.php', $name);
-            $path = NeechyPath::join($this->html_path(), $file_name);
+        foreach(glob($glob_target) as $path) {
+            $file_split = explode('.', basename($path));
+            $name = $file_split[0];
             $page = Page::find_by_tag($name);
             $page->set('body', $this->t->render_partial_by_path($path));
             $page->set('editor', 'NeechySystem');
