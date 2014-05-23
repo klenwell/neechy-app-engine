@@ -124,8 +124,8 @@ class SignUpValidator extends NeechyValidator {
         }
 
         if ( ! preg_match(self::RE_VALID_USERNAME, $value) ) {
-            $message = 'Invalid format: please use something like neechy' .
-                'neechy_user or NeechyUser';
+            $message = 'Invalid format: please use something like neechy,' .
+                'neechy_user, or NeechyUser';
             $this->add_error($form_key, $message);
             return FALSE;
         }

@@ -7,7 +7,7 @@
 $t = $this;   # templater object
 
 ?>
-## Congratulation on your new Neechy Wiki
+## Congratulations on your new Neechy Wiki
 
 You're new wiki, <?php echo NeechyConfig::get('title'); ?>, is ready!
 
@@ -21,4 +21,4 @@ If you are an administrator, you'll have additional tools at your disposal to he
 
 ### Developers
 
-Neechy is designed to allow you, as a developer, hack on your wiki. Extend existing features and add your own. For more information, visit the Neechy github site.
+Neechy is designed to allow you, as a developer, to hack on your own wiki. Extend existing features and add your own. For more information, visit the Neechy github site.

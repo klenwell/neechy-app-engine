@@ -110,4 +110,4 @@ And if you need to ~~strike something through~~
 
 
 ## More Information
-for more information on markdown syntax, see this [StackOverflow page](http://stackoverflow.com/editing-help).
+For more information on markdown syntax, see this [StackOverflow page](http://stackoverflow.com/editing-help).

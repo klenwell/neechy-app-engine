@@ -8,6 +8,7 @@
 require_once('../core/handlers/base.php');
 require_once('../core/neechy/config.php');
 require_once('../core/neechy/path.php');
+require_once('../core/neechy/validator.php');
 require_once('../core/models/page.php');
 require_once('../core/models/user.php');
 
@@ -32,7 +33,7 @@ class InstallHandler extends NeechyHandler {
             $this->setup_database();
             $this->create_neechy_user();
             $this->create_default_pages();
-            return "install successful";
+            $this->create_admin_user();
         }
         catch (Exception $e) {
             $this->print_error($e);
@@ -85,6 +86,40 @@ class InstallHandler extends NeechyHandler {
         }
 
         $this->println(sprintf('Created %d pages', count($pages_created)));
+    }
+
+    private function create_admin_user() {
+        $this->print_header('Create Admin User');
+
+        $validator = new NeechyValidator();
+        $email_is_valid = false;
+
+        $name = $this->prompt_user('Please enter your new user name: ');
+
+        while (! $email_is_valid) {
+            $email = $this->prompt_user('Please enter your email: ');
+
+            if ( ! $validator->is_valid_email($email) ) {
+                $this->println("invalid email address: please re-enter");
+            }
+            else {
+                $email_is_valid = true;
+            }
+        }
+
+        $password = NeechySecurity::random_hex();
+        $level = 'ADMIN';
+
+        $user = User::register($name, $email, $password, $level);
+
+        $format = <<<STDOUT
+An admin has been created with your user name: %s
+Your random password is: %s
+
+Please login now and change your password.
+STDOUT;
+
+        printf($format, $name, $password);
     }
 
     private function command_line_param($n) {
@@ -232,7 +267,7 @@ STDOUT;
         $stdin = fopen('php://stdin', 'r');
         $response = fgets($stdin);
         fclose($stdin);
-        return $response;
+        return trim($response);
     }
 
     private function println($message) {

@@ -20,7 +20,7 @@ CREATE TABLE users (
     name varchar(255) NOT NULL default '',
     email varchar(255) NOT NULL default '',
     password varchar(255) NOT NULL default '',
-    status varchar(16) NOT NULL default '',
+    status int(11) NOT NULL default 0,
     challenge varchar(8) default '',
 
     theme varchar(64) default '',
@@ -38,6 +38,8 @@ MYSQL;
     #
     # Constants
     #
+    private static $STATUS_LEVELS = array('NEWB'    => 1,
+                                          'ADMIN'   => 2);
 
     /*
      * Constructor
@@ -64,11 +66,12 @@ MYSQL;
         return $user;
     }
 
-    public static function register($name, $email, $password) {
+    public static function register($name, $email, $password, $level='NEWB') {
         # Save user
         $user = User::find_by_name($name);
         $user->set('email', $email);
         $user->set('password', NeechySecurity::hash_password($password));
+        $user->set('status', self::$STATUS_LEVELS[$level]);
         $user->save();
 
         return $user;
