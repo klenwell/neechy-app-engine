@@ -96,37 +96,38 @@ class SignUpValidator extends NeechyValidator {
     # Public Methods
     #
     public function is_valid() {
-        $this->validate_signup_user();
-        $this->validate_signup_email();
-        $this->validate_signup_password();
+        $this->validate_signup_user(
+            $this->request->post('signup-name', ''),
+            'signup-name');
+        $this->validate_signup_email(
+            $this->request->post('signup-email', ''),
+            'signup-email');
+        $this->validate_signup_password(
+            $this->request->post('signup-pass', ''),
+            $this->request->post('signup-pass-confirm', ''),
+            $this->request->post('signup-name', ''),
+            'signup-pass');
         return (! $this->has_errors());
     }
 
-    #
-    # Private Methods
-    #
-    private function validate_signup_user() {
-        $form_key = 'signup-name';
-        $value = $this->request->post($form_key, '');
-
-        # Rules
+    public function validate_signup_user($value, $error_key='base') {
         if ( $this->string_is_empty($value) ) {
             $message = 'User name required';
-            $this->add_error($form_key, $message);
+            $this->add_error($error_key, $message);
             return FALSE;
         }
 
         if ( $this->string_is_too_short($value, self::MIN_USERNAME_LENGTH) ) {
             $message = sprintf('User name too short: must be at least %d chars',
                 self::MIN_USERNAME_LENGTH);
-            $this->add_error($form_key, $message);
+            $this->add_error($error_key, $message);
             return FALSE;
         }
 
         if ( ! preg_match(self::RE_VALID_USERNAME, $value) ) {
-            $message = 'Invalid format: please use something like neechy,' .
+            $message = 'Invalid format: please use something like neechy, ' .
                 'neechy_user, or NeechyUser';
-            $this->add_error($form_key, $message);
+            $this->add_error($error_key, $message);
             return FALSE;
         }
 
@@ -134,70 +135,63 @@ class SignUpValidator extends NeechyValidator {
         $user = User::find_by_name($value);
         if ( $user->exists() ) {
             $message = 'This user name is not available. Please choose another.';
-            $this->add_error($form_key, $message);
+            $this->add_error($error_key, $message);
             return FALSE;
         }
 
         $page = Page::find_by_tag($value);
         if ( ! $page->is_new() ) {
             $message = 'This user name is not available. Please choose another.';
-            $this->add_error($form_key, $message);
+            $this->add_error($error_key, $message);
             return FALSE;
         }
 
         return TRUE;
     }
 
-    private function validate_signup_email() {
-        $form_key = 'signup-email';
-        $value = $this->request->post($form_key, '');
-
-        # Rules
+    public function validate_signup_email($value, $error_key='base') {
         if ( $this->string_is_empty($value) ) {
             $message = 'Email required';
-            $this->add_error($form_key, $message);
+            $this->add_error($error_key, $message);
             return FALSE;
         }
 
         if ( ! $this->is_valid_email($value) ) {
-            $message = 'Invalid email address';
-            $this->add_error($form_key, $message);
+            $message = 'Invalid email address format';
+            $this->add_error($error_key, $message);
             return FALSE;
         }
 
         return TRUE;
     }
 
-    private function validate_signup_password() {
-        $form_key = 'signup-pass';
-        $confirm_key = 'signup-pass-confirm';
-        $value = $this->request->post($form_key, '');
-        $confirm_value = $this->request->post($confirm_key, '');
-
-        # Rules
+    #
+    # Private Methods
+    #
+    private function validate_signup_password($value, $confirm_value, $user_name,
+        $error_key='base') {
         if ( $this->string_is_empty($value) ) {
             $message = 'Password required';
-            $this->add_error($form_key, $message);
+            $this->add_error($error_key, $message);
             return FALSE;
         }
 
         if ( $this->string_is_too_short($value, self::MIN_PASSWORD_LENGTH) ) {
             $message = sprintf('Password too short: must be at least %d chars',
                 self::MIN_PASSWORD_LENGTH);
-            $this->add_error($form_key, $message);
+            $this->add_error($error_key, $message);
             return FALSE;
         }
 
         if ( ! $this->values_match($value, $confirm_value) ) {
             $message = 'Password fields do not match. Please try again.';
-            $this->add_error($form_key, $message);
+            $this->add_error($error_key, $message);
             return FALSE;
         }
 
-        $signup_name = $this->request->post('signup-name', '');
-        if ( $this->values_match($value, $signup_name) ) {
+        if ( $this->values_match($value, $user_name) ) {
             $message = 'User name and password should not match';
-            $this->add_error($form_key, $message);
+            $this->add_error($error_key, $message);
             return FALSE;
         }
 

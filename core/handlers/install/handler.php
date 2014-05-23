@@ -7,8 +7,9 @@
  */
 require_once('../core/handlers/base.php');
 require_once('../core/neechy/config.php');
+require_once('../core/neechy/constants.php');
 require_once('../core/neechy/path.php');
-require_once('../core/neechy/validator.php');
+require_once('../core/handlers/auth/php/validator.php');
 require_once('../core/models/page.php');
 require_once('../core/models/user.php');
 
@@ -19,6 +20,12 @@ class InstallHandler extends NeechyHandler {
     # Properties
     #
     # Default pages
+    public static $default_pages = array(
+        'home',
+        'NeechyFormatting',
+        'NeechySystem'
+    );
+
     public $service = null;
     public $html_report = array();
     public $is_console = false;
@@ -74,9 +81,9 @@ class InstallHandler extends NeechyHandler {
         $pages_created = array();
         $glob_target = NeechyPath::join($this->html_path(), '*.md.php');
 
-        foreach(glob($glob_target) as $path) {
-            $file_split = explode('.', basename($path));
-            $name = $file_split[0];
+        foreach(self::$default_pages as $name) {
+            $basename = sprintf('%s.md.php', $name);
+            $path = NeechyPath::join($this->html_path(), $basename);
             $page = Page::find_by_tag($name);
             $page->set('body', $this->t->render_partial_by_path($path));
             $page->set('editor', 'NeechySystem');
@@ -91,16 +98,31 @@ class InstallHandler extends NeechyHandler {
     private function create_admin_user() {
         $this->print_header('Create Admin User');
 
-        $validator = new NeechyValidator();
+        $name_is_valid = false;
         $email_is_valid = false;
 
-        $name = $this->prompt_user('Please enter your new user name: ');
+        while (! $name_is_valid) {
+            $validator = new SignUpValidator();
+            $name = $this->prompt_user('Please enter your new user name: ');
+
+            if ( ! $validator->validate_signup_user($name, 'name') ) {
+                $m = sprintf('invalid user name: %s',
+                    implode(', ', $validator->errors['name']));
+                $this->println($m);
+            }
+            else {
+                $name_is_valid = true;
+            }
+        }
 
         while (! $email_is_valid) {
+            $validator = new SignUpValidator();
             $email = $this->prompt_user('Please enter your email: ');
 
-            if ( ! $validator->is_valid_email($email) ) {
-                $this->println("invalid email address: please re-enter");
+            if ( ! $validator->validate_signup_email($email, 'email') ) {
+                $m = sprintf('invalid email address: %s',
+                    implode(', ', $validator->errors['email']));
+                $this->println($m);
             }
             else {
                 $email_is_valid = true;
@@ -110,8 +132,17 @@ class InstallHandler extends NeechyHandler {
         $password = NeechySecurity::random_hex();
         $level = 'ADMIN';
 
+        # Create user and default page
         $user = User::register($name, $email, $password, $level);
 
+        # Create default page
+        $path = NeechyPath::join($this->html_path(), 'owner-page.md.php');
+        $page = Page::find_by_tag($user->field('name'));
+        $page->set('body', $this->t->render_partial_by_path($path));
+        $page->set('editor', 'NeechySystem');
+        $page->save();
+
+        # Feedback
         $format = <<<STDOUT
 An admin has been created with your user name: %s
 Your random password is: %s
