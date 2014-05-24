@@ -14,8 +14,20 @@ $(document).ready(function() {
     //console.debug("the preview has been updated");
   });
 
-  // Set page markdown / html
+  // Set page markdown
   var page_markdown = $('textarea#wmd-input').val();
+
+  // If page empty, show default
+  if ( ! page_markdown.trim().length  ) {
+    page_markdown = [
+      '## Page Not Found',
+      '',
+      'This page has not been created (yet).'
+    ].join('\n');
+    $('textarea#wmd-input').val(page_markdown);
+  }
+
+  // Set page html
   var page_html = converter.makeHtml(page_markdown);
 
   // Run editor
@@ -25,7 +37,6 @@ $(document).ready(function() {
   (function() {
     $('textarea#wmd-input').on('change keyup paste', function() {
       $('button.save').show();
-      //console.debug('change');
     });
 
     $('button.save').click(function() {
