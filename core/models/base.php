@@ -46,6 +46,7 @@ MYSQL;
     public $fields = array();
     public $table = '';
     public $pdo = null;
+    public $rows_affected = 0;
 
     /*
      * Constructor
@@ -143,9 +144,12 @@ MYSQL;
             implode(', ', array_fill(0, count($this->fields), '?'))
         );
 
+        $this->rows_affected = 0;
         $query = $this->pdo->prepare($sql);
         $query->execute(array_values($this->fields));
-        return $query;
+        $this->rows_affected = $query->rowCount();
+        $this->set('id', $this->pdo->lastInsertId());
+        return $this;
     }
 
     public function update() {
@@ -171,14 +175,16 @@ MYSQL;
         # Build value array
         $values = array();
         foreach ($mutable_fields as $field) {
-            $values = $this->field($field);
+            $values[] = $this->field($field);
         }
-        $values[] = $this->fields['id'];
+        $values[] = $this->field('id');
 
         # Execute
+        $this->rows_affected = 0;
         $query = $this->pdo->prepare($sql);
-        $query->execute($values);
-        return $query;
+        $query->execute(array_values($this->fields));
+        $this->rows_affected = $query->rowCount();
+        return $this;
     }
 
     public function save() {

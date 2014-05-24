@@ -51,13 +51,13 @@ class NeechyModelTest extends PHPUnit_Framework_TestCase {
             'invalid' => 'field'
         ));
         $this->setExpectedException('PDOException');
-        $query = $neechy->save();
+        $neechy->save();
     }
 
     public function testInsert() {
         $neechy = NeechyModel::init(array('neech' => 'testInsert'));
-        $query = $neechy->insert();
-        $this->assertEquals(1, $query->rowCount());
+        $neechy->insert();
+        $this->assertEquals(1, $neechy->rows_affected);
 
         $rows = $neechy->find_by_column_value('neech', 'testInsert');
         $this->assertEquals(1, count($rows));
@@ -65,7 +65,17 @@ class NeechyModelTest extends PHPUnit_Framework_TestCase {
     }
 
     public function testUpdate() {
+        $neechy = NeechyModel::init(array('neech' => 'testInsert'));
+        $neechy->insert();
+        $this->assertEquals(1, $neechy->rows_affected);
 
+        $neechy->set('neech', 'testUpdate');
+        $neechy->update();
+        $this->assertEquals(1, $neechy->rows_affected);
+
+        $rows = $neechy->find_by_column_value('neech', 'testUpdate');
+        $this->assertEquals(1, count($rows));
+        $this->assertEquals('testUpdate', $rows[0]->field('neech'));
     }
 
     public function testSave() {
