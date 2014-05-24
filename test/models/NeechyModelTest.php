@@ -54,12 +54,22 @@ class NeechyModelTest extends PHPUnit_Framework_TestCase {
         $query = $neechy->save();
     }
 
-    public function testSave() {
-        $neechy = NeechyModel::init(array(
-            'neech' => 'testSave',
-        ));
-        $query = $neechy->save();
+    public function testInsert() {
+        $neechy = NeechyModel::init(array('neech' => 'testInsert'));
+        $query = $neechy->insert();
         $this->assertEquals(1, $query->rowCount());
+
+        $rows = $neechy->find_by_column_value('neech', 'testInsert');
+        $this->assertEquals(1, count($rows));
+        $this->assertEquals('testInsert', $rows[0]->field('neech'));
+    }
+
+    public function testUpdate() {
+
+    }
+
+    public function testSave() {
+
     }
 
     public function testAll() {

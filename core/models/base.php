@@ -31,10 +31,14 @@ class NeechyModel {
 CREATE TABLE neeches (
 	id int(10) unsigned NOT NULL auto_increment,
 	neech varchar(75) NOT NULL default '',
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME default NULL,
 	PRIMARY KEY  (id),
 	KEY idx_neech (neech)
 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE={{ engine }}
 MYSQL;
+
+    protected static $immutable_fields = array('id', 'created_at', 'updated_at');
 
     /*
      * Properties
@@ -95,9 +99,20 @@ MYSQL;
         return $statement->fetchAll();
     }
 
-    /*
-     * Public Methods
-     */
+    #
+    # Public Instance Methods
+    #
+    public function is_new() {
+        return is_null($this->field('id'));
+    }
+
+    public function exists() {
+        return !($this->is_new());
+    }
+
+    #
+    # Public Field Methods
+    #
     public function set($field, $value) {
         $this->fields[$field] = $value;
     }
@@ -117,7 +132,10 @@ MYSQL;
         }
     }
 
-    public function save() {
+    #
+    # Public Save Methods
+    #
+    public function insert() {
         $sql_f = 'INSERT INTO %s (%s) VALUES (%s)';
         $sql = sprintf($sql_f,
             $this->table,
@@ -130,6 +148,51 @@ MYSQL;
         return $query;
     }
 
+    public function update() {
+        $sql_f = 'UPDATE %s SET %s WHERE id = ?';
+
+        $mutable_fields = array_diff(array_keys($this->fields), self::$immutable_fields);
+
+        # Build SET clause
+        $set_pairs = array();
+        foreach ( $mutable_fields as $key ) {
+            if ( ! in_array($key, array('id', 'created_at', 'updated_at')) ) {
+                $set_pairs[] = sprintf('%s = ?', $key);
+            }
+        }
+        $set_pairs[] = 'updated_at = NOW()';
+
+        # Build SQL query
+        $sql = sprintf($sql_f,
+            $this->table,
+            implode(', ', $set_pairs)
+        );
+
+        # Build value array
+        $values = array();
+        foreach ($mutable_fields as $field) {
+            $values = $this->field($field);
+        }
+        $values[] = $this->fields['id'];
+
+        # Execute
+        $query = $this->pdo->prepare($sql);
+        $query->execute($values);
+        return $query;
+    }
+
+    public function save() {
+        if ( $this->is_new() ) {
+            return $this->insert();
+        }
+        else {
+            $this->update();
+        }
+    }
+
+    #
+    # Public Select Methods
+    #
     public function find_by_column_value($column, $value) {
         $records = array();
         $ModelClass = get_class($this);
