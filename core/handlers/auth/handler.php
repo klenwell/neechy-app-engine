@@ -69,7 +69,7 @@ class AuthHandler extends NeechyHandler {
     private function save_user_page($user) {
         $path = NeechyPath::join($this->html_path(), 'new-page.md.php');
 
-        $page = Page::find_by_tag($user->field('name'));
+        $page = Page::find_by_title($user->field('name'));
         $page->set('body', $this->t->render_partial_by_path($path));
         $page->set('editor', 'NeechySystem');
         $page->save();

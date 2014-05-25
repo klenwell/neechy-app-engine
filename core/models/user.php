@@ -78,15 +78,31 @@ MYSQL;
     }
 
     public static function is_logged_in() {
-        return isset($_SESSION['logged-in']);
+        return isset($_SESSION['user']);
     }
 
     public static function logout() {
-        unset($_SESSION['logged-in']);
+        unset($_SESSION['user']);
         return null;
     }
 
     public static function is_admin() {
+    }
+
+    public static function logged_in($field=null) {
+        #
+        # Return user currently logged in (saved to SESSION). If field arg
+        # provided, returns that field. If no user logged in, return null.
+        #
+        if ( ! User::is_logged_in() ) {
+            return null;
+        }
+        elseif ( ! $field ) {
+            return $_SESSION['user'];
+        }
+        else {
+            return $_SESSION['user'][$field];
+        }
     }
 
     /*
@@ -100,7 +116,11 @@ MYSQL;
     # Auth Methods
     #
     public function login() {
-        $_SESSION['logged-in'] = microtime(1);
+        $_SESSION['user'] = array(
+            'name' => $this->field('name'),
+            'status' => $this->field('status'),
+            'logged-in' => microtime(1)
+        );
         return null;
     }
 }

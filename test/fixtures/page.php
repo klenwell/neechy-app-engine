@@ -9,19 +9,22 @@ class PageFixture extends NeechyFixture {
 
     static public $data = array(
         array(
-            'tag' => 'NeechyPage',
+            'title' => 'NeechyPage',
+            'slug' => 'neechypage',
             'editor' => 'Anonymous',
             'body' => 'That which does not kill us makes us lunch.',
             'note' => 'version 1'
         ),
         array(
-            'tag' => 'NeechyPage',
+            'title' => 'NeechyPage',
+            'slug' => 'neechypage',
             'editor' => 'Anonymous',
             'body' => 'That which does not kill us makes us manlier.',
             'note' => 'version 2'
         ),
         array(
-            'tag' => 'NeechyPage',
+            'title' => 'NeechyPage',
+            'slug' => 'neechypage',
             'editor' => 'Anonymous',
             'body' => 'That which does not kill us makes us stronger.',
             'note' => 'version 3'

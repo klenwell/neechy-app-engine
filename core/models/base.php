@@ -142,6 +142,8 @@ MYSQL;
     #
     public function insert() {
         $sql_f = 'INSERT INTO %s (%s) VALUES (%s)';
+        $this->filter_immutable_fields();
+
         $sql = sprintf($sql_f,
             $this->table,
             implode(', ', array_keys($this->fields)),
@@ -158,8 +160,7 @@ MYSQL;
 
     public function update() {
         $sql_f = 'UPDATE %s SET %s WHERE id = ?';
-
-        $mutable_fields = array_diff(array_keys($this->fields), self::$immutable_fields);
+        $mutable_fields = $this->mutable_fields();
 
         # Build SET clause
         $set_pairs = array();
@@ -228,9 +229,27 @@ MYSQL;
         }
     }
 
-    /*
-     * Private Method
-     */
+    #
+    # Protected Methods
+    #
+    protected function mutable_fields() {
+        return array_diff(array_keys($this->fields), self::$immutable_fields);
+    }
+
+    protected function filter_immutable_fields() {
+        $filtered_fields = array();
+
+        foreach ($this->mutable_fields() as $field) {
+            $filtered_fields[$field] = $this->field($field);
+        }
+
+        $this->fields = $filtered_fields;
+        return $this;
+    }
+
+    #
+    # Private Methods
+    #
     private static function extract_table_name() {
         $regex = '/CREATE TABLE([^\(]+)\(/';
         $matches = array();

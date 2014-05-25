@@ -84,7 +84,7 @@ class InstallHandler extends NeechyHandler {
         foreach(self::$default_pages as $name) {
             $basename = sprintf('%s.md.php', $name);
             $path = NeechyPath::join($this->html_path(), $basename);
-            $page = Page::find_by_tag($name);
+            $page = Page::find_by_title($name);
             $page->set('body', $this->t->render_partial_by_path($path));
             $page->set('editor', 'NeechySystem');
             $page->save();
@@ -137,7 +137,7 @@ class InstallHandler extends NeechyHandler {
 
         # Create default page
         $path = NeechyPath::join($this->html_path(), 'owner-page.md.php');
-        $page = Page::find_by_tag($user->field('name'));
+        $page = Page::find_by_title($user->field('name'));
         $page->set('body', $this->t->render_partial_by_path($path));
         $page->set('editor', 'NeechySystem');
         $page->save();

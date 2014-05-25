@@ -139,7 +139,7 @@ class SignUpValidator extends NeechyValidator {
             return FALSE;
         }
 
-        $page = Page::find_by_tag($value);
+        $page = Page::find_by_title($value);
         if ( ! $page->is_new() ) {
             $message = 'This user name is not available. Please choose another.';
             $this->add_error($error_key, $message);
