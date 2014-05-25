@@ -38,7 +38,7 @@ MYSQL;
     #
     # Constants
     #
-    private static $STATUS_LEVELS = array('NEWB'    => 1,
+    private static $STATUS_LEVELS = array('NEW'    => 1,
                                           'ADMIN'   => 2);
 
     /*
@@ -66,7 +66,7 @@ MYSQL;
         return $user;
     }
 
-    public static function register($name, $email, $password, $level='NEWB') {
+    public static function register($name, $email, $password, $level='NEW') {
         # Save user
         $user = User::find_by_name($name);
         $user->set('email', $email);
@@ -92,31 +92,6 @@ MYSQL;
     /*
      * Instance Methods
      */
-    public function save() {
-        $sql_f = 'INSERT INTO users (%s, updated_at) VALUES (%s, NOW())';
-
-        # Use database values
-        $this->un_set('id');
-        $this->un_set('updated_at');
-
-        $sql = sprintf($sql_f,
-            implode(', ', array_keys($this->fields)),
-            implode(', ', array_fill(0, count($this->fields), '?'))
-        );
-
-        $query = $this->pdo->prepare($sql);
-        $query->execute(array_values($this->fields));
-        return $query;
-    }
-
-    public function is_new() {
-        return is_null($this->field('id'));
-    }
-
-    public function exists() {
-        return !($this->is_new());
-    }
-
     public function url($handler=NULL, $action=NULL, $params=array()) {
         return NeechyPath::url($this->field('name'), $handler, $action, $params);
     }

@@ -133,6 +133,10 @@ MYSQL;
         }
     }
 
+    public function id() {
+        return $this->field('id');
+    }
+
     #
     # Public Save Methods
     #
@@ -160,9 +164,7 @@ MYSQL;
         # Build SET clause
         $set_pairs = array();
         foreach ( $mutable_fields as $key ) {
-            if ( ! in_array($key, array('id', 'created_at', 'updated_at')) ) {
-                $set_pairs[] = sprintf('%s = ?', $key);
-            }
+            $set_pairs[] = sprintf('%s = ?', $key);
         }
         $set_pairs[] = 'updated_at = NOW()';
 
