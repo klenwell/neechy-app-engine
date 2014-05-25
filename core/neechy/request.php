@@ -11,7 +11,7 @@ class NeechyRequest {
     #
     # Constants
     #
-    const DEFAULT_PAGE = 'HomePage';
+    const DEFAULT_PAGE = 'home';
     const DEFAULT_HANDLER = 'page';
 
     #

@@ -34,11 +34,33 @@ class NeechyResponse {
         die();
     }
 
+    static public function stdout($body='**no output**') {
+        return new NeechyResponse($body, 'stdout');
+    }
+
+    static public function stderr($body) {
+        return new NeechyResponse($body, 'stderr');
+    }
+
     #
     # Public Methods
     #
     public function render() {
         print($this->body);
+    }
+
+    public function to_console() {
+        $stdf = 'php://%s';
+        $valid_formats = array('stdout', 'stderr');
+        $std_file = 'stdout';
+
+        if ( in_array($this->status, $valid_formats) ) {
+            $std_file = $this->status;
+        }
+
+        $fh = fopen(sprintf($stdf, $std_file),'w');
+        fwrite($fh, sprintf("\n%s\n\n", trim($this->body)));
+        fclose($fh);
     }
 
     public function header($field, $value=NULL) {

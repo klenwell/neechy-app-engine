@@ -20,7 +20,7 @@ CREATE TABLE users (
     name varchar(255) NOT NULL default '',
     email varchar(255) NOT NULL default '',
     password varchar(255) NOT NULL default '',
-    status varchar(16) NOT NULL default '',
+    status int(11) NOT NULL default 0,
     challenge varchar(8) default '',
 
     theme varchar(64) default '',
@@ -38,6 +38,8 @@ MYSQL;
     #
     # Constants
     #
+    private static $STATUS_LEVELS = array('NEW'    => 1,
+                                          'ADMIN'   => 2);
 
     /*
      * Constructor
@@ -64,56 +66,48 @@ MYSQL;
         return $user;
     }
 
-    public static function register($name, $email, $password) {
+    public static function register($name, $email, $password, $level='NEW') {
         # Save user
         $user = User::find_by_name($name);
         $user->set('email', $email);
         $user->set('password', NeechySecurity::hash_password($password));
+        $user->set('status', self::$STATUS_LEVELS[$level]);
         $user->save();
 
         return $user;
     }
 
     public static function is_logged_in() {
-        return isset($_SESSION['logged-in']);
+        return isset($_SESSION['user']);
     }
 
     public static function logout() {
-        unset($_SESSION['logged-in']);
+        unset($_SESSION['user']);
         return null;
     }
 
     public static function is_admin() {
     }
 
+    public static function logged_in($field=null) {
+        #
+        # Return user currently logged in (saved to SESSION). If field arg
+        # provided, returns that field. If no user logged in, return null.
+        #
+        if ( ! User::is_logged_in() ) {
+            return null;
+        }
+        elseif ( ! $field ) {
+            return $_SESSION['user'];
+        }
+        else {
+            return $_SESSION['user'][$field];
+        }
+    }
+
     /*
      * Instance Methods
      */
-    public function save() {
-        $sql_f = 'INSERT INTO users (%s, updated_at) VALUES (%s, NOW())';
-
-        # Use database values
-        $this->un_set('id');
-        $this->un_set('updated_at');
-
-        $sql = sprintf($sql_f,
-            implode(', ', array_keys($this->fields)),
-            implode(', ', array_fill(0, count($this->fields), '?'))
-        );
-
-        $query = $this->pdo->prepare($sql);
-        $query->execute(array_values($this->fields));
-        return $query;
-    }
-
-    public function is_new() {
-        return is_null($this->field('id'));
-    }
-
-    public function exists() {
-        return !($this->is_new());
-    }
-
     public function url($handler=NULL, $action=NULL, $params=array()) {
         return NeechyPath::url($this->field('name'), $handler, $action, $params);
     }
@@ -122,7 +116,11 @@ MYSQL;
     # Auth Methods
     #
     public function login() {
-        $_SESSION['logged-in'] = microtime(1);
+        $_SESSION['user'] = array(
+            'name' => $this->field('name'),
+            'status' => $this->field('status'),
+            'logged-in' => microtime(1)
+        );
         return null;
     }
 }

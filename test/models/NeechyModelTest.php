@@ -51,15 +51,56 @@ class NeechyModelTest extends PHPUnit_Framework_TestCase {
             'invalid' => 'field'
         ));
         $this->setExpectedException('PDOException');
-        $query = $neechy->save();
+        $neechy->save();
+    }
+
+    public function testInsert() {
+        $neechy = NeechyModel::init(array('neech' => 'testInsert'));
+        $neechy->insert();
+        $this->assertEquals(1, $neechy->rows_affected);
+
+        $rows = $neechy->find_by_column_value('neech', 'testInsert');
+        $this->assertEquals(1, count($rows));
+        $this->assertEquals('testInsert', $rows[0]->field('neech'));
+    }
+
+    public function testUpdate() {
+        $neechy = NeechyModel::init(array('neech' => 'testInsert'));
+        $neechy->insert();
+        $this->assertEquals(1, $neechy->rows_affected);
+
+        $neechy->set('neech', 'testUpdate');
+        $neechy->update();
+        $this->assertEquals(1, $neechy->rows_affected);
+
+        $rows = $neechy->find_by_column_value('neech', 'testUpdate');
+        $this->assertEquals(1, count($rows));
+        $this->assertEquals('testUpdate', $rows[0]->field('neech'));
     }
 
     public function testSave() {
-        $neechy = NeechyModel::init(array(
-            'neech' => 'testSave',
-        ));
-        $query = $neechy->save();
-        $this->assertEquals(1, $query->rowCount());
+        # First save: insert
+        $neechy = NeechyModel::init(array('neech' => 'first save'));
+        $neechy->save();
+
+        $rows = $neechy->find_by_column_value('neech', 'first save');
+        $saved_neechy = $rows[0];
+        $this->assertEquals(1, count($rows));
+        $this->assertEquals('first save', $saved_neechy->field('neech'));
+
+        # Subsequent saves: update
+        $neechy->set('neech', 'second save');
+        $neechy->save();
+
+        $rows = $neechy->find_by_column_value('neech', 'first save');
+        $this->assertEquals(0, count($rows));
+
+        $rows = $neechy->find_by_column_value('neech', 'second save');
+        $updated_neechy = $rows[0];
+        $this->assertEquals(1, count($rows));
+        $this->assertEquals('second save', $updated_neechy->field('neech'));
+
+        $this->assertEquals($saved_neechy->id(), $updated_neechy->id());
     }
 
     public function testAll() {

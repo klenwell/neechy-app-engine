@@ -38,6 +38,10 @@ class NeechyConfig {
         }
     }
 
+    static public function path() {
+        return NeechyPath::join(NEECHY_ROOT, self::USER_PATH);
+    }
+
     #
     # Private Static Methods
     #

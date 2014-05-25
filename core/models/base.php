@@ -31,10 +31,14 @@ class NeechyModel {
 CREATE TABLE neeches (
 	id int(10) unsigned NOT NULL auto_increment,
 	neech varchar(75) NOT NULL default '',
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME default NULL,
 	PRIMARY KEY  (id),
 	KEY idx_neech (neech)
 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE={{ engine }}
 MYSQL;
+
+    protected static $immutable_fields = array('id', 'created_at', 'updated_at');
 
     /*
      * Properties
@@ -42,6 +46,7 @@ MYSQL;
     public $fields = array();
     public $table = '';
     public $pdo = null;
+    public $rows_affected = 0;
 
     /*
      * Constructor
@@ -95,9 +100,20 @@ MYSQL;
         return $statement->fetchAll();
     }
 
-    /*
-     * Public Methods
-     */
+    #
+    # Public Instance Methods
+    #
+    public function is_new() {
+        return is_null($this->field('id'));
+    }
+
+    public function exists() {
+        return !($this->is_new());
+    }
+
+    #
+    # Public Field Methods
+    #
     public function set($field, $value) {
         $this->fields[$field] = $value;
     }
@@ -117,19 +133,75 @@ MYSQL;
         }
     }
 
-    public function save() {
+    public function id() {
+        return $this->field('id');
+    }
+
+    #
+    # Public Save Methods
+    #
+    public function insert() {
         $sql_f = 'INSERT INTO %s (%s) VALUES (%s)';
+        $this->filter_immutable_fields();
+
         $sql = sprintf($sql_f,
             $this->table,
             implode(', ', array_keys($this->fields)),
             implode(', ', array_fill(0, count($this->fields), '?'))
         );
 
+        $this->rows_affected = 0;
         $query = $this->pdo->prepare($sql);
         $query->execute(array_values($this->fields));
-        return $query;
+        $this->rows_affected = $query->rowCount();
+        $this->set('id', $this->pdo->lastInsertId());
+        return $this;
     }
 
+    public function update() {
+        $sql_f = 'UPDATE %s SET %s WHERE id = ?';
+        $mutable_fields = $this->mutable_fields();
+
+        # Build SET clause
+        $set_pairs = array();
+        foreach ( $mutable_fields as $key ) {
+            $set_pairs[] = sprintf('%s = ?', $key);
+        }
+        $set_pairs[] = 'updated_at = NOW()';
+
+        # Build SQL query
+        $sql = sprintf($sql_f,
+            $this->table,
+            implode(', ', $set_pairs)
+        );
+
+        # Build value array
+        $values = array();
+        foreach ($mutable_fields as $field) {
+            $values[] = $this->field($field);
+        }
+        $values[] = $this->field('id');
+
+        # Execute
+        $this->rows_affected = 0;
+        $query = $this->pdo->prepare($sql);
+        $query->execute(array_values($this->fields));
+        $this->rows_affected = $query->rowCount();
+        return $this;
+    }
+
+    public function save() {
+        if ( $this->is_new() ) {
+            return $this->insert();
+        }
+        else {
+            $this->update();
+        }
+    }
+
+    #
+    # Public Select Methods
+    #
     public function find_by_column_value($column, $value) {
         $records = array();
         $ModelClass = get_class($this);
@@ -157,9 +229,27 @@ MYSQL;
         }
     }
 
-    /*
-     * Private Method
-     */
+    #
+    # Protected Methods
+    #
+    protected function mutable_fields() {
+        return array_diff(array_keys($this->fields), self::$immutable_fields);
+    }
+
+    protected function filter_immutable_fields() {
+        $filtered_fields = array();
+
+        foreach ($this->mutable_fields() as $field) {
+            $filtered_fields[$field] = $this->field($field);
+        }
+
+        $this->fields = $filtered_fields;
+        return $this;
+    }
+
+    #
+    # Private Methods
+    #
     private static function extract_table_name() {
         $regex = '/CREATE TABLE([^\(]+)\(/';
         $matches = array();

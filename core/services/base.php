@@ -13,6 +13,7 @@ class NeechyService {
     #
     # Properties
     #
+    public $type = 'base';
 
     #
     # Constructor
@@ -29,5 +30,8 @@ class NeechyService {
 
     public function serve_error() {
     }
-}
 
+    public function is($type) {
+        return $this->type === $type;
+    }
+}

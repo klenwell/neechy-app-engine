@@ -20,6 +20,8 @@ class NeechyError extends Exception {
 
 class NeechyWebServiceError extends NeechyError {}
 
+class NeechyConsoleError extends NeechyError {}
+
 class NeechyCsrfError extends NeechyWebServiceError {}
 
 class NeechyHandlerError extends NeechyWebServiceError {}

@@ -31,11 +31,9 @@ class PageHandler extends NeechyHandler {
         # Partial variables
         $last_edited = sprintf('Last edited by %s on %s',
             $this->page->editor_link(),
-            $this->page->field('saved_at')
+            $this->page->field('created_at')
         );
-        $page_title = NeechyTemplater::titleize_camel_case(
-            $this->page->field('tag', 'Page')
-        );
+        $page_title = NeechyTemplater::titleize_camel_case($this->page->get_title());
 
         # Render partial
         $this->t->data('page-title', $page_title);

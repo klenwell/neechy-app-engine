@@ -4,6 +4,9 @@
  *
  * Neechy Page model class.
  *
+ * Slug is a normalized version of the title. It is used to minimize minor variations
+ * of page titles.
+ *
  */
 require_once('../core/models/base.php');
 require_once('../core/models/user.php');
@@ -17,25 +20,29 @@ CREATE TABLE pages (
     id int(11) NOT NULL auto_increment,
     primogenitor_id int(11) default NULL,
     editor varchar(255) NOT NULL default '',
-    tag varchar(255) NOT NULL default '',
+    slug varchar(255) NOT NULL default '',
+    title varchar(255) NOT NULL default '',
     body mediumtext NOT NULL,
     note varchar(255) NOT NULL default '',
-    saved_at DATETIME default NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (id),
     KEY idx_primogenitor_id (primogenitor_id),
     KEY idx_editor (editor),
-    KEY idx_tag (tag),
+    KEY idx_slug (slug),
     FULLTEXT KEY body (body),
-    KEY idx_saved_at (saved_at)
+    KEY idx_created_at (created_at)
 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE={{ engine }}
 MYSQL;
 
+    protected static $immutable_fields = array('id', 'created_at');
+
     public $primogenitor = NULL;
     public $editor = NULL;
+    public $edits = array();
 
-    /*
-     * Constructor
-     */
+    #
+    # Constructor
+    #
     public function __construct($fields=array()) {
         parent::__construct($fields);
 
@@ -49,41 +56,53 @@ MYSQL;
         }
     }
 
-    /*
-     * Static Methods
-     */
-    public static function find_by_tag($tag) {
-        $sql = "SELECT * FROM pages WHERE tag = ? ORDER BY saved_at DESC LIMIT 1";
+    #
+    # Static Methods
+    #
+    public static function find_by_title($title) {
+        $sql = "SELECT * FROM pages WHERE slug = ? ORDER BY created_at DESC LIMIT 1";
+        $slug = self::title_to_slug($title);
 
         $pdo = NeechyDatabase::connect_to_db();
         $query = $pdo->prepare($sql);
-        $query->execute(array($tag));
+        $query->execute(array($slug));
         $row = $query->fetch(PDO::FETCH_ASSOC);
 
         if ( $row ) {
             $page = new Page($row);
         }
         else {
-            $page = new Page(array('tag' => $tag));
+            $page = new Page(array(
+                'title' => $title,
+                'slug' => $slug
+            ));
         }
 
         return $page;
     }
 
-    /*
-     * Instance Methods
-     */
-    public function save() {
-        $sql_f = 'INSERT INTO pages (%s, saved_at) VALUES (%s, NOW())';
+    static private function title_to_slug($title) {
+        return preg_replace('/[_+\-\s]/', '', strtolower($title));
+    }
+
+    #
+    # Public Save Methods
+    #
+    public function insert() {
+        $sql_f = 'INSERT INTO pages (%s) VALUES (%s)';
+        $this->filter_immutable_fields();
 
         # Set primogenitor
-        if ( $primogenitor = $this->find_primogenitor_by_tag($this->field('tag')) ) {
+        $primogenitor = $this->find_primogenitor_by_title($this->field('title'));
+        if ( $primogenitor ) {
             $this->set('primogenitor_id', $primogenitor->field('id'));
         }
 
-        # Use database time for saved_at
-        $this->un_set('id');
-        $this->un_set('saved_at');
+        # Set editor
+        $editor = User::logged_in('name');
+        if ( $editor ) {
+            $this->set('editor', $editor);
+        }
 
         $sql = sprintf($sql_f,
             implode(', ', array_keys($this->fields)),
@@ -92,13 +111,23 @@ MYSQL;
 
         $query = $this->pdo->prepare($sql);
         $query->execute(array_values($this->fields));
-        return $query;
+        $this->rows_affected = $query->rowCount();
+        $this->set('id', $this->pdo->lastInsertId());
+        return $this;
     }
 
-    public function find_primogenitor_by_tag($tag) {
-        $sql = 'SELECT * FROM pages WHERE tag = ? ORDER BY id ASC LIMIT 1';
+    public function save() {
+        # There is no updates. All changes to pages are recorded.
+        return $this->insert();
+    }
+
+    #
+    # Public Find Methods
+    #
+    public function find_primogenitor_by_title($title) {
+        $sql = 'SELECT * FROM pages WHERE slug = ? ORDER BY id ASC LIMIT 1';
         $query = $this->pdo->prepare($sql);
-        $query->execute(array($tag));
+        $query->execute(array(self::title_to_slug($title)));
         $row = $query->fetch(PDO::FETCH_ASSOC);
 
         if ( $row ) {
@@ -109,12 +138,36 @@ MYSQL;
         }
     }
 
-    public function is_new() {
-        return is_null($this->field('id'));
+    public function load_history($limit=0) {
+        $sql_f = 'SELECT * FROM pages WHERE slug = ? ORDER BY id DESC%s';
+
+        # Set limit
+        if ( $limit ) {
+            $limit_clause = sprintf(' LIMIT %d', $limit);
+        }
+        else {
+            $limit_clause = '';
+        }
+
+        $sql = sprintf($sql_f, $limit_clause);
+        $query = $this->pdo->prepare($sql);
+        $query->execute(array($this->field('slug')));
+        $rows = $query->fetchAll(PDO::FETCH_ASSOC);
+
+        $edits = array();
+        foreach ( $rows as $row ) {
+            $edits[] = new Page($row);
+        }
+        $this->edits = $edits;
+
+        return $this;
     }
 
+    #
+    # Public Attibute Methods
+    #
     public function url($handler=NULL, $action=NULL, $params=array()) {
-        return NeechyPath::url($this->field('tag'), $handler, $action, $params);
+        return NeechyPath::url($this->field('slug'), $handler, $action, $params);
     }
 
     public function editor_link() {
@@ -126,5 +179,9 @@ MYSQL;
             $editor_name = $this->editor->field('name');
             return $t->neechy_link($editor_name);
         }
+    }
+
+    public function get_title($default='Page') {
+        return $this->field('title', $this->field('slug', $default));
     }
 }

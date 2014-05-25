@@ -28,7 +28,7 @@ class NeechyWebService extends NeechyService {
         parent::__construct($conf_path);
 
         $this->request = NeechyRequest::load();
-        $this->page = Page::find_by_tag($this->request->page);
+        $this->page = Page::find_by_title($this->request->page);
     }
 
     #

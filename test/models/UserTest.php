@@ -35,8 +35,8 @@ class UserModelTest extends PHPUnit_Framework_TestCase {
 
     public function testSave() {
         $user = new User(array('name' => 'FreddyNeechy'));
-        $query = $user->save();
-        $this->assertEquals(1, $query->rowCount());
+        $user->save();
+        $this->assertEquals(1, $user->rows_affected);
     }
 
     public function testInstantiates() {
