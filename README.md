@@ -8,6 +8,8 @@ Lightweight wiki platform written in PHP aimed at individuals and small groups
 
 ## Development
 
+### Models
+
 ### Handlers
 
 ### Tasks
