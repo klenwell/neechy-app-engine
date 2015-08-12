@@ -11,6 +11,10 @@ The command line installation script will walk you through the process. From the
 
 You will need to create a MySQL database for your application.
 
+Once installed, you can test the site by running the PHP development server:
+
+    php -S localhost:3000 -t public/
+
 
 ## Tests
 Tests are run from the command line using `phpunit`. From the root `neechy` directory, run the following command:
