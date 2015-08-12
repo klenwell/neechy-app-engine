@@ -300,8 +300,16 @@ HTML5;
         return $form_tag;
     }
 
-    public function close_form() {
-        return '</form>';
+    public function close_form($action='') {
+        # $action will add a hidden field with action value.
+        $format = "%s\n</form>";
+        $hidden_field = '';
+
+        if ( $action ) {
+            $hidden_field = $this->input_field('hidden', 'action', $action);
+        }
+
+        return sprintf($format, $hidden_field);
     }
 
     public function input_field($type, $name, $value=NULL, $options=array()) {
@@ -317,6 +325,32 @@ HTML5;
         $optional_attrs = $this->array_to_attr_string($options);
 
         return sprintf($format, $type, $name, $value_attr, $optional_attrs);
+    }
+
+    public function password_field($name, $value=NULL, $options=array()) {
+        return $this->input_field('password', $name, $value, $options);
+    }
+
+    public function submit_button($label, $attrs=[]) {
+        $format = '<button type="submit" %s>%s</button>';
+        $optional_attrs = $this->array_to_attr_string($attrs);
+        return sprintf($format, $optional_attrs, $label);
+    }
+
+    public function bootstrap_form_group($inner_html, $class='') {
+        $classes = 'form-group';
+
+        if ( $class ) {
+            $classes = sprintf('%s %s', $classes, $class);
+        }
+
+        $format = <<<HTML5
+<div class="%s">
+  %s
+</div>
+HTML5;
+
+        return sprintf($format, $classes, $inner_html);
     }
 
     #
@@ -347,12 +381,12 @@ HTML5;
             return $partial_tokens[0];
         }
         else {
-            return array();
+            return [];
         }
     }
 
     private function array_to_attr_string($options) {
-        $attr_list = array();
+        $attr_list = [];
 
         foreach( $options as $attr => $val ) {
             if ( is_null($val) ) {
