@@ -19,7 +19,7 @@ class PreferencesHandler extends NeechyHandler {
         # Change password request
         if ( $this->request->action_is('change-password') ) {
             # TODO: process request
-            var_dump($_POST);
+            var_dump($this->request);
             $content = $this->render_view('content');
         }
 
