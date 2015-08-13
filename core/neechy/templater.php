@@ -331,19 +331,19 @@ HTML5;
         return $this->input_field('password', $name, $value, $options);
     }
 
-    public function submit_button($label, $attrs=[]) {
+    public function submit_button($label, $attrs=array()) {
         $format = '<button type="submit" %s>%s</button>';
         $optional_attrs = $this->array_to_attr_string($attrs);
         return sprintf($format, $optional_attrs, $label);
     }
 
-    public function bootstrap_form_group($inner_html, $errors=[]) {
+    public function bootstrap_form_group($inner_html, $errors=array()) {
         # Set group class
         $validation_class = ( $errors ) ? 'has-error' : '';
         $group_class = sprintf('form-group %s', $validation_class);
 
         # Add feedback for errors
-        $help_spans = [];
+        $help_spans = array();
 
         if ( $errors ) {
             foreach ( $errors as $message ) {
@@ -389,12 +389,12 @@ HTML5;
             return $partial_tokens[0];
         }
         else {
-            return [];
+            return array();
         }
     }
 
     private function array_to_attr_string($options) {
-        $attr_list = [];
+        $attr_list = array();
 
         foreach( $options as $attr => $val ) {
             if ( is_null($val) ) {

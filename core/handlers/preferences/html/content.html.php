@@ -17,10 +17,10 @@ function password_group($name, $placeholder, $autofocus, $t) {
   $validation_errors = $t->data('validation-errors');
   $errors = ( isset($validation_errors[$name]) ) ? $validation_errors[$name] : null;
 
-  $attrs = [
+  $attrs = array(
     'class' => 'form-control',
     'placeholder' => $placeholder
-  ];
+  );
 
   if ( $autofocus ) {
     $attrs['autofocus'] = NULL;
