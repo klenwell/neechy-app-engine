@@ -25,8 +25,12 @@ class NeechyValidator {
     #
     # Public Methods
     #
+    public function validate() {
+        throw new Exception('Override in subclass');
+    }
+
     public function is_valid() {
-        return (! $this->has_errors);
+        return (! $this->has_errors());
     }
 
     public function has_errors() {

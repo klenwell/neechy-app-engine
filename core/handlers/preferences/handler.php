@@ -8,7 +8,7 @@
 require_once('../core/handlers/base.php');
 require_once('../core/neechy/path.php');
 require_once('../core/neechy/templater.php');
-require_once('../core/handlers/preferences/php/validator.php');
+require_once('../core/validators/password.php');
 
 
 class PreferencesHandler extends NeechyHandler {
@@ -19,8 +19,10 @@ class PreferencesHandler extends NeechyHandler {
     public function handle() {
         # Change password request
         if ( $this->request->action_is('change-password') ) {
-            $update = new ChangePasswordValidator($this->request);
-            if ( $update->successful() ) {
+            $password = new PasswordValidator($this->request);
+
+            if ( $password->validate_change('old-password', 'new-password',
+                                            'new-password-confirm') ) {
                 $user = User::logged_in();
                 $user->set_password($this->request->post('new-password'));
                 if ( $user->save() ) {
@@ -31,7 +33,7 @@ class PreferencesHandler extends NeechyHandler {
                 }
             }
             else {
-                $this->t->data('validation-errors', $update->errors);
+                $this->t->data('validation-errors', $password->errors);
             }
             $content = $this->render_view('content');
         }
