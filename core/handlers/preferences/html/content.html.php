@@ -14,6 +14,9 @@ $post_url = NeechyPath::url('change', 'preferences');
 # Helper function
 #
 function password_group($name, $placeholder, $autofocus, $t) {
+  $validation_errors = $t->data('validation-errors');
+  $errors = ( isset($validation_errors[$name]) ) ? $validation_errors[$name] : null;
+
   $attrs = [
     'class' => 'form-control',
     'placeholder' => $placeholder
@@ -24,7 +27,8 @@ function password_group($name, $placeholder, $autofocus, $t) {
   }
 
   return $t->bootstrap_form_group(
-    $t->password_field($name, null, $attrs)
+    $t->password_field($name, null, $attrs),
+    $errors
   );
 }
 

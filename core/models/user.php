@@ -70,7 +70,7 @@ MYSQL;
         # Save user
         $user = User::find_by_name($name);
         $user->set('email', $email);
-        $user->set('password', NeechySecurity::hash_password($password));
+        $user->set_password($password);
         $user->set('status', self::$STATUS_LEVELS[$level]);
         $user->save();
 
@@ -91,14 +91,14 @@ MYSQL;
 
     public static function logged_in($field=null) {
         #
-        # Return user currently logged in (saved to SESSION). If field arg
-        # provided, returns that field. If no user logged in, return null.
+        # Return user currently logged in. If field arg provided, returns that
+        # field. If no user logged in, return null.
         #
         if ( ! User::is_logged_in() ) {
             return null;
         }
         elseif ( ! $field ) {
-            return $_SESSION['user'];
+            return User::find_by_name($_SESSION['user']['name']);
         }
         else {
             return $_SESSION['user'][$field];
@@ -110,6 +110,10 @@ MYSQL;
      */
     public function url($handler=NULL, $action=NULL, $params=array()) {
         return NeechyPath::url($this->field('name'), $handler, $action, $params);
+    }
+
+    public function set_password($password) {
+        $this->set('password', NeechySecurity::hash_password($password));
     }
 
     #

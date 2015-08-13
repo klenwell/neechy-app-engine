@@ -337,20 +337,28 @@ HTML5;
         return sprintf($format, $optional_attrs, $label);
     }
 
-    public function bootstrap_form_group($inner_html, $class='') {
-        $classes = 'form-group';
+    public function bootstrap_form_group($inner_html, $errors=[]) {
+        # Set group class
+        $validation_class = ( $errors ) ? 'has-error' : '';
+        $group_class = sprintf('form-group %s', $validation_class);
 
-        if ( $class ) {
-            $classes = sprintf('%s %s', $classes, $class);
+        # Add feedback for errors
+        $help_spans = [];
+
+        if ( $errors ) {
+            foreach ( $errors as $message ) {
+                $help_spans[] = sprintf('<span class="help-block">%s</span>', $message);
+            }
         }
 
         $format = <<<HTML5
 <div class="%s">
   %s
+  %s
 </div>
 HTML5;
 
-        return sprintf($format, $classes, $inner_html);
+        return sprintf($format, $group_class, $inner_html, join("\n", $help_spans));
     }
 
     #
