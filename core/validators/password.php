@@ -87,7 +87,7 @@ class PasswordValidator extends NeechyValidator {
 
     private function validate_confirmation_match($field, $confirm_field, $message=null) {
         $value = $this->request->post($field, '');
-        $confirm_value = $this->request->post($field, '');
+        $confirm_value = $this->request->post($confirm_field, '');
         $message = ( $message ) ? $message : 'Password fields do not match. Please try again.';
 
         if ( ! $this->values_match($value, $confirm_value) ) {
@@ -105,7 +105,7 @@ class PasswordValidator extends NeechyValidator {
         $message = ( $message ) ? $message : 'User name and password should not match.';
 
         if ( $this->values_match($value, $user_name) ) {
-            $this->add_error($confirm_field, $message);
+            $this->add_error($field, $message);
             return false;
         }
         else {

@@ -1,4 +1,6 @@
 <?php
+### TODO: Remove this file. No longer used.
+
 /**
  * core/handlers/preferences/php/validator.php
  *

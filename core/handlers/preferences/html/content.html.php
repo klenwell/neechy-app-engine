@@ -2,35 +2,13 @@
 #
 # Neechy Preferences View
 #
+require_once('../core/handlers/preferences/php/helper.php');
 
 $t = $this;   # templater object
 #$t->append_to_head($t->css_link($t->css_href('login.css')));
 
 # General vars
 $post_url = NeechyPath::url('change', 'preferences');
-
-
-#
-# Helper function
-#
-function password_group($name, $placeholder, $autofocus, $t) {
-  $validation_errors = $t->data('validation-errors');
-  $errors = ( isset($validation_errors[$name]) ) ? $validation_errors[$name] : null;
-
-  $attrs = array(
-    'class' => 'form-control',
-    'placeholder' => $placeholder
-  );
-
-  if ( $autofocus ) {
-    $attrs['autofocus'] = NULL;
-  }
-
-  return $t->bootstrap_form_group(
-    $t->password_field($name, null, $attrs),
-    $errors
-  );
-}
 
 
 ?>
