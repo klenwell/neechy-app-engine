@@ -53,6 +53,24 @@ class PreferencesHandlerTest extends PHPUnit_Framework_TestCase {
     /**
      * Tests
      */
+    public function testShouldRedirectUserWhenNotLoggedIn() {
+        $request = new NeechyRequest();
+
+        # Mock out redirect function (note: 3.7 syntax)
+        $handler = $this->getMockBuilder('PreferencesHandler')
+                        ->setConstructorArgs(array($request))
+                        ->setMethods(array('redirect'))
+                        ->getMock();
+
+        $handler->expects($this->any())
+                ->method('redirect')
+                ->will($this->returnValue('redirected'));
+
+        $this->assertNull(User::logged_in());
+        $redirected = $handler->handle();
+        $this->assertEquals('redirected', $redirected);
+    }
+
     public function testShouldUpdatePassword() {
         $_POST['old-password'] = 'password';
         $_POST['new-password'] = sprintf('%supdated', $_POST['old-password']);

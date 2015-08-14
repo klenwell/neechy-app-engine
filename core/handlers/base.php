@@ -55,6 +55,14 @@ class NeechyHandler {
         }
     }
 
+    public function redirect($handler, $page=null) {
+        # Convenient wrapper for NeechyResponse::redirect. Also allows mocking for
+        # testing, which is difficult with static methods. (See
+        # http://stackoverflow.com/q/2357001/1093087).
+        $url = NeechyPath::url($page, $handler);
+        return NeechyResponse::redirect($url);
+    }
+
     #
     # Protected Methods
     #

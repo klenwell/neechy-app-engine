@@ -9,6 +9,7 @@ require_once('../core/handlers/base.php');
 require_once('../core/neechy/path.php');
 require_once('../core/neechy/templater.php');
 require_once('../core/validators/password.php');
+require_once('../core/neechy/response.php');
 
 
 class PreferencesHandler extends NeechyHandler {
@@ -17,6 +18,12 @@ class PreferencesHandler extends NeechyHandler {
     # Public Methods
     #
     public function handle() {
+        # If not logged in, redirect to login page
+        if ( ! User::logged_in() ) {
+            $this->t->flash('Please login to access that page.', 'warning');
+            return $this->redirect('auth', 'login');
+        }
+
         # Change password request
         if ( $this->request->action_is('change-password') ) {
             $password = new PasswordValidator($this->request);
