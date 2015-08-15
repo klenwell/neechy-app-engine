@@ -27,7 +27,16 @@ class NeechySecurityTest extends PHPUnit_Framework_TestCase {
     /**
      * Tests
      */
-    public function testCsrfPrevention() {
+    public function testShouldNotRaiseCSRFError() {
+        # Create CSRF token (no post yet so doesn't authenticate)
+        NeechySecurity::prevent_csrf();
+
+        # Test successful authentication
+        $_POST['csrf_token'] = $_SESSION['csrf_token'];
+        $this->assertTrue(NeechySecurity::prevent_csrf());
+    }
+
+    public function testThatInvalidCSRFTokenFromPostRaisesError() {
         # Create CSRF token (no post yet so doesn't authenticate)
         NeechySecurity::prevent_csrf();
 
@@ -37,13 +46,19 @@ class NeechySecurityTest extends PHPUnit_Framework_TestCase {
         NeechySecurity::prevent_csrf();
     }
 
-    public function testCsrfAuthentication() {
+    public function testThatExpiredCSRFSessionRaisesError() {
         # Create CSRF token (no post yet so doesn't authenticate)
         NeechySecurity::prevent_csrf();
 
-        # Test successful authentication
+        # Simulate POST form rendered with valid CSRF token
         $_POST['csrf_token'] = $_SESSION['csrf_token'];
-        $this->assertTrue(NeechySecurity::prevent_csrf());
+
+        # Simulate SESSION expiring before form posted
+        session_unset();
+
+        # Simulate form post
+        $this->setExpectedException('NeechyCsrfError');
+        NeechySecurity::prevent_csrf();
     }
 
     public function testHashPassword() {
