@@ -4,6 +4,9 @@
  *
  * Handles install process.
  *
+ * Console (CLI):
+ *  php console/run.php install
+ *
  */
 require_once('../core/handlers/base.php');
 require_once('../core/neechy/config.php');
@@ -34,9 +37,8 @@ class InstallHandler extends NeechyHandler {
     #
     # Public Methods
     #
-    public function handle($is_console=false) {
+    public function handle() {
         try {
-            $this->is_console = $is_console;
             $this->setup_database();
             $this->create_neechy_user();
             $this->create_default_pages();
