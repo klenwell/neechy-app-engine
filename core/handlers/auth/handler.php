@@ -53,7 +53,7 @@ class AuthHandler extends NeechyHandler {
         }
         elseif ( $this->request->page_is('logout') ) {
             $this->t->flash('You have been logged out.', 'success');
-            User::logout();
+            User::logout_current();
             $content = $this->render_view('login');
         }
         else {

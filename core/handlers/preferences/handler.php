@@ -27,7 +27,7 @@ class PreferencesHandler extends NeechyHandler {
         }
 
         # If not logged in, redirect to login page
-        if ( ! User::logged_in() ) {
+        if ( ! User::is_logged_in() ) {
             $this->t->flash('Please login to access that page.', 'warning');
             return $this->redirect('auth', 'login');
         }
@@ -38,7 +38,7 @@ class PreferencesHandler extends NeechyHandler {
 
             if ( $password->validate_change('old-password', 'new-password',
                                             'new-password-confirm') ) {
-                $user = User::logged_in();
+                $user = User::current();
                 $user->set_password($this->request->post('new-password'));
                 if ( $user->save() ) {
                     $this->t->flash('Your password has been changed.', 'success');

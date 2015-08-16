@@ -28,8 +28,7 @@ class PasswordValidator extends NeechyValidator {
         $this->validate_present($confirm_field);
 
         if ( $old_present && $new_present ) {
-            $user = User::find_by_name(User::logged_in('name'));
-
+            $user = User::current();
             $this->authenticate_user_password($user, $old_field);
             $this->validate_min_length($new_field);
             $this->validate_confirmation_match($new_field, $confirm_field);

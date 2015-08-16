@@ -18,7 +18,7 @@ if ( User::is_logged_in() ) {
     </div>
 HTML5;
 
-  $user_name = User::logged_in('name');
+  $user_name = User::current('name');
   $right_button = sprintf($logged_in_dropdown,
                           $user_name,
                           $t->neechy_link('Preferences', $user_name, 'preferences'),

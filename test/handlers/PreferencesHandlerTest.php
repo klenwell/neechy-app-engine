@@ -66,7 +66,7 @@ class PreferencesHandlerTest extends PHPUnit_Framework_TestCase {
                 ->method('redirect')
                 ->will($this->returnValue('redirected'));
 
-        $this->assertNull(User::logged_in());
+        $this->assertNull(User::current());
         $redirected = $handler->handle();
         $this->assertEquals('redirected', $redirected);
     }

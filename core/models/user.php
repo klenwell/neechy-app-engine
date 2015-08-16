@@ -81,19 +81,10 @@ MYSQL;
         return isset($_SESSION['user']);
     }
 
-    public static function logout() {
-        unset($_SESSION['user']);
-        return null;
-    }
-
     public static function is_admin() {
     }
 
-    public static function logged_in($field=null) {
-        #
-        # Return user currently logged in. If field arg provided, returns that
-        # field. If no user logged in, return null.
-        #
+    public static function current($field=null) {
         if ( ! User::is_logged_in() ) {
             return null;
         }
@@ -102,6 +93,13 @@ MYSQL;
         }
         else {
             return $_SESSION['user'][$field];
+        }
+    }
+
+    public static function logout_current() {
+        $current_user = User::current();
+        if ( $current_user ) {
+            $current_user->logout();
         }
     }
 
@@ -125,6 +123,11 @@ MYSQL;
             'status' => $this->field('status'),
             'logged-in' => microtime(1)
         );
+        return null;
+    }
+
+    public function logout() {
+        unset($_SESSION['user']);
         return null;
     }
 }
