@@ -35,7 +35,7 @@ class NeechyHandler {
     #
     # Public Methods
     #
-    public function handle($is_handle) {
+    public function handle() {
         throw new NeechyError('NeechyHandler::handler should be overridden');
     }
 
