@@ -124,6 +124,23 @@ HTML5;
         return sprintf($format, $group_class, $inner_html, join("\n", $help_spans));
     }
 
+    public function neechy_link($label, $handler=null, $page=null, $action=null,
+                                $attrs=array()) {
+        $page = (is_null($page)) ? $label : $page;
+        $href = NeechyPath::url($page, $handler, $action);
+        return $this->link($href, $label, $attrs);
+    }
+
+    public function link($href, $text, $attrs=array()) {
+        $format = '<a %s>%s</a>';
+        $tag_attrs = array(sprintf('href="%s"', $href));
+
+        foreach ( $attrs as $attr => $value ) {
+            $tag_attrs[] = sprintf('%s="%s"', $attr, $value);
+        }
+
+        return sprintf($format, implode(' ', $tag_attrs), $text);
+    }
 
     #
     # Protected Methods

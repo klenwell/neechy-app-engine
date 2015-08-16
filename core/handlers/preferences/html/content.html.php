@@ -21,9 +21,9 @@ $post_url = NeechyPath::url('change', 'preferences');
             <h3 class="form-signin-heading">Change Password</h2>
             <?php echo $helper->password_group('old-password', 'Old Password', true, $t); ?>
             <?php echo $helper->password_group('new-password', 'New Password (8 chars min)',
-                                      false, $t); ?>
+                                               false, $t); ?>
             <?php echo $helper->password_group('new-password-confirm', 'New Password (confirm)',
-                                      false, $t); ?>
+                                               false, $t); ?>
             <?php echo $helper->submit_button('Submit'); ?>
           <?php echo $helper->close_form('change-password'); ?>
         </div>

@@ -97,4 +97,42 @@ HTML5;
 
         return sprintf($format, $group_class, $inner_html, join("\n", $help_spans));
     }
+
+    public function user_button() {
+        if ( User::is_logged_in() ) {
+            $logged_in_dropdown = <<<HTML5
+    <div class="btn btn-group user-button logged-in">
+      <button type="button" class="btn btn-info">%s</button>
+      <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown"
+        aria-haspopup="true" aria-expanded="false">
+        <span class="caret"></span>
+        <span class="sr-only">Toggle Dropdown</span>
+      </button>
+      <ul class="dropdown-menu">
+        <li>%s</li>
+        <li>%s</li>
+      </ul>
+    </div>
+HTML5;
+
+            $user_name = User::current('name');
+            $user_button = sprintf($logged_in_dropdown,
+                                   $user_name,
+                                   $this->neechy_link('Preferences', 'preferences', $user_name),
+                                   $this->neechy_link('Logout', 'auth', 'logout'));
+        }
+        else {
+            $format = <<<HTML5
+    <div class="user-button">
+      %s
+    </div>
+HTML5;
+
+            $link = $this->neechy_link('Login / SignUp', 'auth', 'login', null,
+                                       array('class' => 'btn btn-primary navbar-btn'));
+            $user_button = sprintf($format, $link);
+        }
+
+        return $user_button;
+    }
 }
