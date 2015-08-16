@@ -1,8 +1,8 @@
 <?php
-require_once('../core/neechy/helper.php');
+require_once('../public/themes/bootstrap/php/helper.php');
 
 
-class PreferencesHelper extends NeechyHelper {
+class PreferencesHelper extends BootstrapHelper {
 
     #
     # Properties

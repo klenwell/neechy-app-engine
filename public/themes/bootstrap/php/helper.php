@@ -1,13 +1,14 @@
 <?php
 /**
- * core/neechy/helper.php
+ * public/themes/bootstrap/php/helper.php
  *
  * Base Neechy Helper class
  *
  */
+require_once('../core/neechy/helper.php');
 
 
-class NeechyHelper {
+class BootstrapHelper extends NeechyHelper {
 
     #
     # Properties
@@ -24,23 +25,8 @@ class NeechyHelper {
     #
     # Public Methods
     #
-    public function input_field($type, $name, $value=NULL, $attrs=array()) {
-        $format = '<input type="%s" name="%s"%s%s />';
-
-        if ( ! is_null($value) ) {
-            $value_attr = sprintf(' value="%s"', str_replace('"', '\"', $value));
-        }
-        else {
-            $value_attr = '';
-        }
-
-        $attr_string = $this->array_to_attr_string($attrs);
-
-        return sprintf($format, $type, $name, $value_attr, $attr_string);
-    }
-
-    public function open_bootstrap_form($url, $method='POST', $attrs=array(),
-                                        $hidden_fields=array()) {
+    public function open_form($url, $method='POST', $attrs=array(),
+                              $hidden_fields=array()) {
         $format = '<form role="form" method="%s" action="%s"%s />';
         $bootstrap_class = 'form-login';
 
@@ -72,19 +58,7 @@ class NeechyHelper {
         return $form_tag;
     }
 
-    public function close_form($action='') {
-        # $action will add a hidden field with action value.
-        $format = "%s\n</form>";
-        $hidden_field = '';
-
-        if ( $action ) {
-            $hidden_field = $this->input_field('hidden', 'action', $action);
-        }
-
-        return sprintf($format, $hidden_field);
-    }
-
-    public function bootstrap_submit_button($label, $state='primary', $attrs=array()) {
+    public function submit_button($label, $state='primary', $attrs=array()) {
         $format = '<button type="submit" %s>%s</button>';
         $state_class = sprintf('btn-%s', $state);
         $bootstrap_class = sprintf('btn btn-lg %s btn-block', $state_class);
@@ -100,7 +74,7 @@ class NeechyHelper {
         return sprintf($format, $optional_attrs, $label);
     }
 
-    public function bootstrap_form_group($inner_html, $errors=array()) {
+    public function form_group($inner_html, $errors=array()) {
         # Set group class
         $validation_class = ( $errors ) ? 'has-error' : '';
         $group_class = sprintf('form-group %s', $validation_class);
@@ -122,33 +96,5 @@ class NeechyHelper {
 HTML5;
 
         return sprintf($format, $group_class, $inner_html, join("\n", $help_spans));
-    }
-
-
-    #
-    # Protected Methods
-    #
-    protected function array_to_attr_string($options) {
-        $attr_list = array();
-
-        foreach( $options as $attr => $val ) {
-            if ( is_null($val) ) {
-                $attr_list[] = $attr;
-            }
-            else {
-                $attr_list[] = sprintf(' %s="%s"',
-                    $attr,
-                    str_replace('"', '\"', $val));
-            }
-        }
-
-        if ($attr_list) {
-            $attr_string = ' ' . implode(' ', $attr_list);
-        }
-        else {
-            $attr_string = '';
-        }
-
-        return $attr_string;
     }
 }
