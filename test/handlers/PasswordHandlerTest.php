@@ -6,14 +6,14 @@
  * > phpunit --bootstrap test/bootstrap.php handlers/PreferencesHandlerTest
  *
  */
-require_once('../core/handlers/preferences/handler.php');
+require_once('../core/handlers/password/handler.php');
 require_once('../core/neechy/request.php');
 require_once('../test/helper.php');
 require_once('../test/fixtures/page.php');
 require_once('../test/fixtures/user.php');
 
 
-class PreferencesHandlerTest extends PHPUnit_Framework_TestCase {
+class PasswordHandlerTest extends PHPUnit_Framework_TestCase {
 
     /**
      * Test Fixtures
@@ -57,7 +57,7 @@ class PreferencesHandlerTest extends PHPUnit_Framework_TestCase {
         $request = new NeechyRequest();
 
         # Mock out redirect function (note: 3.7 syntax)
-        $handler = $this->getMockBuilder('PreferencesHandler')
+        $handler = $this->getMockBuilder('PasswordHandler')
                         ->setConstructorArgs(array($request))
                         ->setMethods(array('redirect'))
                         ->getMock();
@@ -82,7 +82,7 @@ class PreferencesHandlerTest extends PHPUnit_Framework_TestCase {
         $request = new NeechyRequest();
         $request->action = 'change-password';
 
-        $handler = new PreferencesHandler($request);
+        $handler = new PasswordHandler($request);
         $content = $handler->handle();
         $this->assertPasswordChanged($user->field('name'), $old_password);
         $this->assertEquals('Your password has been changed.',
@@ -100,7 +100,7 @@ class PreferencesHandlerTest extends PHPUnit_Framework_TestCase {
         $request = new NeechyRequest();
         $request->action = 'change-password';
 
-        $handler = new PreferencesHandler($request);
+        $handler = new PasswordHandler($request);
         $content = $handler->handle();
         $this->assertPasswordUnchanged($user->field('name'), $old_password);
 
@@ -119,7 +119,7 @@ class PreferencesHandlerTest extends PHPUnit_Framework_TestCase {
         $request = new NeechyRequest();
         $request->action = 'change-password';
 
-        $handler = new PreferencesHandler($request);
+        $handler = new PasswordHandler($request);
         $content = $handler->handle();
         $this->assertPasswordUnchanged($user->field('name'), $old_password);
 
@@ -138,7 +138,7 @@ class PreferencesHandlerTest extends PHPUnit_Framework_TestCase {
         $request = new NeechyRequest();
         $request->action = 'change-password';
 
-        $handler = new PreferencesHandler($request);
+        $handler = new PasswordHandler($request);
         $content = $handler->handle();
         $this->assertPasswordUnchanged($user->field('name'), $old_password);
 
@@ -159,7 +159,7 @@ class PreferencesHandlerTest extends PHPUnit_Framework_TestCase {
         $request = new NeechyRequest();
         $request->action = 'change-password';
 
-        $handler = new PreferencesHandler($request);
+        $handler = new PasswordHandler($request);
         $content = $handler->handle();
         $this->assertPasswordUnchanged($user->field('name'), $old_password);
 
@@ -170,8 +170,8 @@ class PreferencesHandlerTest extends PHPUnit_Framework_TestCase {
 
     public function testInstantiates() {
         $request = new NeechyRequest();
-        $handler = new PreferencesHandler($request);
-        $this->assertInstanceOf('PreferencesHandler', $handler);
+        $handler = new PasswordHandler($request);
+        $this->assertInstanceOf('PasswordHandler', $handler);
         $this->assertInstanceOf('NeechyHandler', $handler);
     }
 }

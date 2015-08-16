@@ -2,7 +2,7 @@
 require_once('../public/themes/bootstrap/php/helper.php');
 
 
-class PreferencesHelper extends BootstrapHelper {
+class PasswordHelper extends BootstrapHelper {
 
     #
     # Properties

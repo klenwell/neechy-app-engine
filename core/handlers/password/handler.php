@@ -14,7 +14,7 @@ require_once('../core/validators/password.php');
 require_once('../core/neechy/response.php');
 
 
-class PreferencesHandler extends NeechyHandler {
+class PasswordHandler extends NeechyHandler {
 
     #
     # Public Methods

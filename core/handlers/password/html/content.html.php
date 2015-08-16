@@ -2,13 +2,13 @@
 #
 # Neechy Preferences View
 #
-require_once('../core/handlers/preferences/php/helper.php');
+require_once('../core/handlers/password/php/helper.php');
 
 $t = $this;   # templater object
-$helper = new PreferencesHelper();
+$helper = new PasswordHelper();
 
 # General vars
-$post_url = NeechyPath::url('change', 'preferences');
+$post_url = NeechyPath::url('change', 'password');
 
 
 ?>
