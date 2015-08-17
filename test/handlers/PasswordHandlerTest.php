@@ -1,9 +1,9 @@
 <?php
 /**
- * test/handlers/PageHandlerTest.php
+ * test/handlers/PasswordHandlerTest.php
  *
  * Usage (run from Neechy root dir):
- * > phpunit --bootstrap test/bootstrap.php handlers/PreferencesHandlerTest
+ * > phpunit --bootstrap test/bootstrap.php handlers/PasswordHandlerTest
  *
  */
 require_once('../core/handlers/password/handler.php');
