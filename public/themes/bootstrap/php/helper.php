@@ -58,6 +58,33 @@ class BootstrapHelper extends NeechyHelper {
         return $form_tag;
     }
 
+    public function input_field($type, $name, $value=null, $attrs=array()) {
+        $format = '<input type="%s" name="%s"%s%s />';
+        $bootstrap_class = 'form-control';
+
+        if ( isset($attrs['class']) ) {
+            $attrs['class'] = sprintf('%s %s', $bootstrap_class, $attrs['class']);
+        }
+        else {
+            $attrs['class'] = $bootstrap_class;
+        }
+
+        if ( ! is_null($value) ) {
+            $value_attr = sprintf(' value="%s"', str_replace('"', '\"', $value));
+        }
+        else {
+            $value_attr = '';
+        }
+
+        $attr_string = $this->array_to_attr_string($attrs);
+
+        return sprintf($format, $type, $name, $value_attr, $attr_string);
+    }
+
+    public function password_field($name, $value=null, $attrs=array()) {
+        return $this->input_field('password', $name, $value, $attrs);
+    }
+
     public function submit_button($label, $state='primary', $attrs=array()) {
         $format = '<button type="submit" %s>%s</button>';
         $state_class = sprintf('btn-%s', $state);
@@ -81,7 +108,6 @@ class BootstrapHelper extends NeechyHelper {
 
         # Add feedback for errors
         $help_spans = array();
-
         if ( $errors ) {
             foreach ( $errors as $message ) {
                 $help_spans[] = sprintf('<span class="help-block">%s</span>', $message);

@@ -19,34 +19,37 @@ class PasswordValidator extends NeechyValidator {
     const MIN_USERNAME_LENGTH = 6;
     const MIN_PASSWORD_LENGTH = 8;
 
+    public $value = null;
+    public $user = null;
+
+    #
+    # Constructor
+    #
+    public function __construct($value, $user=null) {
+        $this->value = $value;
+        $this->user = $user;
+    }
+
     #
     # Public Methods
     #
-    public function validate_change($old_field, $new_field, $confirm_field) {
-        $old_present = $this->validate_present($old_field);
-        $new_present = $this->validate_present($new_field);
-        $this->validate_present($confirm_field);
+    public function validate() {
+        $this->validate_present();
+        $this->validate_min_length();
 
-        if ( $old_present && $new_present ) {
-            $user = User::current();
-            $this->authenticate_user_password($user, $old_field);
-            $this->validate_min_length($new_field);
-            $this->validate_confirmation_match($new_field, $confirm_field);
-            $this->validate_not_user_name($user, $new_field);
+        if ( $this->user ) {
+            $this->validate_not_user_name();
         }
 
-        return $this->is_valid();
+        return $this->has_errors();
     }
 
-    #
-    # Private Methods
-    #
-    private function validate_present($field, $message=null) {
-        $value = $this->request->post($field, '');
-        $message = ( $message ) ? $message : 'Password required.';
+    public function validate_present() {
+        $key = 'present';
+        $message = 'Password required.';
 
-        if ( $this->string_is_empty($value) ) {
-            $this->add_error($field, $message);
+        if ( $this->string_is_empty($this->value) ) {
+            $this->add_error($key, $message);
             return false;
         }
         else {
@@ -54,14 +57,13 @@ class PasswordValidator extends NeechyValidator {
         }
     }
 
-    private function authenticate_user_password($user, $field, $message=null) {
-        $value = $this->request->post($field, '');
-        $default_message = sprintf('Password is incorrect. Please try again.',
-                                   self::MIN_PASSWORD_LENGTH);
-        $message = ( $message ) ? $message : $default_message;
+    public function validate_min_length() {
+        $key = 'min_length';
+        $message = sprintf('Password too short: must be at least %d chars.',
+                           self::MIN_PASSWORD_LENGTH);
 
-        if ( ! NeechySecurity::verify_password($value, $user->field('password')) ) {
-            $this->add_error($field, $message);
+        if ( $this->string_is_too_short($this->value, self::MIN_PASSWORD_LENGTH) ) {
+            $this->add_error($key, $message);
             return false;
         }
         else {
@@ -69,14 +71,13 @@ class PasswordValidator extends NeechyValidator {
         }
     }
 
-    private function validate_min_length($field, $message=null) {
-        $value = $this->request->post($field, '');
-        $default_message = sprintf('Password too short: must be at least %d chars.',
-                                   self::MIN_PASSWORD_LENGTH);
-        $message = ( $message ) ? $message : $default_message;
+    public function validate_not_user_name() {
+        $key = 'not_user_name';
+        $user_name = $this->user->field('name');
+        $message = 'User name and password should not match.';
 
-        if ( $this->string_is_too_short($value, self::MIN_PASSWORD_LENGTH) ) {
-            $this->add_error($field, $message);
+        if ( $this->values_match($this->value, $user_name) ) {
+            $this->add_error($key, $message);
             return false;
         }
         else {
@@ -84,27 +85,13 @@ class PasswordValidator extends NeechyValidator {
         }
     }
 
-    private function validate_confirmation_match($field, $confirm_field, $message=null) {
-        $value = $this->request->post($field, '');
-        $confirm_value = $this->request->post($confirm_field, '');
-        $message = ( $message ) ? $message : 'Password fields do not match. Please try again.';
+    public function authenticate_user_password() {
+        $key = 'authenticate';
+        $message = 'Password is incorrect. Please try again.';
 
-        if ( ! $this->values_match($value, $confirm_value) ) {
-            $this->add_error($confirm_field, $message);
-            return false;
-        }
-        else {
-            return true;
-        }
-    }
-
-    private function validate_not_user_name($user, $field, $message=null) {
-        $value = $this->request->post($field, '');
-        $user_name = $user->field('name');
-        $message = ( $message ) ? $message : 'User name and password should not match.';
-
-        if ( $this->values_match($value, $user_name) ) {
-            $this->add_error($field, $message);
+        if ( ! NeechySecurity::verify_password($this->value,
+                                               $this->user->field('password')) ) {
+            $this->add_error('authenticate', $message);
             return false;
         }
         else {

@@ -15,21 +15,26 @@ class PasswordHelper extends BootstrapHelper {
     #
     # Public Methods
     #
-    public function password_group($name, $placeholder, $autofocus, $t) {
-      $validation_errors = $t->data('validation-errors');
-      $errors = ( isset($validation_errors[$name]) ) ? $validation_errors[$name] : null;
+    public function password_group($name, $placeholder, $autofocus, $validator=null) {
+      if ( $validator ) {
+        $errors = ( isset($validator->errors[$name]) ) ? $validator->errors[$name] : array();
+        $value = $validator->field_value($name);
+      }
+      else {
+        $errors = array();
+        $value = null;
+      }
 
       $attrs = array(
-        'class' => 'form-control',
         'placeholder' => $placeholder
       );
 
       if ( $autofocus ) {
-        $attrs['autofocus'] = NULL;
+        $attrs['autofocus'] = null;
       }
 
-      return $this->bootstrap_form_group(
-        $t->password_field($name, null, $attrs),
+      return $this->form_group(
+        $this->password_field($name, $value, $attrs),
         $errors
       );
     }
