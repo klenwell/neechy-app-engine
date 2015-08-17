@@ -17,13 +17,13 @@ Once installed, you can test the site by running the PHP development server:
 
 
 ## Tests
+Neechy tests require PhpUnit to be installed. For installation instructions, see [the PhpUnit docs](http://phpunit.de/manual/3.7/en/installation.html). I found the PEAR method simple and straightforward.
+
 Tests are run from the command line using `phpunit`. From the root `neechy` directory, run the following command:
 
     phpunit --bootstrap test/bootstrap.php --colors .
 
-Neechy tests require PhpUnit to be installed. For installation instructions, see [the PhpUnit docs](http://phpunit.de/manual/3.7/en/installation.html).
-
-I found the PEAR method simple and straightforward.
+For more information on tests, see the README in the test directory.
 
 
 ## Development

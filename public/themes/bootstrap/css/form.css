@@ -2,58 +2,59 @@
  * Styling for Neechy login/signup view
  *
  */
-div#neechy-auth {
+div.handler form {
   background: #eeeeee;
   padding: 20px;
   color: #3276b1;
+  border-radius: 6px;
 }
 
-div#neechy-auth h2.form-signin-heading {
-  margin: 10px 0;
+div.handler form h3 {
+  margin: 0 0 10px;
 }
 
-div#neechy-auth h4 {
+div.handler form h4 {
   margin-top: 0px;
   font-size: 16px;
   font-weight: normal;
 }
 
-div#neechy-auth input {
+div.handler form input {
   margin:2px 0;
 }
 
-div#neechy-auth input[type=checkbox] {
+div.handler form input[type=checkbox] {
   margin-left: -20px;
 }
 
-div#neechy-auth .well-sm {
+div.handler form .well-sm {
   background-color: white;
   padding: .4em 1em 1em;
   border: 1px solid #CCCCFF;
 }
 
-div#neechy-auth div.form-group {
+div.handler form div.form-group {
   margin-bottom: 0px;
 }
 
 /*
  * Error Messages
  */
-div#auth-errors {
+div.handler form.errors {
   color: #990000;
 }
 
-div#auth-errors div.panel {
+div.handler form.errors div.panel {
   margin-bottom: 8px;
   padding: .5em 2em;
   background-color: #F2DEDE;
 }
 
-div#auth-errors div.panel-body {
+div.handler form.errors div.panel-body {
   padding: 8px 8px 2px;
 }
 
-div#auth-errors h4 {
+div.handler form.errors h4 {
   font-weight: bold;
   margin: 0 0 10px;
 }

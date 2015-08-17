@@ -5,7 +5,7 @@
 #
 
 $t = $this;   # templater object
-$t->append_to_head($t->css_link($t->css_href('login.css')));
+$t->append_to_head($t->css_link($t->css_href('form.css')));
 
 # General vars
 $alert = $t->data('alert');
@@ -84,12 +84,13 @@ foreach ( $signup_fields as $field => $attrs ) {
 }
 
 ?>
+    <div class="auth handler login">
       <?php if (! empty($alert)): ?>
         <div class="alert"><?php echo $alert; ?></div>
       <?php endif; ?>
 
       <?php if (! empty($validation_errors)): ?>
-      <div id="auth-errors" class="row">
+      <div class="row form errors">
         <div class="panel panel-danger">
           <div class="panel-body">
             <h4>There was a problem:</h4>
@@ -108,7 +109,7 @@ foreach ( $signup_fields as $field => $attrs ) {
       <div id="neechy-auth" class="row">
         <div id="neechy-login" class="well-sm col-xs-offset-2 col-xs-3">
           <?php echo $t->open_form($post_url, 'post', array('class' => 'form-login')); ?>
-            <h2 class="form-signin-heading">Sign In</h2>
+            <h3>Sign In</h3>
             <?php echo $login_html['login-name']; ?>
             <?php echo $login_html['login-pass']; ?>
             <label class="checkbox">
@@ -121,7 +122,7 @@ foreach ( $signup_fields as $field => $attrs ) {
 
         <div id="neechy-signup" class="well-sm col-xs-offset-2 col-xs-3">
           <?php echo $t->open_form($post_url, 'post', array('class' => 'form-signup')); ?>
-            <h2 class="form-signin-heading">Sign Up</h2>
+            <h3>Sign Up</h3>
             <h4>And get your own wiki page!</h4>
             <?php echo $signup_html['signup-name']; ?>
             <?php echo $signup_html['signup-email']; ?>
@@ -132,3 +133,4 @@ foreach ( $signup_fields as $field => $attrs ) {
           <?php echo $t->close_form(); ?>
         </div>
       </div>
+    </div>
