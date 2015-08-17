@@ -1,6 +1,6 @@
 <?php
 #
-# Neechy Preferences View
+# Neechy Password View
 #
 require_once('../core/handlers/password/php/helper.php');
 

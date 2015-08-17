@@ -1,8 +1,8 @@
 <?php
 /**
- * core/handlers/preferences/handler.php
+ * core/handlers/password/handler.php
  *
- * PreferencesHandler class.
+ * PasswordHandler class.
  *
  * Console (CLI): See help method below.
  *

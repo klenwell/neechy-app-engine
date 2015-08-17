@@ -1,8 +1,8 @@
 <?php
 /**
- * core/handlers/preferences/php/validator.php
+ * core/validators/password.php
  *
- * Preferences Handler Validator
+ * Password Validator
  *
  */
 require_once('../core/neechy/validator.php');
