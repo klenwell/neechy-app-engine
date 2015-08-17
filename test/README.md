@@ -16,6 +16,19 @@ Neechy tests require PhpUnit to be installed. For installation instructions, see
 I found the PEAR method simple and straightforward.
 
 
+## Theme Tests
+Theme tests may be run individually like any other test by appending the test directory to the test command. For example, with the default bootstrap theme:
+
+    phpunit --bootstrap test/bootstrap.php ../public/themes/bootstrap/test
+
+To run theme tests as part of the full test suite, you'll need to link the test directory to the `test/themes` directory.
+
+For example, with the packaged Bootstrap theme, where `${NEECHY_ROOT}` is your root Neechy path:
+
+    ln -sv ${NEECHY_ROOT}/themes/bootstrap/test test/themes/bootstrap
+    phpunit --bootstrap test/bootstrap.php --colors .
+
+
 ## To Run
 Tests are run from the command line using `phpunit`. From the root `neechy` directory, run the following command:
 

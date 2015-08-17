@@ -99,7 +99,7 @@ MYSQL;
         }
 
         # Set editor
-        $editor = User::logged_in('name');
+        $editor = User::current('name');
         if ( $editor ) {
             $this->set('editor', $editor);
         }

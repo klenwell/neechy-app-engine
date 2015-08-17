@@ -23,6 +23,13 @@ class LoginValidator extends NeechyValidator {
     public $user = NULL;
 
     #
+    # Constructor
+    #
+    public function __construct($request) {
+        $this->request = $request;
+    }
+
+    #
     # Public Methods
     #
     public function successful() {

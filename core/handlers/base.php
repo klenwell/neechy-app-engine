@@ -17,9 +17,10 @@ class NeechyHandler {
     #
     # Properties
     #
-    public $request = NULL;
-    public $page = NULL;
-    public $t = NULL;
+    public $request = null;
+    public $page = null;
+    public $t = null;
+    public $is_console = false;
 
     #
     # Constructor
@@ -55,6 +56,14 @@ class NeechyHandler {
         }
     }
 
+    public function redirect($handler, $page=null) {
+        # Convenient wrapper for NeechyResponse::redirect. Also allows mocking for
+        # testing, which is difficult with static methods. (See
+        # http://stackoverflow.com/q/2357001/1093087).
+        $url = NeechyPath::url($page, $handler);
+        return NeechyResponse::redirect($url);
+    }
+
     #
     # Protected Methods
     #
@@ -66,5 +75,49 @@ class NeechyHandler {
         $class_name = get_class($this);
         $folder_name = str_replace('Handler', '', $class_name);
         return strtolower($folder_name);
+    }
+
+    #
+    # Print Functions
+    #
+    protected function prompt_user($prompt) {
+        print($prompt);
+        $stdin = fopen('php://stdin', 'r');
+        $response = fgets($stdin);
+        fclose($stdin);
+        return trim($response);
+    }
+
+    protected function println($message) {
+        printf("%s\n", $message);
+    }
+
+    protected function print_header($message) {
+        $console_f = "\n*** %s";
+        $html_f = <<<XHTML
+    <div class="row">
+      <div class="col-md-4"><h4 class="section">%s</h4></div>
+    </div>
+XHTML;
+
+        if ( $this->is_console ) {
+            $this->println(sprintf($console_f, $message));
+        }
+        else {
+            $this->html_report[] = sprintf($html_f, $message);
+        }
+    }
+
+    protected function print_error($e) {
+        $message = ($e instanceof Exception) ? $e->getMessage() : (string) $e;
+
+        if ( $this->is_console ) {
+            $format = "\n\nERROR:\n%s\n";
+            $this->println(sprintf($format, $message));
+            die(1);
+        }
+        else {
+            throw $e;
+        }
     }
 }

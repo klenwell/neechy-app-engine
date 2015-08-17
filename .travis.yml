@@ -1,5 +1,6 @@
 language: php
 
+sudo: false
 
 php:
   - 5.3
@@ -8,5 +9,6 @@ php:
   
 before_script:
   - cp test/travis-ci.conf.php-dist test/test.conf.php
+  - ln -s ${TRAVIS_BUILD_DIR}/public/themes/bootstrap/test test/themes/bootstrap
 
 script: phpunit --bootstrap test/bootstrap.php --colors .

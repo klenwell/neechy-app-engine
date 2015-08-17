@@ -1,22 +1,17 @@
 <?php
+require_once('../public/themes/bootstrap/php/helper.php');
+
 
 $t = $this;   # templater object
-
-if ( User::is_logged_in() ) {
-  $right_button = $t->neechy_link('Logout', 'logout', 'auth', NULL,
-    array('class' => 'btn btn-primary navbar-btn'));
-}
-else {
-  $right_button = $t->neechy_link('Login / SignUp', 'login', 'auth', NULL,
-    array('class' => 'btn btn-primary navbar-btn'));
-}
+$helper = new BootstrapHelper();
 
 ?>
 
     <div role="navigation" class="navbar navbar-inverse navbar-static-top">
       <div class="container">
         <div class="navbar-header">
-          <button data-target=".navbar-collapse" data-toggle="collapse" class="navbar-toggle" type="button">
+          <button data-target=".navbar-collapse" data-toggle="collapse"
+                  class="navbar-toggle" type="button">
             <span class="sr-only">Toggle navigation</span>
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
@@ -44,9 +39,7 @@ else {
 
           <ul class="nav navbar-nav navbar-right">
             <li>
-                <div class="a-requires-parent">
-                  <?php echo $right_button; ?>
-                </div>
+              <?php echo $helper->user_button(); ?>
             </li>
           </ul>
         </div><!--/.nav-collapse -->

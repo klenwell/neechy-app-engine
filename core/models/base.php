@@ -185,18 +185,20 @@ MYSQL;
         # Execute
         $this->rows_affected = 0;
         $query = $this->pdo->prepare($sql);
-        $query->execute(array_values($this->fields));
+        $query->execute($values);
         $this->rows_affected = $query->rowCount();
         return $this;
     }
 
     public function save() {
         if ( $this->is_new() ) {
-            return $this->insert();
+            $this->insert();
         }
         else {
             $this->update();
         }
+
+        return $this->rows_affected > 0;
     }
 
     #

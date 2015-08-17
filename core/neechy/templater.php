@@ -300,8 +300,16 @@ HTML5;
         return $form_tag;
     }
 
-    public function close_form() {
-        return '</form>';
+    public function close_form($action='') {
+        # $action will add a hidden field with action value.
+        $format = "%s\n</form>";
+        $hidden_field = '';
+
+        if ( $action ) {
+            $hidden_field = $this->input_field('hidden', 'action', $action);
+        }
+
+        return sprintf($format, $hidden_field);
     }
 
     public function input_field($type, $name, $value=NULL, $options=array()) {
@@ -317,6 +325,16 @@ HTML5;
         $optional_attrs = $this->array_to_attr_string($options);
 
         return sprintf($format, $type, $name, $value_attr, $optional_attrs);
+    }
+
+    public function password_field($name, $value=NULL, $options=array()) {
+        return $this->input_field('password', $name, $value, $options);
+    }
+
+    public function submit_button($label, $attrs=array()) {
+        $format = '<button type="submit" %s>%s</button>';
+        $optional_attrs = $this->array_to_attr_string($attrs);
+        return sprintf($format, $optional_attrs, $label);
     }
 
     #

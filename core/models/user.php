@@ -70,7 +70,7 @@ MYSQL;
         # Save user
         $user = User::find_by_name($name);
         $user->set('email', $email);
-        $user->set('password', NeechySecurity::hash_password($password));
+        $user->set_password($password);
         $user->set('status', self::$STATUS_LEVELS[$level]);
         $user->save();
 
@@ -81,27 +81,25 @@ MYSQL;
         return isset($_SESSION['user']);
     }
 
-    public static function logout() {
-        unset($_SESSION['user']);
-        return null;
-    }
-
     public static function is_admin() {
     }
 
-    public static function logged_in($field=null) {
-        #
-        # Return user currently logged in (saved to SESSION). If field arg
-        # provided, returns that field. If no user logged in, return null.
-        #
+    public static function current($field=null) {
         if ( ! User::is_logged_in() ) {
             return null;
         }
         elseif ( ! $field ) {
-            return $_SESSION['user'];
+            return User::find_by_name($_SESSION['user']['name']);
         }
         else {
             return $_SESSION['user'][$field];
+        }
+    }
+
+    public static function logout_current() {
+        $current_user = User::current();
+        if ( $current_user ) {
+            $current_user->logout();
         }
     }
 
@@ -110,6 +108,10 @@ MYSQL;
      */
     public function url($handler=NULL, $action=NULL, $params=array()) {
         return NeechyPath::url($this->field('name'), $handler, $action, $params);
+    }
+
+    public function set_password($password) {
+        $this->set('password', NeechySecurity::hash_password($password));
     }
 
     #
@@ -121,6 +123,11 @@ MYSQL;
             'status' => $this->field('status'),
             'logged-in' => microtime(1)
         );
+        return null;
+    }
+
+    public function logout() {
+        unset($_SESSION['user']);
         return null;
     }
 }
