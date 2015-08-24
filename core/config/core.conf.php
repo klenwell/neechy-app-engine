@@ -1,6 +1,9 @@
 <?php
 /**
  * Neechy Main Configuration File
+ * ** DO NOT EDIT **
+ *
+ * You should only edit config/neechy.conf.php file created on install.
  *
  */
 
