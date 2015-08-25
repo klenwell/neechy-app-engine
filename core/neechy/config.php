@@ -13,7 +13,8 @@ class NeechyConfig {
     # Constants
     #
     const CORE_PATH = 'core/config/core.conf.php';
-    const USER_PATH = 'config/neechy.conf.php';
+    const STUB_PATH = 'core/handlers/install/php/stub.config.php';
+    const USER_PATH = 'config/app.conf.php';
 
     #
     # Properties
@@ -23,13 +24,13 @@ class NeechyConfig {
     #
     # Public Static Methods
     #
-    static public function init($path=NULL) {
+    static public function init($path=null) {
         $core_settings = self::load_core_config_file();
         $user_settings = self::load_user_config_file($path);
         self::$config = array_merge($core_settings, $user_settings);
     }
 
-    static public function get($setting, $default=NULL) {
+    static public function get($setting, $default=null) {
         if ( isset(self::$config[$setting]) ) {
             return self::$config[$setting];
         }
@@ -45,15 +46,34 @@ class NeechyConfig {
     #
     # Private Static Methods
     #
-    static private function load_core_config_file($path=NULL) {
+    static private function load_core_config_file($path=null) {
         $path = NeechyPath::join(NEECHY_ROOT, self::CORE_PATH);
         require($path);
         return $neechy_core_config;
     }
 
-    static private function load_user_config_file($path=NULL) {
-        $path = ( $path ) ? $path : NeechyPath::join(NEECHY_ROOT, self::USER_PATH);
+    static private function load_user_config_file($path=null) {
+        $user_config_path = NeechyPath::join(NEECHY_ROOT, self::USER_PATH);
+        $user_config_dir = dirname($user_config_path);
+
+        # Detect initial install
+        $requires_install = (is_null($path)) && (! file_exists($user_config_dir));
+
+        if ( $requires_install ) {
+            mkdir($user_config_dir);
+            NeechyConfig::install_user_config_file($user_config_path);
+        }
+
+        $path = ( $path ) ? $path : $user_config_path;
         require($path);
         return $neechy_config;
+    }
+
+    static private function install_user_config_file($user_config_path) {
+        $warning = sprintf("[WARNING] Creating user config file: %s\n", $user_config_path);
+        echo $warning;
+
+        $stub_config_path = NeechyPath::join(NEECHY_ROOT, self::STUB_PATH);
+        copy($stub_config_path, $user_config_path);
     }
 }

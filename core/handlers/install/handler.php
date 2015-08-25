@@ -291,46 +291,4 @@ STDOUT;
             }
         }
     }
-
-    #
-    # Print Functions
-    #
-    private function prompt_user($prompt) {
-        print($prompt);
-        $stdin = fopen('php://stdin', 'r');
-        $response = fgets($stdin);
-        fclose($stdin);
-        return trim($response);
-    }
-
-    private function println($message) {
-        printf("%s\n", $message);
-    }
-
-    private function print_header($message) {
-        $console_f = "\n*** %s";
-        $html_f = <<<XHTML
-    <div class="row">
-      <div class="col-md-4"><h4 class="section">%s</h4></div>
-    </div>
-XHTML;
-
-        if ( $this->is_console ) {
-            $this->println(sprintf($console_f, $message));
-        }
-        else {
-            $this->html_report[] = sprintf($html_f, $message);
-        }
-    }
-
-    private function print_error($e) {
-        if ( $this->is_console ) {
-            $format = "\nERROR:\n%s\n";
-            $this->println(sprintf($format, $e->getMessage()));
-            die(1);
-        }
-        else {
-            throw $e;
-        }
-    }
 }
