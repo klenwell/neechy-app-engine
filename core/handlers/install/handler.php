@@ -26,7 +26,7 @@ class InstallHandler extends NeechyHandler {
     public static $default_pages = array(
         'home',
         'NeechyFormatting',
-        'NeechySystem'
+        NEECHY_USER
     );
 
     public $service = null;
@@ -46,12 +46,11 @@ class InstallHandler extends NeechyHandler {
         try {
             $this->preamble();
             $this->setup_database();
-            $this->update_app_config_file();
+            $this->save_and_reload_app_config_file();
             $this->create_model_tables();
             $this->create_neechy_user();
             $this->create_default_pages();
             $this->create_admin_user();
-            $this->update_config_file();
         }
         catch (Exception $e) {
             $this->print_error($e);
@@ -96,7 +95,7 @@ PREAMBLE;
         $this->create_database();
     }
 
-    protected function update_app_config_file() {
+    protected function save_and_reload_app_config_file() {
         # This will create file if it does not exist
         $app_config = NeechyConfig::load_app_config();
 
@@ -114,7 +113,7 @@ PREAMBLE;
     protected function create_neechy_user() {
         $this->print_header('Create Default Users');
 
-        $name = 'NeechySystem';
+        $name = NEECHY_USER;
         $email = 'no-reply@neechy.github.com';
         $password = NeechySecurity::random_hex();
 
@@ -131,8 +130,8 @@ PREAMBLE;
             $basename = sprintf('%s.md.php', $name);
             $path = NeechyPath::join($this->html_path(), $basename);
             $page = Page::find_by_title($name);
-            $page->set('body', $this->t->render_partial_by_path($path));
-            $page->set('editor', 'NeechySystem');
+            $page->set('body', $this->read_page_body_from_template($path));
+            $page->set('editor', NEECHY_USER);
             $page->save();
             $pages_created[] = $page;
             $this->println(sprintf('Created page: %s', $name));
@@ -149,7 +148,7 @@ PREAMBLE;
 
         while (! $name_is_valid) {
             $validator = new SignUpValidator();
-            $name = $this->prompt_user('Please enter your new user name: ');
+            $name = $this->prompt_user('Please enter your new user name');
 
             if ( ! $validator->validate_signup_user($name, 'name') ) {
                 $m = sprintf('invalid user name: %s',
@@ -163,7 +162,7 @@ PREAMBLE;
 
         while (! $email_is_valid) {
             $validator = new SignUpValidator();
-            $email = $this->prompt_user('Please enter your email: ');
+            $email = $this->prompt_user('Please enter your email');
 
             if ( ! $validator->validate_signup_email($email, 'email') ) {
                 $m = sprintf('invalid email address: %s',
@@ -184,7 +183,7 @@ PREAMBLE;
         # Create default page
         $path = NeechyPath::join($this->html_path(), 'owner-page.md.php');
         $page = Page::find_by_title($user->field('name'));
-        $page->set('body', $this->t->render_partial_by_path($path));
+        $page->set('body', $this->read_page_body_from_template($path));
         $page->set('editor', 'NeechySystem');
         $page->save();
 
@@ -196,7 +195,7 @@ Your random password is: %s
 Please login now and change your password.
 STDOUT;
 
-        printf($format, $name, $password);
+        $this->println(sprintf($format, $name, $password));
     }
 
     protected function command_line_param($n) {
@@ -206,6 +205,11 @@ STDOUT;
         else {
             return $this->service->params[$n];
         }
+    }
+
+    protected function read_page_body_from_template($path) {
+        # This method makes it easier to mock out during testing.
+        return $this->t->render_partial_by_path($path);
     }
 
     #

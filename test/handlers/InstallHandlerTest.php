@@ -16,6 +16,7 @@ require_once('../core/handlers/install/handler.php');
 class InstallHandlerTest extends PHPUnit_Framework_TestCase {
 
     public $test_db_name = 'neechy_install_test';
+    public $test_admin_name = 'InstallTestAdmin';
 
     /**
      * Test Fixtures
@@ -53,9 +54,22 @@ class InstallHandlerTest extends PHPUnit_Framework_TestCase {
         $this->assertFalse(file_exists($dir_path), $message);
     }
 
-    public function assertSystemUserExists($handler) {
-        $sql = 'SELECT name FROM users WHERE name = "NeechySystem"';
+    public function assertUserExists($name) {
+        $sql = 'SELECT name FROM users WHERE name = ?';
+        $params = array($name);
+        $query = $this->query($sql, $params);
+        $this->assertEquals(1, $query->rowCount(), sprintf('User %s not found', $name));
+    }
 
+    public function assertPageExists($title) {
+        $sql = 'SELECT title FROM pages WHERE title = ?';
+        $params = array($title);
+        $query = $this->query($sql, $params);
+        $this->assertGreaterThanOrEqual(1, $query->rowCount(),
+            sprintf('Page %s not found', $title));
+    }
+
+    private function query($sql, $params=array()) {
         $dsn = sprintf('mysql:host=%s;dbname=%s',
                        NeechyConfig::get('mysql_host'),
                        $this->test_db_name);
@@ -64,9 +78,8 @@ class InstallHandlerTest extends PHPUnit_Framework_TestCase {
                        NeechyConfig::get('mysql_password'));
 
         $query = $pdo->prepare($sql);
-        $query->execute();
-
-        $this->assertEquals(1, $query->rowCount());
+        $query->execute($params);
+        return $query;
     }
 
     private function select_database($db_name) {
@@ -117,27 +130,27 @@ class InstallHandlerTest extends PHPUnit_Framework_TestCase {
                         ->setConstructorArgs(array($request))
                         ->setMethods(array(
                             'preamble',
-                            'create_default_pages',
-                            'create_admin_user',
-                            'update_config_file',
-                            'prompt_user',
-                            'println'
+                            'println',
+                            'read_page_body_from_template',
+                            'prompt_user'
                           ))
                         ->getMock();
 
         # Mock handler methods
         $handler->expects($this->any())->method('preamble');
-        $handler->expects($this->any())->method('create_default_pages');
-        $handler->expects($this->any())->method('create_admin_user');
-        $handler->expects($this->any())->method('update_config_file');
         $handler->expects($this->any())->method('println');
+        $handler->expects($this->any())->method('read_page_body_from_template')
+                ->will($this->returnValue('body cannot be null'));
 
         # Mock prompt user method.
         $mockedPromptUserValues = array(
             array('Enter database host', 'localhost', NeechyConfig::get('mysql_host')),
             array('Enter database user name', '', NeechyConfig::get('mysql_user')),
             array('Enter database user password', '', NeechyConfig::get('mysql_password')),
-            array('Enter database name', 'neechy', $this->test_db_name)
+            array('Enter database name', 'neechy', $this->test_db_name),
+            array('Please enter your new user name', '', $this->test_admin_name),
+            array('Please enter your email', '',
+                  sprintf('%s@neechy.com', $this->test_admin_name)),
         );
         $handler->expects($this->any())
                 ->method('prompt_user')
@@ -150,10 +163,12 @@ class InstallHandlerTest extends PHPUnit_Framework_TestCase {
         $handler->handle();
 
         # Verify
-        $pdo = NeechyDatabase::connect_to_db();
-        $this->assertDatabaseExists($this->test_db_name);
         $this->assertEquals($this->test_db_name, NeechyConfig::get('mysql_database'));
-        $this->assertSystemUserExists($handler);
+        $this->assertDatabaseExists($this->test_db_name);
+        $this->assertUserExists(NEECHY_USER);
+        $this->assertPageExists(NEECHY_USER);
+        $this->assertUserExists($this->test_admin_name);
+        $this->assertPageExists($this->test_admin_name);
     }
 
     public function testInstantiates() {
