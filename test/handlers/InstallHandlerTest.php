@@ -9,6 +9,7 @@
 require_once('../test/helper.php');
 require_once('../test/fixtures/page.php');
 require_once('../test/fixtures/user.php');
+require_once('../core/neechy/path.php');
 require_once('../core/handlers/install/handler.php');
 
 
@@ -24,11 +25,19 @@ class InstallHandlerTest extends PHPUnit_Framework_TestCase {
         UserFixture::init();
         PageFixture::init();
         $this->assertDatabaseDoesNotExist($this->test_db_name);
+
+        $this->app_config_path = NeechyConfig::app_config_path();
+        $this->assertDirDoesNotExist(
+            $this->app_config_path,
+            sprintf('App config file (%s) should not exist when running this test.',
+                    $this->app_config_path)
+        );
     }
 
     public function tearDown() {
         NeechyTestHelper::tearDown();
         $this->destroy_database_if_exists($this->test_db_name);
+        $this->destroy_file_if_exists($this->app_config_path);
         $this->assertDatabaseDoesNotExist($this->test_db_name);
     }
 
@@ -38,6 +47,10 @@ class InstallHandlerTest extends PHPUnit_Framework_TestCase {
 
     public function assertDatabaseDoesNotExist($db_name) {
         $this->assertFalse((bool) $this->select_database($db_name));
+    }
+
+    public function assertDirDoesNotExist($dir_path, $message=null) {
+        $this->assertFalse(file_exists($dir_path), $message);
     }
 
     public function assertSystemUserExists($handler) {
@@ -73,7 +86,13 @@ class InstallHandlerTest extends PHPUnit_Framework_TestCase {
         return $pdo;
     }
 
-    /**
+    private function destroy_file_if_exists($path) {
+        if ( file_exists($path) ) {
+            unlink($path);
+        };
+    }
+
+    /*
      * Tests
      */
     public function testShouldHandleInstallation() {
@@ -131,7 +150,9 @@ class InstallHandlerTest extends PHPUnit_Framework_TestCase {
         $handler->handle();
 
         # Verify
+        $pdo = NeechyDatabase::connect_to_db();
         $this->assertDatabaseExists($this->test_db_name);
+        $this->assertEquals($this->test_db_name, NeechyConfig::get('mysql_database'));
         $this->assertSystemUserExists($handler);
     }
 

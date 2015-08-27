@@ -22,6 +22,7 @@ class NeechyTestHelper {
 
     static public function tearDown() {
         $_SERVER = array();
+        NeechyDatabase::disconnect_from_db();
         self::destroy_database();
     }
 
@@ -55,10 +56,7 @@ class NeechyTestHelper {
         }
     }
 
-    /*
-     * Private Functions
-     */
-    static private function connect_to_database_host() {
+    static public function connect_to_database_host() {
         $host = sprintf('mysql:host=%s', NeechyConfig::get('mysql_host'));
         $pdo = new PDO($host,
             NeechyConfig::get('mysql_user'),
@@ -68,14 +66,14 @@ class NeechyTestHelper {
         return $pdo;
     }
 
-    static private function create_database() {
+    static public function create_database() {
         $test_database = NeechyConfig::get('mysql_database');
         $pdo = self::connect_to_database_host();
         $pdo->exec(sprintf('CREATE DATABASE `%s`', $test_database));
         return $pdo;
     }
 
-    static private function destroy_database() {
+    static public function destroy_database() {
         $test_database = NeechyConfig::get('mysql_database');
         $pdo = self::connect_to_database_host();
         $pdo->exec(sprintf('DROP DATABASE IF EXISTS `%s`', $test_database));

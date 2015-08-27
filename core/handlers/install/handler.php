@@ -34,15 +34,24 @@ class InstallHandler extends NeechyHandler {
     public $is_console = false;
     private $reset_database = false;
 
+    private $db_host = 'localhost';
+    private $db_name = 'neechy';
+    private $db_user = '';
+    private $db_pass = '';
+
     #
     # Public Methods
     #
     public function handle() {
         try {
+            $this->preamble();
             $this->setup_database();
+            $this->update_app_config_file();
+            $this->create_model_tables();
             $this->create_neechy_user();
             $this->create_default_pages();
             $this->create_admin_user();
+            $this->update_config_file();
         }
         catch (Exception $e) {
             $this->print_error($e);
@@ -50,24 +59,59 @@ class InstallHandler extends NeechyHandler {
     }
 
     #
-    # Private Methods
+    # Protected Methods (private cannot be mocked)
     #
-    private function setup_database() {
+    protected function preamble() {
+        $preamble = <<<PREAMBLE
+
+** NEECHY INSTALLATION SCRIPT **
+
+This script will install Neechy on your system for you.
+
+Before you begin, you should create a MySQL database user with CREATE privileges
+and have that user's name and password ready.
+
+If your MySQL user is not yet ready, please ready the user now.
+
+PREAMBLE;
+
+        $this->println($preamble);
+        $this->prompt_user("When ready, hit 'ENTER' to continue");
+    }
+
+    protected function setup_database() {
         $this->print_header('Setting Up Database');
 
+        # Prompt user for database settings
+        $this->db_host = $this->prompt_user("Enter database host", $this->db_host);
+        $this->db_user = $this->prompt_user("Enter database user name", $this->db_user);
+        $this->db_pass = $this->prompt_user("Enter database user password", $this->db_pass);
+        $this->db_name = $this->prompt_user("Enter database name", $this->db_name);
+
         # Validations
-        $this->validate_config_settings();
         $this->validate_database_connection();
         $this->validate_database_safe_to_write();
 
         # Create database
         $this->create_database();
-
-        # Create tables
-        $this->create_model_tables();
     }
 
-    private function create_neechy_user() {
+    protected function update_app_config_file() {
+        # This will create file if it does not exist
+        $app_config = NeechyConfig::load_app_config();
+
+        # Replace database settings
+        $app_config->update_setting('mysql_host', $this->db_host);
+        $app_config->update_setting('mysql_user', $this->db_user);
+        $app_config->update_setting('mysql_password', $this->db_pass);
+        $app_config->update_setting('mysql_database', $this->db_name);
+        $app_config->save();
+
+        # Reload config settings
+        $app_config->reload();
+    }
+
+    protected function create_neechy_user() {
         $this->print_header('Create Default Users');
 
         $name = 'NeechySystem';
@@ -78,7 +122,7 @@ class InstallHandler extends NeechyHandler {
         $this->println('NeechySystem user created');
     }
 
-    private function create_default_pages() {
+    protected function create_default_pages() {
         $this->print_header('Create Default Pages');
         $pages_created = array();
         $glob_target = NeechyPath::join($this->html_path(), '*.md.php');
@@ -97,7 +141,7 @@ class InstallHandler extends NeechyHandler {
         $this->println(sprintf('Created %d pages', count($pages_created)));
     }
 
-    private function create_admin_user() {
+    protected function create_admin_user() {
         $this->print_header('Create Admin User');
 
         $name_is_valid = false;
@@ -155,7 +199,7 @@ STDOUT;
         printf($format, $name, $password);
     }
 
-    private function command_line_param($n) {
+    protected function command_line_param($n) {
         if ( ! isset($this->service->params[$n]) ) {
             return null;
         }
@@ -168,22 +212,18 @@ STDOUT;
     # Database Methods
     #
     private function connect_to_database_host() {
-        $host = sprintf('mysql:host=%s', NeechyConfig::get('mysql_host'));
-        $pdo = new PDO($host,
-            NeechyConfig::get('mysql_user'),
-            NeechyConfig::get('mysql_password')
-        );
+        $host = sprintf('mysql:host=%s', $this->db_host);
+        $pdo = new PDO($host, $this->db_user, $this->db_pass);
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         return $pdo;
     }
 
     private function database_exists() {
         $sql = 'SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME=?';
-        $db_name = NeechyConfig::get('mysql_database');
 
         $pdo = $this->connect_to_database_host();
         $query = $pdo->prepare($sql);
-        $query->execute(array($db_name));
+        $query->execute(array($this->db_name));
         $row = $query->fetch(PDO::FETCH_ASSOC);
 
         return ((bool) $row);
@@ -192,16 +232,15 @@ STDOUT;
     private function create_database() {
         $this->println('Creating database');
         $this->drop_database_if_exists();
-        $database = NeechyConfig::get('mysql_database');
         $pdo = $this->connect_to_database_host();
-        $pdo->exec(sprintf('CREATE DATABASE `%s`', $database));
+        $pdo->exec(sprintf('CREATE DATABASE `%s`', $this->db_name));
         return $pdo;
     }
 
     private function drop_database_if_exists() {
         $database = NeechyConfig::get('mysql_database');
         $pdo = $this->connect_to_database_host();
-        $pdo->exec(sprintf('DROP DATABASE IF EXISTS `%s`', $database));
+        $pdo->exec(sprintf('DROP DATABASE IF EXISTS `%s`', $this->db_name));
         return $pdo;
     }
 
@@ -241,18 +280,10 @@ STDOUT;
     }
 
     private function validate_database_connection() {
-        $this->connect_to_database_host();
+        return $this->connect_to_database_host();
     }
 
     private function validate_database_safe_to_write() {
-        # No heredoc: want extra space at end (gets removed by my editor if I
-        # use a heredoc)
-        $prompt_format = "
-WARNING:
-This script will overwrite your existing database: %s
-
-Enter 'Y' to continue, any other key to abort: ";
-
         $db_exists = $this->database_exists();
 
         # Database does not yet exist: safe
@@ -275,8 +306,15 @@ STDOUT;
 
         # Database exists, force param, prompt
         else {
-            $response = $this->prompt_user(sprintf($prompt_format,
-                NeechyConfig::get('mysql_database')));
+            # No heredoc: want extra space at end (gets removed by my editor if I
+            # use a heredoc)
+            $prompt_format = "
+WARNING:
+This script will overwrite your existing database: %s
+
+Enter 'Y' to continue, any other key to abort: ";
+
+            $response = $this->prompt_user(sprintf($prompt_format, $this->db_name));
 
             # Prompt yes: safe
             $response = substr($response, 0, 1);
