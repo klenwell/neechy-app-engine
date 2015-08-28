@@ -13,6 +13,9 @@ require_once('../core/neechy/path.php');
 require_once('../core/handlers/install/handler.php');
 
 
+class InstallHandlerTestError extends Exception {}
+
+
 class InstallHandlerTest extends PHPUnit_Framework_TestCase {
 
     public $test_db_name = 'neechy_install_test';
@@ -69,6 +72,19 @@ class InstallHandlerTest extends PHPUnit_Framework_TestCase {
             sprintf('Page %s not found', $title));
     }
 
+    private function mock_install_handler($mocked_methods) {
+        # Mock out handler prompt_user method.
+        $request = new NeechyRequest();
+
+        # Mock out handler
+        $handler = $this->getMockBuilder('InstallHandler')
+                        ->setConstructorArgs(array($request))
+                        ->setMethods($mocked_methods)
+                        ->getMock();
+
+        return $handler;
+    }
+
     private function query($sql, $params=array()) {
         $dsn = sprintf('mysql:host=%s;dbname=%s',
                        NeechyConfig::get('mysql_host'),
@@ -108,33 +124,14 @@ class InstallHandlerTest extends PHPUnit_Framework_TestCase {
     /*
      * Tests
      */
-    public function testShouldHandleInstallation() {
-        # Mock out handler prompt_user method.
-        $request = new NeechyRequest();
-
-        # Mock out handler
-        $handler = $this->getMockBuilder('InstallHandler')
-                        ->setConstructorArgs(array($request))
-                        ->setMethods(array('handle'))
-                        ->getMock();
-        $handler->expects($this->any())->method('handle');
-        $this->assertNull($handler->handle());
-    }
-
-    public function testShouldSetupDatabase() {
-        # Mock out handler prompt_user method.
-        $request = new NeechyRequest();
-
-        # Mock out handler
-        $handler = $this->getMockBuilder('InstallHandler')
-                        ->setConstructorArgs(array($request))
-                        ->setMethods(array(
-                            'preamble',
-                            'println',
-                            'read_page_body_from_template',
-                            'prompt_user'
-                          ))
-                        ->getMock();
+    public function testShouldSuccessfullySetupNeechyFromConsole() {
+        # Mock handler
+        $mocked_methods = array('preamble',
+                                'println',
+                                'read_page_body_from_template',
+                                'prompt_user');
+        $handler = $this->mock_install_handler($mocked_methods);
+        $handler->is_console = true;
 
         # Mock handler methods
         $handler->expects($this->any())->method('preamble');
@@ -163,12 +160,88 @@ class InstallHandlerTest extends PHPUnit_Framework_TestCase {
         $handler->handle();
 
         # Verify
+        $this->assertTrue($handler->is_console);
         $this->assertEquals($this->test_db_name, NeechyConfig::get('mysql_database'));
         $this->assertDatabaseExists($this->test_db_name);
         $this->assertUserExists(NEECHY_USER);
         $this->assertPageExists(NEECHY_USER);
         $this->assertUserExists($this->test_admin_name);
         $this->assertPageExists($this->test_admin_name);
+    }
+
+    public function testShouldInputInvalidDbCredentialsAndFail() {
+        # Mock handler
+        $mocked_methods = array('preamble',
+                                'println',
+                                'print_error',
+                                'prompt_user');
+        $handler = $this->mock_install_handler($mocked_methods);
+        $handler->is_console = true;
+
+        # Mock handler methods
+        $handler->expects($this->any())->method('preamble');
+        $handler->expects($this->any())->method('println');
+        $handler->expects($this->any())->method('print_error')->will(
+            $this->throwException(new InstallHandlerTestError));
+
+        # Mock prompt user method.
+        $mockedPromptUserValues = array(
+            array('Enter database host', 'localhost', NeechyConfig::get('mysql_host')),
+            array('Enter database user name', '', 'invalid'),
+            array('Enter database user password', '', NeechyConfig::get('mysql_password')),
+            array('Enter database name', 'neechy', $this->test_db_name),
+        );
+        $handler->expects($this->any())
+                ->method('prompt_user')
+                ->will($this->returnValueMap($mockedPromptUserValues));
+
+        # Assert pre-exercise conditions
+        $this->assertDatabaseDoesNotExist($this->test_db_name);
+
+        # Exercise
+        $this->setExpectedException('InstallHandlerTestError');
+        $handler->handle();
+    }
+
+    public function testShouldInputInvalidEmailAddressAndFail() {
+        # Mock handler
+        $mocked_methods = array('preamble',
+                                'println',
+                                'print_error',
+                                'prompt_user');
+        $handler = $this->mock_install_handler($mocked_methods);
+        $handler->is_console = true;
+
+        # Mock handler methods
+        $handler->expects($this->any())->method('preamble');
+        $handler->expects($this->any())->method('println');
+        $handler->expects($this->any())->method('print_error')->will(
+            $this->throwException(new InstallHandlerTestError));
+
+        # Mock prompt user method.
+        $mockedPromptUserValues = array(
+            array('Enter database host', 'localhost', NeechyConfig::get('mysql_host')),
+            array('Enter database user name', '', NeechyConfig::get('mysql_user')),
+            array('Enter database user password', '', NeechyConfig::get('mysql_password')),
+            array('Enter database name', 'neechy', $this->test_db_name),
+            array('Please enter your new user name', '', $this->test_admin_name),
+            array('Please enter your email', '', 'invalid'),
+        );
+        $handler->expects($this->any())
+                ->method('prompt_user')
+                ->will($this->returnValueMap($mockedPromptUserValues));
+
+        # Assert pre-exercise conditions
+        $this->assertDatabaseDoesNotExist($this->test_db_name);
+
+        # Exercise
+        $this->setExpectedException('InstallHandlerTestError');
+        $handler->handle();
+
+        # Verify makes it at least through database setup
+        $this->assertEquals($this->test_db_name, NeechyConfig::get('mysql_database'));
+        $this->assertDatabaseExists($this->test_db_name);
+        $this->assertUserExists(NEECHY_USER);
     }
 
     public function testInstantiates() {

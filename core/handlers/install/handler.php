@@ -198,6 +198,28 @@ STDOUT;
         $this->println(sprintf($format, $name, $password));
     }
 
+    protected function print_error($e) {
+        $message = ($e instanceof Exception) ? $e->getMessage() : (string) $e;
+
+        $format = <<<STDOUT
+
+The following error occurred:
+
+%s
+
+Please double check your input and try again.
+
+STDOUT;
+
+        if ( $this->is_console ) {
+            $this->println(sprintf($format, $message));
+            die(1);
+        }
+        else {
+            throw $e;
+        }
+    }
+
     protected function command_line_param($n) {
         if ( ! isset($this->service->params[$n]) ) {
             return null;
