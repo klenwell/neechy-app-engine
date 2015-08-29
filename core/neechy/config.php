@@ -25,7 +25,7 @@ class NeechyConfig {
     #
     # Constants
     #
-    const CORE_PATH = 'core/config/core.conf.php';
+    const CORE_PATH = 'config/core.conf.php';
     const STUB_PATH = 'core/handlers/install/php/stub.config.php';
     const TEST_PATH = 'test/test.conf.php';
     const APP_PATH = 'config/app.conf.php';
