@@ -4,7 +4,7 @@
  *
  */
 
-$neechy_config = array(
+$neechy_app_config = array(
     # Database Settings
     'mysql_database'    => 'NULL',
     'mysql_host'        => 'NULL',
