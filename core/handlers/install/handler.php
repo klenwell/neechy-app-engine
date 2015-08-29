@@ -43,6 +43,18 @@ class InstallHandler extends NeechyHandler {
     # Public Methods
     #
     public function handle() {
+        if ( $this->is_console ) {
+            $this->handle_in_console();
+        }
+        else {
+            return '<h4>Install runs from the console.</h4>';
+        }
+    }
+
+    #
+    # Protected Methods (private cannot be mocked)
+    #
+    protected function handle_in_console() {
         try {
             $this->preamble();
             $this->setup_database();
@@ -57,9 +69,6 @@ class InstallHandler extends NeechyHandler {
         }
     }
 
-    #
-    # Protected Methods (private cannot be mocked)
-    #
     protected function preamble() {
         $preamble = <<<PREAMBLE
 

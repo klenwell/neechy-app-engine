@@ -244,6 +244,14 @@ class InstallHandlerTest extends PHPUnit_Framework_TestCase {
         $this->assertUserExists(NEECHY_USER);
     }
 
+    public function testHandlerFromWeb() {
+        $request = new NeechyRequest();
+        $handler = new InstallHandler($request);
+        $handler->is_console = false;
+        $content = $handler->handle();
+        $this->assertEquals('<h4>Install runs from the console.</h4>', $content);
+    }
+
     public function testInstantiates() {
         $handler = new InstallHandler();
         $this->assertInstanceOf('InstallHandler', $handler);
