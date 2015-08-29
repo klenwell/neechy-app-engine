@@ -26,6 +26,13 @@ class NeechyConfigTest extends PHPUnit_Framework_TestCase {
     public function testConfigShouldBeInTestEnvironment() {
         NeechyConfig::init();
         $this->assertEquals('test', NeechyConfig::environment());
+        $this->assertNotNull(NeechyConfig::get('test-loaded'));
+        $this->assertNull(NeechyConfig::get('app-loaded'));
+    }
+
+    public function testShouldLoadCoreConfigFile() {
+        NeechyConfig::init();
+        $this->assertNotNull(NeechyConfig::get('core-loaded'));
     }
 
     public function testShouldLoadTestConfigFile() {

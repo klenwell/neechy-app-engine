@@ -113,6 +113,7 @@ class NeechyConfig {
         require($core_config_path);
 
         # Global variable assigned in core config file.
+        $neechy_core_config['core-loaded'] = microtime();
         return $neechy_core_config;
     }
 
@@ -134,6 +135,7 @@ class NeechyConfig {
         require($app_config_path);
 
         # Global variable assigned in app config file.
+        $neechy_app_config['app-loaded'] = microtime();
         return $neechy_app_config;
     }
 
@@ -147,6 +149,7 @@ class NeechyConfig {
         require($test_config_path);
 
         # Global variable assigned in test config file.
+        $neechy_test_config['test-loaded'] = microtime();
         return $neechy_test_config;
     }
 
