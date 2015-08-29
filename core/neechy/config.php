@@ -40,6 +40,7 @@ class NeechyConfig {
     private $core_loaded = false;
     private $test_loaded = false;
     private $app_loaded = false;
+    private $_settings = array();
 
     #
     # Public Static Interface
@@ -89,8 +90,8 @@ class NeechyConfig {
     }
 
     static public function get($setting, $default=null) {
-        if ( isset(self::$config[$setting]) ) {
-            return self::$config[$setting];
+        if ( isset(self::$settings[$setting]) ) {
+            return self::$settings[$setting];
         }
         else {
             return $default;
@@ -167,7 +168,7 @@ class NeechyConfig {
     # Instance Methods
     #
     public function update_setting($setting, $value) {
-        $this->settings[$setting] = $value;
+        $this->_settings[$setting] = $value;
     }
 
     public function save() {
