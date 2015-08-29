@@ -27,8 +27,8 @@ class NeechyConsoleService extends NeechyService {
     #
     # Constructor
     #
-    public function __construct($conf_path=NULL) {
-        parent::__construct($conf_path);
+    public function __construct($config) {
+        parent::__construct($config);
         $this->args = array_slice($_SERVER['argv'], 1);
         $this->type = 'console';
 

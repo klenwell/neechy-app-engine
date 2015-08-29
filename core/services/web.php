@@ -24,8 +24,8 @@ class NeechyWebService extends NeechyService {
     #
     # Constructor
     #
-    public function __construct($conf_path=NULL) {
-        parent::__construct($conf_path);
+    public function __construct($config) {
+        parent::__construct($config);
 
         $this->request = NeechyRequest::load();
         $this->page = Page::find_by_title($this->request->page);
