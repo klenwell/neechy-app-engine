@@ -74,21 +74,6 @@ class NeechyConfig {
         return $self;
     }
 
-    static public function environment() {
-        return self::$environment;
-    }
-
-
-    #
-    # Instance Constructor
-    #
-    static public function load_app_config($path=null) {
-        $app_config = new NeechyConfig();
-        $app_config->path = self::app_config_path();
-        $app_config->settings = self::load_app_config_file($path);
-        return $app_config;
-    }
-
     static public function get($setting, $default=null) {
         if ( isset(self::$settings[$setting]) ) {
             return self::$settings[$setting];
@@ -96,6 +81,18 @@ class NeechyConfig {
         else {
             return $default;
         }
+    }
+
+    static public function environment() {
+        return self::$environment;
+    }
+
+    static public function load_app_config($path=null) {
+        $app_config = new NeechyConfig();
+        $app_config->path = self::app_config_path();
+        $app_config->_settings = self::load_core_config_file($path);
+        unset($app_config->_settings['core-loaded']);
+        return $app_config;
     }
 
     static public function app_config_path() {
@@ -190,7 +187,7 @@ class NeechyConfig {
 HEREPHP;
 
         $config_lines = array();
-        foreach ( $this->settings as $setting => $value ) {
+        foreach ( $this->_settings as $setting => $value ) {
             $config_lines[] = sprintf("'%s' => '%s',",
                 str_replace("'", "/'", $setting),
                 str_replace("'", "/'", $value)
@@ -201,7 +198,7 @@ HEREPHP;
 
         $content = sprintf($format,
             date('r'),
-            '$neechy_config',
+            '$neechy_app_config',
             implode("\n    ", $config_lines)
         );
 
@@ -213,6 +210,6 @@ HEREPHP;
 
     public function reload() {
         NeechyDatabase::disconnect_from_db();
-        NeechyConfig::init($this->path);
+        NeechyConfig::init();
     }
 }

@@ -10,6 +10,7 @@ require_once('../test/helper.php');
 require_once('../test/fixtures/page.php');
 require_once('../test/fixtures/user.php');
 require_once('../core/neechy/path.php');
+require_once('../core/neechy/config.php');
 require_once('../core/handlers/install/handler.php');
 
 
@@ -28,20 +29,12 @@ class InstallHandlerTest extends PHPUnit_Framework_TestCase {
         NeechyTestHelper::setUp();
         UserFixture::init();
         PageFixture::init();
-        $this->assertDatabaseDoesNotExist($this->test_db_name);
-
-        $this->app_config_path = NeechyConfig::app_config_path();
-        $this->assertDirDoesNotExist(
-            $this->app_config_path,
-            sprintf('App config file (%s) should not exist when running this test.',
-                    $this->app_config_path)
-        );
     }
 
     public function tearDown() {
         NeechyTestHelper::tearDown();
         $this->destroy_database_if_exists($this->test_db_name);
-        $this->destroy_file_if_exists($this->app_config_path);
+        $this->destroy_file_if_exists(NeechyConfig::app_config_path());
         $this->assertDatabaseDoesNotExist($this->test_db_name);
     }
 
@@ -51,10 +44,6 @@ class InstallHandlerTest extends PHPUnit_Framework_TestCase {
 
     public function assertDatabaseDoesNotExist($db_name) {
         $this->assertFalse((bool) $this->select_database($db_name));
-    }
-
-    public function assertDirDoesNotExist($dir_path, $message=null) {
-        $this->assertFalse(file_exists($dir_path), $message);
     }
 
     public function assertUserExists($name) {
@@ -124,6 +113,51 @@ class InstallHandlerTest extends PHPUnit_Framework_TestCase {
     /*
      * Tests
      */
+    public function testShouldReloadConfigSettingsInputByUser() {
+        # Mock handler
+        $mocked_methods = array('preamble',
+                                'create_model_tables',
+                                'create_neechy_user',
+                                'create_default_pages',
+                                'create_admin_user',
+                                'println',
+                                'prompt_user');
+        $handler = $this->mock_install_handler($mocked_methods);
+        $handler->is_console = true;
+
+        # Mock handler methods
+        $handler->expects($this->any())->method('preamble');
+        $handler->expects($this->any())->method('create_model_tables');
+        $handler->expects($this->any())->method('create_neechy_user');
+        $handler->expects($this->any())->method('create_default_pages');
+        $handler->expects($this->any())->method('create_admin_user');
+        $handler->expects($this->any())->method('println');
+
+        # Mock prompt user method.
+        $mockedPromptUserValues = array(
+            array('Enter database host', 'localhost', NeechyConfig::get('mysql_host')),
+            array('Enter database user name', '', NeechyConfig::get('mysql_user')),
+            array('Enter database user password', '', NeechyConfig::get('mysql_password')),
+            array('Enter database name', 'neechy', $this->test_db_name),
+        );
+        $handler->expects($this->any())
+                ->method('prompt_user')
+                ->will($this->returnValueMap($mockedPromptUserValues));
+
+        # Assert pre-exercise conditions
+        $this->assertDatabaseDoesNotExist($this->test_db_name);
+        $this->assertEquals('test', NeechyConfig::environment());
+
+        # Exercise
+        $handler->handle();
+
+        # Verify
+        $this->assertTrue($handler->is_console);
+        $this->assertEquals($this->test_db_name, NeechyConfig::get('mysql_database'));
+        $this->assertDatabaseExists($this->test_db_name);
+        $this->assertEquals('app', NeechyConfig::environment());
+    }
+
     public function testShouldSuccessfullySetupNeechyFromConsole() {
         # Mock handler
         $mocked_methods = array('preamble',
@@ -161,6 +195,7 @@ class InstallHandlerTest extends PHPUnit_Framework_TestCase {
 
         # Verify
         $this->assertTrue($handler->is_console);
+        $this->assertEquals('app', NeechyConfig::environment());
         $this->assertEquals($this->test_db_name, NeechyConfig::get('mysql_database'));
         $this->assertDatabaseExists($this->test_db_name);
         $this->assertUserExists(NEECHY_USER);
@@ -182,7 +217,8 @@ class InstallHandlerTest extends PHPUnit_Framework_TestCase {
         $handler->expects($this->any())->method('preamble');
         $handler->expects($this->any())->method('println');
         $handler->expects($this->any())->method('print_error')->will(
-            $this->throwException(new InstallHandlerTestError));
+            $this->returnCallback(function($e) { throw $e; })
+        );
 
         # Mock prompt user method.
         $mockedPromptUserValues = array(
@@ -199,7 +235,7 @@ class InstallHandlerTest extends PHPUnit_Framework_TestCase {
         $this->assertDatabaseDoesNotExist($this->test_db_name);
 
         # Exercise
-        $this->setExpectedException('InstallHandlerTestError');
+        $this->setExpectedException('PDOException');
         $handler->handle();
     }
 
@@ -207,6 +243,7 @@ class InstallHandlerTest extends PHPUnit_Framework_TestCase {
         # Mock handler
         $mocked_methods = array('preamble',
                                 'println',
+                                'read_page_body_from_template',
                                 'print_error',
                                 'prompt_user');
         $handler = $this->mock_install_handler($mocked_methods);
@@ -215,8 +252,11 @@ class InstallHandlerTest extends PHPUnit_Framework_TestCase {
         # Mock handler methods
         $handler->expects($this->any())->method('preamble');
         $handler->expects($this->any())->method('println');
+        $handler->expects($this->any())->method('read_page_body_from_template')
+                ->will($this->returnValue('body cannot be null'));
         $handler->expects($this->any())->method('print_error')->will(
-            $this->throwException(new InstallHandlerTestError));
+            $this->returnCallback(function($e) { throw $e; })
+        );
 
         # Mock prompt user method.
         $mockedPromptUserValues = array(
@@ -235,7 +275,8 @@ class InstallHandlerTest extends PHPUnit_Framework_TestCase {
         $this->assertDatabaseDoesNotExist($this->test_db_name);
 
         # Exercise
-        $this->setExpectedException('InstallHandlerTestError');
+        $expected_message = 'Email cannot be validated. Install failed. Please start over.';
+        $this->setExpectedException('NeechyInstallError', $expected_message);
         $handler->handle();
 
         # Verify makes it at least through database setup

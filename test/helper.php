@@ -9,7 +9,6 @@ class NeechyTestHelper {
     #
     # Constants
     #
-    const TEST_CONF_PATH = '../test/test.conf.php';
 
     /*
      * API
@@ -27,7 +26,7 @@ class NeechyTestHelper {
     }
 
     static public function init_config() {
-        NeechyConfig::init(self::TEST_CONF_PATH);
+        NeechyConfig::init();
     }
 
     static public function init_server_env() {
@@ -57,6 +56,12 @@ class NeechyTestHelper {
     }
 
     static public function connect_to_database_host() {
+        # Tests will hang if host is invalid
+        $host = NeechyConfig::get('mysql_host');
+        if ( is_null($host) || $host == 'NULL' ) {
+            throw new Exception('mysql_host set to null');
+        }
+
         $host = sprintf('mysql:host=%s', NeechyConfig::get('mysql_host'));
         $pdo = new PDO($host,
             NeechyConfig::get('mysql_user'),

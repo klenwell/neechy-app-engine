@@ -17,6 +17,9 @@ require_once('../core/models/page.php');
 require_once('../core/models/user.php');
 
 
+class NeechyInstallError extends NeechyError {}
+
+
 class InstallHandler extends NeechyHandler {
 
     #
@@ -56,6 +59,7 @@ class InstallHandler extends NeechyHandler {
     #
     protected function handle_in_console() {
         try {
+            $this->assert_app_config_not_present();
             $this->preamble();
             $this->setup_database();
             $this->save_and_reload_app_config_file();
@@ -66,6 +70,12 @@ class InstallHandler extends NeechyHandler {
         }
         catch (Exception $e) {
             $this->print_error($e);
+        }
+    }
+
+    protected function assert_app_config_not_present() {
+        if ( NeechyConfig::environment() == 'app' ) {
+            throw new NeechyInstallError('App config file is already installed.');
         }
     }
 
@@ -105,7 +115,6 @@ PREAMBLE;
     }
 
     protected function save_and_reload_app_config_file() {
-        # This will create file if it does not exist
         $app_config = NeechyConfig::load_app_config();
 
         # Replace database settings
@@ -155,6 +164,8 @@ PREAMBLE;
         $name_is_valid = false;
         $email_is_valid = false;
 
+        # Choose name (5 tries)
+        $strikes = 5;
         while (! $name_is_valid) {
             $validator = new SignUpValidator();
             $name = $this->prompt_user('Please enter your new user name');
@@ -163,12 +174,20 @@ PREAMBLE;
                 $m = sprintf('invalid user name: %s',
                     implode(', ', $validator->errors['name']));
                 $this->println($m);
+                $strikes--;
             }
             else {
                 $name_is_valid = true;
             }
+
+            if ( $strikes < 1 ) {
+                $m = 'User name cannot be validated. Install failed. Please start over.';
+                throw new NeechyInstallError($m);
+            }
         }
 
+        # Input email
+        $strikes = 5;
         while (! $email_is_valid) {
             $validator = new SignUpValidator();
             $email = $this->prompt_user('Please enter your email');
@@ -177,9 +196,15 @@ PREAMBLE;
                 $m = sprintf('invalid email address: %s',
                     implode(', ', $validator->errors['email']));
                 $this->println($m);
+                $strikes--;
             }
             else {
                 $email_is_valid = true;
+            }
+
+            if ( $strikes < 1 ) {
+                $m = 'Email cannot be validated. Install failed. Please start over.';
+                throw new NeechyInstallError($m);
             }
         }
 
