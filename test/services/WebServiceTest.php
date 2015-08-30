@@ -7,6 +7,7 @@
  *
  */
 require_once('../core/services/web.php');
+require_once('../core/neechy/config.php');
 require_once('../test/helper.php');
 require_once('../test/fixtures/page.php');
 require_once('../test/fixtures/user.php');
@@ -31,7 +32,8 @@ class WebServiceTest extends PHPUnit_Framework_TestCase {
      * Tests
      */
     public function testInstantiates() {
-        $web_service = new NeechyWebService(NeechyTestHelper::TEST_CONF_PATH);
+        $config = NeechyConfig::init();
+        $web_service = new NeechyWebService($config);
         $this->assertInstanceOf('NeechyWebService', $web_service);
     }
 }
