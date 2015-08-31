@@ -16,3 +16,10 @@ $t = $this;   # templater object
         </p>
       </div>
     </footer>
+    <?php if ( NeechyConfig::environment() == 'test' ) { ?>
+      <div class="dev-footer">
+        <h4>Dev Environment</h4>
+        <p>Using test config settings.</p>
+        <p>To sign in: NeechyAdmin / neechy123</p>
+      </div>
+    <?php } ?>

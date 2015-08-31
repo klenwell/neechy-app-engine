@@ -54,6 +54,23 @@ class InstallHandler extends NeechyHandler {
         }
     }
 
+    public function setup_dev() {
+        # Specifically for running development web server against source.
+        $this->create_database(NeechyConfig::get('mysql_host'),
+                               NeechyConfig::get('mysql_user'),
+                               NeechyConfig::get('mysql_password'),
+                               NeechyConfig::get('mysql_database'));
+        $this->create_model_tables();
+        $this->create_neechy_user();
+        $this->create_default_pages();
+
+        # Create admin user
+        $name = 'NeechyAdmin';
+        $email = 'neechyadmin@neechy.org';
+        $password = 'neechy123';
+        $this->register_admin_user($name, $email, $password);
+    }
+
     #
     # Protected Methods (private cannot be mocked)
     #
@@ -111,7 +128,7 @@ PREAMBLE;
         $this->validate_database_safe_to_write();
 
         # Create database
-        $this->create_database();
+        $this->create_database($this->db_host, $this->db_user, $this->db_pass, $this->db_name);
     }
 
     protected function save_and_reload_app_config_file() {
@@ -208,7 +225,22 @@ PREAMBLE;
             }
         }
 
+        # Register user and create page
         $password = NeechySecurity::random_hex();
+        $this->register_admin_user($name, $email, $password);
+
+        # Feedback
+        $format = <<<STDOUT
+An admin has been created with your user name: %s
+Your random password is: %s
+
+Please login now and change your password.
+STDOUT;
+
+        $this->println(sprintf($format, $name, $password));
+    }
+
+    protected function register_admin_user($name, $email, $password) {
         $level = 'ADMIN';
 
         # Create user and default page
@@ -221,15 +253,7 @@ PREAMBLE;
         $page->set('editor', 'NeechySystem');
         $page->save();
 
-        # Feedback
-        $format = <<<STDOUT
-An admin has been created with your user name: %s
-Your random password is: %s
-
-Please login now and change your password.
-STDOUT;
-
-        $this->println(sprintf($format, $name, $password));
+        return $page;
     }
 
     protected function print_error($e) {
@@ -271,9 +295,9 @@ STDOUT;
     #
     # Database Methods
     #
-    private function connect_to_database_host() {
-        $host = sprintf('mysql:host=%s', $this->db_host);
-        $pdo = new PDO($host, $this->db_user, $this->db_pass);
+    private function connect_to_database_host($host, $user, $pass) {
+        $dsn = sprintf('mysql:host=%s', $host);
+        $pdo = new PDO($dsn, $user, $pass);
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         return $pdo;
     }
@@ -281,7 +305,7 @@ STDOUT;
     private function database_exists() {
         $sql = 'SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME=?';
 
-        $pdo = $this->connect_to_database_host();
+        $pdo = $this->connect_to_database_host($this->db_host, $this->db_user, $this->db_pass);
         $query = $pdo->prepare($sql);
         $query->execute(array($this->db_name));
         $row = $query->fetch(PDO::FETCH_ASSOC);
@@ -289,37 +313,25 @@ STDOUT;
         return ((bool) $row);
     }
 
-    private function create_database() {
+    private function create_database($host, $user, $pass, $db_name) {
         $this->println('Creating database');
-        $this->drop_database_if_exists();
-        $pdo = $this->connect_to_database_host();
-        $pdo->exec(sprintf('CREATE DATABASE `%s`', $this->db_name));
+        $this->drop_database_if_exists($host, $user, $pass, $db_name);
+        $pdo = $this->connect_to_database_host($host, $user, $pass);
+        $pdo->exec(sprintf('CREATE DATABASE `%s`', $db_name));
         return $pdo;
     }
 
-    private function drop_database_if_exists() {
+    private function drop_database_if_exists($host, $user, $pass, $db_name) {
         $database = NeechyConfig::get('mysql_database');
-        $pdo = $this->connect_to_database_host();
-        $pdo->exec(sprintf('DROP DATABASE IF EXISTS `%s`', $this->db_name));
+        $pdo = $this->connect_to_database_host($host, $user, $pass);
+        $pdo->exec(sprintf('DROP DATABASE IF EXISTS `%s`', $db_name));
         return $pdo;
     }
 
     private function create_model_tables() {
         $this->println('Creating database tables');
-        $models = array('Page', 'User');
-
-        foreach ( $models as $model_name ) {
-            $model = new $model_name();
-            $model_class = get_class($model);
-
-            if ( $model_class::table_exists() ) {
-                $this->println(sprintf("%s table exists", $model_name));
-            }
-            else {
-                $model_class::create_table_if_not_exists();
-                $this->println(sprintf("created %s table", $model_name));
-            }
-        }
+        $tables_created = NeechyDatabase::create_model_tables();
+        $this->println(sprintf("Created tables: %s", join(', ', $tables_created)));
     }
 
     #
@@ -340,7 +352,7 @@ STDOUT;
     }
 
     private function validate_database_connection() {
-        return $this->connect_to_database_host();
+        return $this->connect_to_database_host($this->db_host, $this->db_user, $this->db_pass);
     }
 
     private function validate_database_safe_to_write() {

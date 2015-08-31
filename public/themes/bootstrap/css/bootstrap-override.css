@@ -108,3 +108,16 @@ footer .footer-links li {
   display: inline;
   padding: 0 2px;
 }
+
+
+/*
+ * Dev Environment
+ */
+div.dev-footer {
+  padding: 2px;
+  text-align: center;
+  color: #660000;
+  background-color: #ff9999;
+  border-top: 1px solid #660000;
+  border-bottom: 1px solid #660000;
+}
