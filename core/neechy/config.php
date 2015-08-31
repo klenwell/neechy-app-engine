@@ -27,7 +27,7 @@ class NeechyConfig {
     #
     const CORE_PATH = 'config/core.conf.php';
     const STUB_PATH = 'core/handlers/install/php/stub.config.php';
-    const TEST_PATH = 'test/test.conf.php';
+    const TEST_PATH = 'config/test.conf.php';
     const APP_PATH = 'config/app.conf.php';
 
     #
@@ -97,6 +97,10 @@ class NeechyConfig {
 
     static public function app_config_path() {
         return NeechyPath::join(NEECHY_ROOT, self::APP_PATH);
+    }
+
+    static public function test_config_path() {
+        return NeechyPath::join(NEECHY_ROOT, self::TEST_PATH);
     }
 
     #

@@ -52,20 +52,21 @@ class NeechyWebService extends NeechyService {
     # Private Functions
     #
     private function validate_environment() {
-        if ( NeechyConfig::environment() == 'core' ) {
+        if ( NeechyConfig::environment() == 'app' ) {
+            return true;
+        }
+        elseif ( NeechyConfig::environment() == 'test' ) {
+            $this->setup_dev_environment();
+            return true;
+        }
+        else {
             $format = 'Config file missing. Please see %s for install help.';
             $link = '<a href="https://github.com/klenwell/neechy">Neechy README file</a>';
             throw new NeechyConfigError(sprintf($format, $link));
         }
-        elseif ( NeechyConfig::environment() == 'test' ) {
-            $this->setup_test_environment();
-        }
-        else {
-            return true;
-        }
     }
 
-    private function setup_test_environment() {
+    private function setup_dev_environment() {
         $handler_path = NeechyPath::join(NEECHY_HANDLER_CORE_PATH,
             'install', 'handler.php');
         require_once($handler_path);
@@ -74,7 +75,9 @@ class NeechyWebService extends NeechyService {
             error_log('Test database found.');
         }
         else {
-            error_log('Setting up test environment.');
+            error_log('Setting up dev environment using test configuration file.');
+
+            # Buffer console output.
             ob_start();
             $handler = new InstallHandler($this->request);
             $handler->setup_dev();
