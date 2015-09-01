@@ -90,7 +90,7 @@ class InstallHandlerTest extends PHPUnit_Framework_TestCase {
     private function select_database($db_name) {
         $sql = 'SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME=?';
 
-        $pdo = NeechyTestHelper::connect_to_database_host();
+        $pdo = NeechyDatabase::connect_to_database_host();
         $query = $pdo->prepare($sql);
         $query->execute(array($db_name));
         $row = $query->fetch(PDO::FETCH_ASSOC);
@@ -99,7 +99,7 @@ class InstallHandlerTest extends PHPUnit_Framework_TestCase {
     }
 
     private function destroy_database_if_exists($db_name) {
-        $pdo = NeechyTestHelper::connect_to_database_host();
+        $pdo = NeechyDatabase::connect_to_database_host();
         $pdo->exec(sprintf('DROP DATABASE IF EXISTS `%s`', $db_name));
         return $pdo;
     }

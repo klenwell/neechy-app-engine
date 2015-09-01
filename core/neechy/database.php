@@ -76,14 +76,14 @@ class NeechyDatabase {
 
     static public function create_database() {
         $database = NeechyConfig::get('mysql_database');
-        $pdo = self::connect_to_db();
+        $pdo = self::connect_to_database_host();
         $pdo->exec(sprintf('CREATE DATABASE `%s`', $database));
         return $pdo;
     }
 
     static public function destroy_database() {
         $database = NeechyConfig::get('mysql_database');
-        $pdo = self::connect_to_db();
+        $pdo = self::connect_to_database_host();
         $pdo->exec(sprintf('DROP DATABASE IF EXISTS `%s`', $database));
         return $pdo;
     }
