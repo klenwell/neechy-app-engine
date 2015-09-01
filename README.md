@@ -1,10 +1,11 @@
 # Neechy
 [![Build Status](https://travis-ci.org/klenwell/neechy.svg)](https://travis-ci.org/klenwell/neechy)
 
-Lightweight wiki platform written in PHP aimed at individuals and small groups
+Lightweight wiki platform written in PHP aimed at developers and small groups.
 
 
 ## Installation
+
 Using git and the command line installation script, you can get set up quickly:
 
 1. Clone repository:
@@ -19,14 +20,24 @@ Using git and the command line installation script, you can get set up quickly:
      FLUSH PRIVILEGES;
     "
 
-3. Run the console install script:
+3. Prepare the test configuration file:
 
     cd neechy
-    php console/run.php install
+    cp -v config/test.conf.php{-dist,}
 
-4. Once installed, you can test the site locally by running the PHP development server:
+Update the database user and password settings.
+
+4. Run the developer server
 
     php -S localhost:3000 -t public/
+
+You should now be able to access a development version of the site at:
+
+- http://localhost:3000/
+
+For a full installation, repeat steps 1 and 2 above, then run the console install script:
+
+    php console/run.php install
 
 
 ## Tests
