@@ -124,8 +124,10 @@ PREAMBLE;
         $this->db_name = $this->prompt_user("Enter database name", $this->db_name);
 
         # Validations
-        $this->validate_database_connection();
-        $this->validate_database_safe_to_write();
+        $this->validate_database_connection($this->db_host, $this->db_user, $this->db_pass,
+                                            $this->db_name);
+        $this->validate_database_safe_to_write($this->db_host, $this->db_user,
+                                               $this->db_pass, $this->db_name);
 
         # Create database
         $this->create_database($this->db_host, $this->db_user, $this->db_pass, $this->db_name);
@@ -302,12 +304,12 @@ STDOUT;
         return $pdo;
     }
 
-    private function database_exists() {
+    private function database_exists($host, $user, $pass, $db_name) {
         $sql = 'SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME=?';
 
-        $pdo = $this->connect_to_database_host($this->db_host, $this->db_user, $this->db_pass);
+        $pdo = $this->connect_to_database_host($host, $user, $pass);
         $query = $pdo->prepare($sql);
-        $query->execute(array($this->db_name));
+        $query->execute(array($db_name));
         $row = $query->fetch(PDO::FETCH_ASSOC);
 
         return ((bool) $row);
@@ -351,12 +353,12 @@ STDOUT;
         }
     }
 
-    private function validate_database_connection() {
-        return $this->connect_to_database_host($this->db_host, $this->db_user, $this->db_pass);
+    private function validate_database_connection($host, $user, $pass, $db_name) {
+        return $this->connect_to_database_host($host, $user, $pass, $db_name);
     }
 
-    private function validate_database_safe_to_write() {
-        $db_exists = $this->database_exists();
+    private function validate_database_safe_to_write($host, $user, $pass, $db_name) {
+        $db_exists = $this->database_exists($host, $user, $pass, $db_name);
 
         # Database does not yet exist: safe
         if ( ! $db_exists ) {
