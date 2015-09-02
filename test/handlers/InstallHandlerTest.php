@@ -38,6 +38,11 @@ class InstallHandlerTest extends PHPUnit_Framework_TestCase {
         $this->assertDatabaseDoesNotExist($this->test_db_name);
     }
 
+    public function onNotSuccessfulTest($e){
+        $this->destroy_file_if_exists(NeechyConfig::app_config_path());
+        parent::onNotSuccessfulTest($e);
+    }
+
     public function assertDatabaseExists($db_name) {
         $this->assertTrue((bool) $this->select_database($db_name));
     }
@@ -283,6 +288,36 @@ class InstallHandlerTest extends PHPUnit_Framework_TestCase {
         $this->assertEquals($this->test_db_name, NeechyConfig::get('mysql_database'));
         $this->assertDatabaseExists($this->test_db_name);
         $this->assertUserExists(NEECHY_USER);
+    }
+
+    public function testShouldThrowErrorWhenAppConfigFilePresent() {
+        # Setup NeechyConfig with App Config present
+        $test_db_name = NeechyConfig::get('mysql_database');
+        $this->assertEquals('test', NeechyConfig::environment());
+
+        # Generate app config file from test config
+        $test_config_contents = file_get_contents(NeechyConfig::test_config_path());
+        $app_config_contents = str_replace('neechy_test_config',
+                                           'neechy_app_config',
+                                           $test_config_contents);
+        file_put_contents(NeechyConfig::app_config_path(), $app_config_contents);
+
+        # Reload NeechyConfig with App Config present
+        NeechyConfig::init();
+        $this->assertEquals('app', NeechyConfig::environment());
+        $this->assertEquals($test_db_name, NeechyConfig::get('mysql_database'));
+
+        # Mock handler
+        $handler = $this->mock_install_handler(array('print_error'));
+        $handler->expects($this->any())->method('print_error')->will(
+            $this->returnCallback(function($e) { throw $e; })
+        );
+        $handler->is_console = true;
+
+        # Exercise
+        $expected_message = 'App config file is already installed.';
+        $this->setExpectedException('NeechyInstallError', $expected_message);
+        $handler->handle();
     }
 
     public function testHandlerFromWeb() {

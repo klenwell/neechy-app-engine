@@ -21,8 +21,8 @@ class NeechyTestHelper {
 
     static public function tearDown() {
         $_SERVER = array();
-        NeechyDatabase::disconnect_from_db();
         NeechyDatabase::destroy_database();
+        NeechyDatabase::disconnect_from_db();
     }
 
     static public function init_config() {
