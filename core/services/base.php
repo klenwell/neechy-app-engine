@@ -18,8 +18,8 @@ class NeechyService {
     #
     # Constructor
     #
-    public function __construct($conf_path=NULL) {
-        NeechyConfig::init($conf_path);
+    public function __construct($config) {
+        $this->config = $config;
     }
 
     #

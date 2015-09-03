@@ -7,6 +7,7 @@
  *
  */
 require_once('../core/services/base.php');
+require_once('../core/neechy/config.php');
 require_once('../test/helper.php');
 
 
@@ -27,7 +28,8 @@ class NeechyServiceTest extends PHPUnit_Framework_TestCase {
      * Tests
      */
     public function testInstantiates() {
-        $service = new NeechyService(NeechyTestHelper::TEST_CONF_PATH);
+        $config = NeechyConfig::init();
+        $service = new NeechyService($config);
         $this->assertInstanceOf('NeechyService', $service);
     }
 }

@@ -80,12 +80,21 @@ class NeechyHandler {
     #
     # Print Functions
     #
-    protected function prompt_user($prompt) {
+    protected function prompt_user($prompt, $default='') {
+        if ( $default ) {
+            $prompt = sprintf('%s: [%s] ', $prompt, $default);
+        }
+        else {
+            $prompt = sprintf('%s: ', $prompt);
+        }
+
         print($prompt);
         $stdin = fopen('php://stdin', 'r');
-        $response = fgets($stdin);
+        $response = trim(fgets($stdin));
         fclose($stdin);
-        return trim($response);
+
+        $response = ( $response ) ? $response : $default;
+        return $response;
     }
 
     protected function println($message) {

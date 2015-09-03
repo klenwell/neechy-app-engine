@@ -8,5 +8,6 @@
  */
 require_once('../core/services/web.php');
 
-$web_service = new NeechyWebService();
+$config = NeechyConfig::init();
+$web_service = new NeechyWebService($config);
 $web_service->serve();

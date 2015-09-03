@@ -1,13 +1,13 @@
 <?php
 /**
  * Neechy Main Configuration File
+ * ** DO NOT EDIT **
  *
- * To create your wiki config file:
- *  $ cp -v config/neechy.conf.php{-dist,}
+ * You should only edit config/neechy.conf.php file created on install.
  *
  */
 
-$neechy_config = array(
+$neechy_core_config = array(
     # Database Settings
     'mysql_database'    => 'NULL',
     'mysql_host'        => 'NULL',

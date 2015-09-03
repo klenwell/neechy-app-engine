@@ -1,10 +1,10 @@
 <?php
 /**
- * Neechy Main Configuration File
+ * Neechy App Configuration File
  *
  */
 
-$neechy_core_config = array(
+$neechy_app_config = array(
     # Database Settings
     'mysql_database'    => 'NULL',
     'mysql_host'        => 'NULL',
@@ -12,8 +12,8 @@ $neechy_core_config = array(
     'mysql_user'        => 'NULL',
 
     # Wiki Settings
-    'title'             => 'Neechy',
-    'keywords'          => 'wikka, wiki, niche, nietzsche',
-    'description'       => 'a lightweight wiki platform adapted from WikkaWiki',
+    'title'             => 'NeechyDev',
+    'keywords'          => 'neechy, github, klenwell',
+    'description'       => 'Neechy dev version',
     'theme'             => 'bootstrap'
 );

@@ -13,5 +13,6 @@
 chdir(__DIR__);
 require_once('../core/services/console.php');
 
-$console_service = new NeechyConsoleService();
+$config = NeechyConfig::init();
+$console_service = new NeechyConsoleService($config);
 $console_service->serve();

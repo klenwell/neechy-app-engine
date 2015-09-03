@@ -8,7 +8,7 @@ php:
   - 5.5
   
 before_script:
-  - cp test/travis-ci.conf.php-dist test/test.conf.php
+  - cp config/travis-ci.conf.php-dist config/test.conf.php
   - ln -s ${TRAVIS_BUILD_DIR}/public/themes/bootstrap/test test/themes/bootstrap
 
 script: phpunit --bootstrap test/bootstrap.php --colors .

@@ -9,7 +9,6 @@ class NeechyTestHelper {
     #
     # Constants
     #
-    const TEST_CONF_PATH = '../test/test.conf.php';
 
     /*
      * API
@@ -22,11 +21,12 @@ class NeechyTestHelper {
 
     static public function tearDown() {
         $_SERVER = array();
-        self::destroy_database();
+        NeechyDatabase::destroy_database();
+        NeechyDatabase::disconnect_from_db();
     }
 
     static public function init_config() {
-        NeechyConfig::init(self::TEST_CONF_PATH);
+        NeechyConfig::init();
     }
 
     static public function init_server_env() {
@@ -43,8 +43,8 @@ class NeechyTestHelper {
     }
 
     static public function init_database() {
-        self::destroy_database();
-        $pdo = self::create_database();
+        NeechyDatabase::destroy_database();
+        $pdo = NeechyDatabase::create_database();
         $pdo->query(sprintf('USE %s', NeechyConfig::get('mysql_database')));
     }
 
@@ -53,32 +53,5 @@ class NeechyTestHelper {
             session_destroy();
             $_SESSION = array();
         }
-    }
-
-    /*
-     * Private Functions
-     */
-    static private function connect_to_database_host() {
-        $host = sprintf('mysql:host=%s', NeechyConfig::get('mysql_host'));
-        $pdo = new PDO($host,
-            NeechyConfig::get('mysql_user'),
-            NeechyConfig::get('mysql_password')
-        );
-        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        return $pdo;
-    }
-
-    static private function create_database() {
-        $test_database = NeechyConfig::get('mysql_database');
-        $pdo = self::connect_to_database_host();
-        $pdo->exec(sprintf('CREATE DATABASE `%s`', $test_database));
-        return $pdo;
-    }
-
-    static private function destroy_database() {
-        $test_database = NeechyConfig::get('mysql_database');
-        $pdo = self::connect_to_database_host();
-        $pdo->exec(sprintf('DROP DATABASE IF EXISTS `%s`', $test_database));
-        return $pdo;
     }
 }

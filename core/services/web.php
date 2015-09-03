@@ -24,11 +24,8 @@ class NeechyWebService extends NeechyService {
     #
     # Constructor
     #
-    public function __construct($conf_path=NULL) {
-        parent::__construct($conf_path);
-
-        $this->request = NeechyRequest::load();
-        $this->page = Page::find_by_title($this->request->page);
+    public function __construct($config) {
+        parent::__construct($config);
     }
 
     #
@@ -38,6 +35,9 @@ class NeechyWebService extends NeechyService {
         try {
             NeechySecurity::start_session();
             NeechySecurity::prevent_csrf();
+            $this->request = NeechyRequest::load();
+            $this->validate_environment();
+            $this->page = Page::find_by_title($this->request->page);
             $response = $this->dispatch_to_handler();
         }
         catch (NeechyError $e) {
@@ -51,6 +51,40 @@ class NeechyWebService extends NeechyService {
     #
     # Private Functions
     #
+    private function validate_environment() {
+        if ( NeechyConfig::environment() == 'app' ) {
+            return true;
+        }
+        elseif ( NeechyConfig::environment() == 'test' ) {
+            $this->setup_dev_environment();
+            return true;
+        }
+        else {
+            $format = 'Config file missing. Please see %s for install help.';
+            $link = '<a href="https://github.com/klenwell/neechy">Neechy README file</a>';
+            throw new NeechyConfigError(sprintf($format, $link));
+        }
+    }
+
+    private function setup_dev_environment() {
+        $handler_path = NeechyPath::join(NEECHY_HANDLER_CORE_PATH,
+            'install', 'handler.php');
+        require_once($handler_path);
+
+        if ( NeechyDatabase::database_exists(NeechyConfig::get('mysql_database')) ) {
+            error_log('Test database found.');
+        }
+        else {
+            error_log('Setting up dev environment using test configuration file.');
+
+            # Buffer console output.
+            ob_start();
+            $handler = new InstallHandler($this->request);
+            $handler->setup_dev();
+            ob_end_clean();
+        }
+    }
+
     private function dispatch_to_handler() {
         $handler = $this->load_handler();
         $content = $handler->handle();

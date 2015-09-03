@@ -90,6 +90,10 @@ MYSQL;
             $model_class = get_called_class();
             $model = new $model_class();
             $model->pdo->exec($model_class::get_schema());
+            return $model->table;
+        }
+        else {
+            return null;
         }
     }
 

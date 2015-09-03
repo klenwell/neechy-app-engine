@@ -1,6 +1,6 @@
 <?php
 /**
- * Neechy Main Configuration File
+ * Neechy Travis-CI Configuration File
  *
  * In your travis.yml file include the following command:
  *
@@ -11,7 +11,7 @@
  */
 
 
-$neechy_config = array(
+$neechy_test_config = array(
     # Database Settings
     'mysql_host'        => 'localhost',
     'mysql_database'    => 'myapp_test',
