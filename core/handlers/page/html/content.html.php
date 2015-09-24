@@ -7,17 +7,18 @@ $t = $this;   # templater object
 #
 function build_page_tab_menu($t) {
   $page_tabs = array(
-    'edit' => array('Edit', $t->data('editor')),
-    'discuss' => array('Discuss', 'Under development: a comment space'),
-    'history' => array('History', 'Under development: list of page edits'),
-    'access' => array('Access', 'Under development: page access control form')
+    # key => array(label, link, panel content)
+    'edit' => array('Edit', '#edit', $t->data('editor')),
+    'discuss' => array('Discuss', '#discuss', 'Under development: a comment space'),
+    'history' => array('History', '/?handler=history&page=%s', 'Under development: list of page edits'),
+    'access' => array('Access', '#access', 'Under development: page access control form')
   );
   $user_tabs = array(
     'default' => array('edit>hide', 'discuss', 'history'),
     'logged-in' => array('edit', 'discuss', 'history', 'access')
   );
 
-  $tab_format = '<li><a href="#%s" data-toggle="tab">%s</a></li>';
+  $tab_format = '<li><a href="%s"%s>%s</a></li>';
   $panel_format = '<div class="tab-pane" id="%s">%s</div>';
 
   $tabs = array(
@@ -39,12 +40,21 @@ function build_page_tab_menu($t) {
       $mod = 'show';
     }
 
-    $tab_data = $page_tabs[$tab_key];
+    list($tab_label, $tab_link_f, $tab_content) = $page_tabs[$tab_key];
+
+    if ( substr_count($tab_link_f, '%s') > 0 ) {
+      $tab_link = sprintf($tab_link_f, $t->request->page);
+      $data_toggle = '';
+    }
+    else {
+      $tab_link = $tab_link_f;
+      $data_toggle = ' data-toggle="tab"';
+    }
 
     if ( $mod !== 'hide' ) {
-      $tabs[] = sprintf($tab_format, $tab_key, $tab_data[0]);
+      $tabs[] = sprintf($tab_format, $tab_link, $data_toggle, $tab_label);
     }
-    $panels[] = sprintf($panel_format, $tab_key, $tab_data[1]);
+    $panels[] = sprintf($panel_format, $tab_key, $tab_content);
   }
 
   return array(
