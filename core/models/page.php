@@ -139,10 +139,12 @@ MYSQL;
     }
 
     public function load_history($limit=0) {
+        // Loads page history and (1) assigns as array of Page instances to edits
+        // and (2) return array of associate array data from table.
         $sql_f = 'SELECT * FROM pages WHERE slug = ? ORDER BY id DESC%s';
 
         # Set limit
-        if ( $limit ) {
+        if ( $limit > 0 ) {
             $limit_clause = sprintf(' LIMIT %d', $limit);
         }
         else {
@@ -160,7 +162,7 @@ MYSQL;
         }
         $this->edits = $edits;
 
-        return $this;
+        return $rows;
     }
 
     #

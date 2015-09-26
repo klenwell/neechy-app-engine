@@ -59,7 +59,7 @@ class PageHelper extends BootstrapHelper {
             # handler => content
             'page' => 'loading...',
             'edit' => $templater->data('editor'),
-            'history' => 'loading...'
+            'history' => $this->history_tab_content($templater)
         );
 
         $panel_divs = array();
@@ -94,5 +94,36 @@ class PageHelper extends BootstrapHelper {
                        $class_attr,
                        $href,
                        $label);
+    }
+
+    private function history_tab_content($templater) {
+        $html_f = <<<HTML5
+    <div id="history-content">
+        <h4>loading...</h4>
+    </div>
+HTML5;
+
+        # Add script to dynamically load history on first click
+        $script_f = <<<SCRIPT
+        <script>
+            (function() {
+                var url = '/?page=%s&handler=history&format=ajax';
+
+                // .one is .on that works just once.
+                $('li.history').one('click', function() {
+                    console.debug('load history tab', url);
+
+                    $.get(url)
+                        .success(function(html) {
+                            console.debug('load history', html);
+                            $('div#history-content').html(html);
+                        });
+                });
+            })();
+        </script>
+SCRIPT;
+
+        $templater->append_to_body(sprintf($script_f, $this->request->page));
+        return $html_f;
     }
 }

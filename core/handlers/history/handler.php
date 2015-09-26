@@ -15,7 +15,9 @@ class HistoryHandler extends NeechyHandler {
     # Public Methods
     #
     public function handle() {
-        return 'TODO: render history';
+        $edits = $this->page->load_history();
+        $this->t->data('edits', $edits);
+        return $this->render_view('table');
     }
 
     #
