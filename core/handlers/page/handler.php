@@ -52,7 +52,7 @@ class PageHandler extends NeechyHandler {
     #
     # Private Methods
     #
-    private function respond($content) {
+    protected function respond($content) {
         # No AJAX response
         $templater = NeechyTemplater::load();
         $templater->page = $this->page;

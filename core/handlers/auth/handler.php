@@ -60,7 +60,7 @@ class AuthHandler extends NeechyHandler {
             $content = $this->render_view('login');
         }
 
-        return $content;
+        return $this->respond($content);
     }
 
     #
