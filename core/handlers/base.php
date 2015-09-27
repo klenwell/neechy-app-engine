@@ -39,6 +39,21 @@ class NeechyHandler {
         throw new NeechyError('NeechyHandler::handler should be overridden');
     }
 
+    private function respond($content) {
+        if ( $this->request->format == 'ajax' ) {
+            $body = $content;
+        }
+        else {
+            # Render web page
+            $templater = NeechyTemplater::load();
+            $templater->page = $this->page;
+            $templater->set('content', $content);
+            $body = $templater->render();
+        }
+
+        return new NeechyResponse($body, 200);
+    }
+
     public function render_view($id_or_path) {
         # First look for partial file in handler's html folder. If not there,
         # user theme's html folder.

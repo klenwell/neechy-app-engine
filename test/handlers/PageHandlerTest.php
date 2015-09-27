@@ -37,13 +37,13 @@ class PageHandlerTest extends PHPUnit_Framework_TestCase {
         $request = new NeechyRequest();
         $page = Page::find_by_title('NeechyPage');
 
-
         $handler = new PageHandler($request, $page);
-        $content = $handler->handle();
+        $response = $handler->handle();
 
+        $this->assertEquals(200, $response->status);
         $this->assertContains('<div class="tab-pane page active" id="read">loading...</div>',
-                              $content);
-        $this->assertContains($page->field('body'), $content);
+                              $response->body);
+        $this->assertContains($page->field('body'), $response->body);
     }
 
     public function testInstantiates() {

@@ -39,13 +39,14 @@ class NeechyWebService extends NeechyService {
             $this->validate_environment();
             $this->page = Page::find_by_title($this->request->page);
             $handler = $this->load_handler();
-            $content = $handler->handle();
+            $response = $handler->handle();
         }
         catch (NeechyError $e) {
-            $content = $e->getMessage();
+            $handler = $this->load_error_handler();
+            $response = $handler->handler($e);
+            #$content = $e->getMessage();
         }
 
-        $response = $this->respond($content);
         $response->send_headers();
         $response->render();
     }
@@ -53,21 +54,6 @@ class NeechyWebService extends NeechyService {
     #
     # Private Functions
     #
-    private function respond($content) {
-        if ( $this->request->format == 'ajax' ) {
-            $body = $content;
-        }
-        else {
-            # Render web page
-            $templater = NeechyTemplater::load();
-            $templater->page = $this->page;
-            $templater->set('content', $content);
-            $body = $templater->render();
-        }
-
-        return new NeechyResponse($body, 200);
-    }
-
     private function validate_environment() {
         if ( NeechyConfig::environment() == 'app' ) {
             return true;
@@ -121,6 +107,13 @@ class NeechyWebService extends NeechyService {
         }
 
         $handler = new $HandlerClass($this->request, $this->page);
+        return $handler;
+    }
+
+    private function load_error_handler() {
+        $handler_path = NeechyPath::join(NEECHY_HANDLER_CORE_PATH, 'error', 'handler.php');
+        require_once($handler_path);
+        $handler = new ErrorHandler($this->request, $this->page);
         return $handler;
     }
 }

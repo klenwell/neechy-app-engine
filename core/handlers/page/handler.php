@@ -39,13 +39,28 @@ class PageHandler extends NeechyHandler {
         $this->t->data('page-title', $page_title);
         $this->t->data('last-edited', $last_edited);
         $content = $this->render_view('content');
-        #$content = $this->t->render_partial_by_id('content');
-        return $content;
+
+        # Return response
+        if ( $this->request->format == 'json' ) {
+            return new NeechyResponse($this->page->to_json(), 200);
+        }
+        else {
+            return $this->respond($content);
+        }
     }
 
     #
     # Private Methods
     #
+    private function respond($content) {
+        # No AJAX response
+        $templater = NeechyTemplater::load();
+        $templater->page = $this->page;
+        $templater->set('content', $content);
+        $body = $templater->render();
+        return new NeechyResponse($body, 200);
+    }
+
     private function render_page_controls() {
         $format = <<<HTML5
       <div id="page-controls" class="navbar">
