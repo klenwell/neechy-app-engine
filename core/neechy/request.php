@@ -24,6 +24,7 @@ class NeechyRequest {
     public $action = NULL;
     public $mod_rewrite_on = FALSE;
 
+    private $valid_formats = array('html', 'ajax');
     private $params = array();
 
     #
@@ -31,6 +32,7 @@ class NeechyRequest {
     #
     public function __construct() {
         $this->params = array_merge($_GET, $_POST);
+        $this->format = $this->set_format();
         $this->page = $this->set_page();
         $this->handler = $this->set_handler();
         $this->action = $this->set_action();
@@ -93,10 +95,14 @@ class NeechyRequest {
         return (isset($_GET[$key])) ? trim($_GET[$key]) : $default;
     }
 
-
     #
     # Private Methods
     #
+    private function set_format() {
+        $format = $this->param('format');
+        return (in_array($format, $this->valid_formats)) ? $format : 'html';
+    }
+
     private function set_page() {
         return $this->param('page', self::DEFAULT_PAGE);
     }

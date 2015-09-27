@@ -238,7 +238,7 @@ HTML5;
         return sprintf($format, implode(' ', $attrs), $text);
     }
 
-    public function neechy_link($label, $page=NULL, $handler=NULL, $action=NULL,
+    public function neechy_link($label, $page=null, $handler=null, $action=null,
         $options=array()) {
 
         $page = (is_null($page)) ? $label : $page;
