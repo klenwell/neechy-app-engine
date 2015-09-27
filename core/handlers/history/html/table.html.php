@@ -12,10 +12,10 @@ $t = $this;   # templater object
         </tr>
         <?php foreach ( $t->data('edits') as $row ): ?>
         <tr>
-          <td class=""><?php echo $row['id']; ?></td>
-          <td class=""><?php echo $row['editor']; ?></td>
-          <td class=""><?php echo strlen($row['body']); ?></td>
-          <td class=""><?php echo $row['created_at']; ?></td>
+          <td class="id"><?php echo $row['id']; ?></td>
+          <td class="editor"><?php echo $row['editor']; ?></td>
+          <td class="body"><?php echo strlen($row['body']); ?></td>
+          <td class="created_at"><?php echo $row['created_at']; ?></td>
         </tr>
         <?php endforeach ?>
       </table>
