@@ -22,15 +22,30 @@ class PageHandlerTest extends PHPUnit_Framework_TestCase {
         NeechyTestHelper::setUp();
         UserFixture::init();
         PageFixture::init();
+        $_SESSION['csrf_token'] = 'foo';
     }
 
     public function tearDown() {
         NeechyTestHelper::tearDown();
+        $_SESSION['csrf_token'] = null;
     }
 
     /**
      * Tests
      */
+    public function testShouldDisplayPage() {
+        $request = new NeechyRequest();
+        $page = Page::find_by_title('NeechyPage');
+
+
+        $handler = new PageHandler($request, $page);
+        $content = $handler->handle();
+
+        $this->assertContains('<div class="tab-pane page active" id="read">loading...</div>',
+                              $content);
+        $this->assertContains($page->field('body'), $content);
+    }
+
     public function testInstantiates() {
         $request = new NeechyRequest();
         $handler = new PageHandler($request);

@@ -38,12 +38,14 @@ class NeechyWebService extends NeechyService {
             $this->request = NeechyRequest::load();
             $this->validate_environment();
             $this->page = Page::find_by_title($this->request->page);
-            $response = $this->dispatch_to_handler();
+            $handler = $this->load_handler();
+            $content = $handler->handle();
         }
         catch (NeechyError $e) {
-            $response = $this->dispatch_to_error($e);
+            $content = $e->getMessage();
         }
 
+        $response = $this->respond($content);
         $response->send_headers();
         $response->render();
     }
@@ -51,6 +53,21 @@ class NeechyWebService extends NeechyService {
     #
     # Private Functions
     #
+    private function respond($content) {
+        if ( $this->request->format == 'ajax' ) {
+            $body = $content;
+        }
+        else {
+            # Render web page
+            $templater = NeechyTemplater::load();
+            $templater->page = $this->page;
+            $templater->set('content', $content);
+            $body = $templater->render();
+        }
+
+        return new NeechyResponse($body, 200);
+    }
+
     private function validate_environment() {
         if ( NeechyConfig::environment() == 'app' ) {
             return true;
@@ -83,33 +100,6 @@ class NeechyWebService extends NeechyService {
             $handler->setup_dev();
             ob_end_clean();
         }
-    }
-
-    private function dispatch_to_handler() {
-        $handler = $this->load_handler();
-        $content = $handler->handle();
-
-        # Render web page
-        $templater = NeechyTemplater::load();
-        $templater->page = $this->page;
-        $templater->set('content', $content);
-        $body = $templater->render();
-
-        # Prepare response
-        $response = new NeechyResponse($body, 200);
-        return $response;
-    }
-
-    private function dispatch_to_error($e) {
-        # Render web page
-        $templater = NeechyTemplater::load();
-        $templater->page = $this->page;
-        $templater->set('content', $e->getMessage());
-        $body = $templater->render();
-
-        # Prepare response
-        $response = new NeechyResponse($body, 200);
-        return $response;
     }
 
     private function load_handler() {
