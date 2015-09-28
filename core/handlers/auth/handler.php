@@ -2,12 +2,12 @@
 /**
  * core/handlers/auth/handler.php
  *
- * PageHandler class.
+ * AuthHandler class.
  *
  */
 require_once('../core/handlers/base.php');
 require_once('../core/neechy/path.php');
-require_once('../core/neechy/templater.php');
+require_once('../core/neechy/response.php');
 require_once('../core/models/user.php');
 require_once('../core/models/page.php');
 require_once('../core/handlers/auth/php/validator.php');
