@@ -12,6 +12,7 @@ require_once('../core/neechy/request.php');
 require_once('../core/neechy/templater.php');
 require_once('../core/neechy/response.php');
 require_once('../core/models/page.php');
+require_once('../core/handlers/error/handler.php');
 
 
 
@@ -19,7 +20,7 @@ class NeechyWebService extends NeechyService {
     #
     # Properties
     #
-    private $request = NULL;
+    private $request = null;
 
     #
     # Constructor
@@ -42,9 +43,8 @@ class NeechyWebService extends NeechyService {
             $response = $handler->handle();
         }
         catch (NeechyError $e) {
-            $handler = $this->load_error_handler();
-            $response = $handler->handler($e);
-            #$content = $e->getMessage();
+            $handler = new ErrorHandler($this->request, $this->page);
+            $response = $handler->handle($e);
         }
 
         $response->send_headers();
@@ -103,17 +103,11 @@ class NeechyWebService extends NeechyService {
         }
         else {
             throw new NeechyWebServiceError(sprintf('handler %s not found',
-                $this->request->handler));
+                                                    $this->request->handler),
+                                            404);
         }
 
         $handler = new $HandlerClass($this->request, $this->page);
-        return $handler;
-    }
-
-    private function load_error_handler() {
-        $handler_path = NeechyPath::join(NEECHY_HANDLER_CORE_PATH, 'error', 'handler.php');
-        require_once($handler_path);
-        $handler = new ErrorHandler($this->request, $this->page);
         return $handler;
     }
 }

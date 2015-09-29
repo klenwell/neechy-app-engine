@@ -9,8 +9,12 @@
 # Errors
 #
 class NeechyError extends Exception {
+
+    public $status_code = 500;
+
     public function __construct($message, $code=0) {
         parent::__construct($message, $code);
+        $this->status_code = $code;
     }
 
     public function __toString() {

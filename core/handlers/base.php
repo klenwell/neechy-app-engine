@@ -67,7 +67,7 @@ class NeechyHandler {
     #
     # Protected Methods
     #
-    protected function respond($content) {
+    protected function respond($content, $status=200) {
         if ( $this->request->format == 'ajax' ) {
             $body = $content;
         }
@@ -79,7 +79,7 @@ class NeechyHandler {
             $body = $templater->render();
         }
 
-        return new NeechyResponse($body, 200);
+        return new NeechyResponse($body, $status);
     }
 
     protected function html_path() {
