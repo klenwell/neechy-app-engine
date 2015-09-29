@@ -77,6 +77,17 @@ class UserModelTest extends PHPUnit_Framework_TestCase {
                                                           $user->field('password')));
     }
 
+    public function testShouldConvertFieldsToJSON() {
+        $user = User::find_by_name('NeechyUser');
+        $expected = sprintf(
+            '{"id":"1","name":"NeechyUser","email":"nuser@neechy.org","password":"",' .
+            '"status":"0","challenge":"","theme":"","show_comments":"N",' .
+            '"created_at":"%s","updated_at":null}',
+            $user->field('created_at')
+        );
+        $this->assertEquals($expected, $user->to_json());
+    }
+
     public function testShouldInstantiateUser() {
         $user = new User();
         $this->assertInstanceOf('User', $user);
