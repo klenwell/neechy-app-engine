@@ -37,6 +37,7 @@ class PageHandler extends NeechyHandler {
 
         # Render partial
         $this->t->data('page-title', $page_title);
+        $this->t->data('page-body', $this->page->body_to_html());
         $this->t->data('last-edited', $last_edited);
         $content = $this->render_view('content');
 
