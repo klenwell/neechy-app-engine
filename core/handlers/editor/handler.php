@@ -1,8 +1,8 @@
 <?php
 /**
- * core/handlers/page/handler.php
+ * core/handlers/editor/handler.php
  *
- * PageHandler class.
+ * EditorHandler class
  *
  */
 require_once('../core/handlers/base.php');
@@ -10,7 +10,7 @@ require_once('../core/neechy/templater.php');
 require_once('../core/neechy/response.php');
 
 
-class PageHandler extends NeechyHandler {
+class EditorHandler extends NeechyHandler {
     #
     # Public Methods
     #
@@ -37,17 +37,12 @@ class PageHandler extends NeechyHandler {
 
         # Render partial
         $this->t->data('page-title', $page_title);
-        $this->t->data('panel-content', $this->page->body_to_html());
+        $this->t->data('page-body', $this->page->field('body'));
         $this->t->data('last-edited', $last_edited);
-        $content = $this->render_view('content');
+        $content = $this->render_view('editor');
 
         # Return response
-        if ( $this->request->format == 'json' ) {
-            return new NeechyResponse($this->page->to_json(), 200);
-        }
-        else {
-            return $this->respond($content);
-        }
+        return $this->respond($content);
     }
 
     #

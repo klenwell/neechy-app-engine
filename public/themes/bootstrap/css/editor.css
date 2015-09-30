@@ -17,6 +17,10 @@
 	padding-bottom: 8px;
 }
 
+div#editor {
+  display: block;
+}
+
 div.actions {
 	padding: 12px 8px;
 }
@@ -130,4 +134,3 @@ div.wmd-panel textarea {
 	font-size: 0.8em;
 	font-weight: bold;
 }
-
