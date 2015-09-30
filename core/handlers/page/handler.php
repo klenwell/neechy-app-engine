@@ -22,10 +22,10 @@ class PageHandler extends NeechyHandler {
             NeechyResponse::redirect($this->page->url());
         }
         elseif ( $this->page->is_new() ) {
-            $this->t->data('editor', $this->t->render_editor());
+            #$this->t->data('editor', $this->t->render_editor());
         }
         else {
-            $this->t->data('editor', $this->t->render_editor($this->page->field('body')));
+            #$this->t->data('editor', $this->t->render_editor($this->page->field('body')));
         }
 
         # Partial variables
@@ -37,7 +37,7 @@ class PageHandler extends NeechyHandler {
 
         # Render partial
         $this->t->data('page-title', $page_title);
-        $this->t->data('page-body', $this->page->body_to_html());
+        $this->t->data('panel-content', $this->page->body_to_html());
         $this->t->data('last-edited', $last_edited);
         $content = $this->render_view('content');
 

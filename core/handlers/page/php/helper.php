@@ -20,10 +20,10 @@ class PageHelper extends BootstrapHelper {
     #
     public function build_page_tab_menu($page_title) {
         $page_tabs = array(
-            # handler => array(label, href)
-            'page' => array($page_title, '#read'),
-            'edit' => array('Edit', '#edit'),
-            'history' => array('History', '#history')
+            # handler => label
+            'page' => $page_title,
+            'editor' => 'Edit',
+            'history' => 'History'
         );
 
         $tabs_by_user_status = array(
@@ -37,7 +37,8 @@ class PageHelper extends BootstrapHelper {
         $tab_links = array();
 
         foreach ( $user_tabs as $handler) {
-            list($label, $href) = $page_tabs[$handler];
+            $label = $page_tabs[$handler];
+            $href = NeechyPath::url($this->request->page, $handler);
             $classes = array( $handler );
 
             if ( $handler == 'page' ) {
@@ -54,13 +55,14 @@ class PageHelper extends BootstrapHelper {
         return implode("\n", $tab_links);
     }
 
-    public function build_tab_panels($templater) {
+    public function build_tab_panels($panel_content) {
         $page_tabs = array(
             # handler => content
             'page' => 'loading...',
-            'edit' => $templater->data('editor'),
-            'history' => $this->history_tab_content($templater)
+            'editor' => 'loading...',
+            'history' => 'loading...'
         );
+        $page_tabs[$this->request->handler] = $panel_content;
 
         $panel_divs = array();
         $panel_format = '<div class="%s" id="%s">%s</div>';
@@ -86,7 +88,8 @@ class PageHelper extends BootstrapHelper {
     # Private Methods
     #
     private function build_page_tab_link($label, $href, $classes=array()) {
-        $tab_format = '<li class="%s"><a href="%s" data-toggle="tab">%s</a></li>';
+        # Change data-toggle-off to data-toggle below to reenable Bootstrap tab panels.
+        $tab_format = '<li class="%s"><a href="%s" data-toggle-off="tab">%s</a></li>';
 
         $class_attr = implode(' ', $classes);
 

@@ -16,13 +16,7 @@ $helper = new PageHelper($t->request);
       <!-- Tab Panes -->
       <div id="main-content">
         <div class="tab-content">
-          <div class="tab-pane page active" id="read">
-            <?php echo $t->data('page-body'); ?>
-          </div>
-          <div class="tab-pane edit" id="edit">
-          </div>
-          <div class="tab-pane history" id="history">
-          </div>
+          <?php echo $helper->build_tab_panels($t->data('panel-content')); ?>
         </div>
       </div>
 
