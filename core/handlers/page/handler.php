@@ -15,19 +15,6 @@ class PageHandler extends NeechyHandler {
     # Public Methods
     #
     public function handle() {
-        # Action tree
-        if ( $this->request->action_is('save') ) {
-            $this->page->set('body', $this->request->post('page-body'));
-            $this->page->save();
-            NeechyResponse::redirect($this->page->url());
-        }
-        elseif ( $this->page->is_new() ) {
-            #$this->t->data('editor', $this->t->render_editor());
-        }
-        else {
-            #$this->t->data('editor', $this->t->render_editor($this->page->field('body')));
-        }
-
         # Partial variables
         $last_edited = sprintf('Last edited by %s on %s',
             $this->page->editor_link(),
