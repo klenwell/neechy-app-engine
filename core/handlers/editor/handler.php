@@ -17,15 +17,21 @@ class EditorHandler extends NeechyHandler {
     public function handle() {
         # Action tree
         if ( $this->request->action_is('save') ) {
-            $this->page->set('body', $this->request->post('page-body'));
+            $this->page->set('body', $this->request->post('wmd-input'));
             $this->page->save();
             NeechyResponse::redirect($this->page->url());
         }
-        elseif ( $this->page->is_new() ) {
-            #$this->t->data('editor', $this->t->render_editor());
+        elseif ( $this->request->action_is('preview') ) {
+            $markdown = new Parsedown();
+            $preview_html = $markdown->text($this->request->post('wmd-input'));
+            $this->t->data('preview', $preview_html);
+            $this->t->data('page-body', $this->request->post('wmd-input'));
+        }
+        elseif ( $this->request->action_is('edit') ) {
+            $this->t->data('page-body', $this->request->post('wmd-input'));
         }
         else {
-            #$this->t->data('editor', $this->t->render_editor($this->page->field('body')));
+            $this->t->data('page-body', $this->page->field('body'));
         }
 
         # Partial variables
@@ -36,8 +42,8 @@ class EditorHandler extends NeechyHandler {
         $page_title = NeechyTemplater::titleize_camel_case($this->page->get_title());
 
         # Render partial
+        $this->t->data('action', $this->request->action);
         $this->t->data('page-title', $page_title);
-        $this->t->data('page-body', $this->page->field('body'));
         $this->t->data('last-edited', $last_edited);
         $content = $this->render_view('editor');
 

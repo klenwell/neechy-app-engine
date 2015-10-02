@@ -22,21 +22,36 @@ $page_helper = new PageHelper($t->request);
         <div class="tab-content">
           <div class="tab-pane editor" id="editor">
             <div id="neechy-editor">
-              <div id="wmd-editor" class="wmd-panel">
-                <div id="wmd-button-bar"></div>
-                <textarea class="form-control wmd-input" id="wmd-input"><?php echo $t->data('page-body') ?></textarea>
-              </div>
-              <div id="wmd-preview" class="wmd-panel wmd-preview well"></div>
-            </div>
+              <?php echo $t->open_form('', 'post', array('class' => 'save-page')); ?>
 
-            <div class="actions">
-              <button class="btn btn-primary preview">preview</button>
-              <button class="btn btn-primary edit">edit</button>
-              <button class="btn btn-info save">save</button>
-                 <?php echo $t->open_form('', 'post', array('class' => 'save-page')); ?>
-                  <textarea id="page-body" name="page-body" style="display:none;"></textarea>
-                  <input type="hidden" name="action" value="save" />
-                <?php echo $t->close_form(); ?>
+                <?php # Preview Panel ?>
+                <?php if ( $t->data('action') == 'preview' ): ?>
+                <div id="wmd-preview" class="wmd-panel wmd-preview well">
+                  <?php echo $t->data('preview') ?>
+                </div>
+                <textarea class="form-control wmd-input hidden"
+                          name="wmd-input"
+                          id="wmd-input"><?php echo $t->data('page-body') ?></textarea>
+
+                <?php # Editor ?>
+                <?php else: ?>
+                <div id="wmd-editor" class="wmd-panel">
+                  <div id="wmd-button-bar"></div>
+                  <textarea class="form-control wmd-input"
+                            name="wmd-input"
+                            id="wmd-input"><?php echo $t->data('page-body') ?></textarea>
+                </div>
+                <?php endif; ?>
+
+                <div class="actions">
+                  <?php if ( $t->data('action') == 'preview' ): ?>
+                  <input type="submit" class="btn btn-primary edit" name="action" value="edit" />
+                  <?php else: ?>
+                  <input type="submit" class="btn btn-primary preview" name="action" value="preview" />
+                  <?php endif; ?>
+                  <input type="submit" class="btn btn-info save" name="action" value="save" />
+                </div>
+              <?php echo $t->close_form(); ?>
             </div>
           </div>
         </div>

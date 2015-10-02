@@ -27,8 +27,8 @@ class PageHelper extends BootstrapHelper {
         );
 
         $tabs_by_user_status = array(
-            'default' => array_keys($page_tabs),
-            'logged-in' => array('page', 'history')
+            'default' => array('page', 'history'),
+            'logged-in' => array_keys($page_tabs)
         );
 
         $user_status = ( User::is_logged_in() ) ? 'logged-in' : 'default';
@@ -47,6 +47,12 @@ class PageHelper extends BootstrapHelper {
 
             if ( $handler == $this->request->handler ) {
                 $classes[] = 'active';
+            }
+
+            if ( $this->request->handler == 'editor' &&
+                 $handler == $this->request->handler &&
+                 $this->request->action == 'preview' ) {
+                $label = 'Preview';
             }
 
             $tab_links[] = $this->build_page_tab_link($label, $href, $classes);
