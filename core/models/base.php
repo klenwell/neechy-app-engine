@@ -115,6 +115,10 @@ MYSQL;
         return !($this->is_new());
     }
 
+    public function to_json() {
+        return json_encode($this->fields);
+    }
+
     #
     # Public Field Methods
     #

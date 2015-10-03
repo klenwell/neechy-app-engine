@@ -16,8 +16,15 @@ class HistoryHandler extends NeechyHandler {
     #
     public function handle() {
         $edits = $this->page->load_history();
-        $this->t->data('edits', $edits);
-        return $this->render_view('table');
+
+        if ( $this->request->format == 'ajax' ) {
+            return new NeechyResponse(json_encode($edits), 200);
+        }
+        else {
+            $this->t->data('edits', $edits);
+            $content = $this->render_view('table');
+            return $this->respond($content);
+        }
     }
 
     #
