@@ -83,15 +83,15 @@ class NeechyRequest {
         }
     }
 
-    public function param($key, $default=NULL) {
+    public function param($key, $default=null) {
         return (isset($this->params[$key])) ? trim($this->params[$key]) : $default;
     }
 
-    public function post($key, $default=NULL) {
+    public function post($key, $default=null) {
         return (isset($_POST[$key])) ? trim($_POST[$key]) : $default;
     }
 
-    public function get($key, $default=NULL) {
+    public function get($key, $default=null) {
         return (isset($_GET[$key])) ? trim($_GET[$key]) : $default;
     }
 
@@ -114,6 +114,6 @@ class NeechyRequest {
 
     private function set_action() {
         $action = $this->param('action');
-        return (! is_null($action)) ? strtolower($action) : NULL;
+        return (! is_null($action)) ? strtolower($action) : null;
     }
 }

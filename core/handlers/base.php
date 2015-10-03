@@ -67,6 +67,21 @@ class NeechyHandler {
     #
     # Protected Methods
     #
+    protected function respond($content, $status=200) {
+        if ( $this->request->format == 'ajax' ) {
+            $body = $content;
+        }
+        else {
+            # Render web page
+            $templater = NeechyTemplater::load();
+            $templater->page = $this->page;
+            $templater->set('content', $content);
+            $body = $templater->render();
+        }
+
+        return new NeechyResponse($body, $status);
+    }
+
     protected function html_path() {
         return NeechyPath::join(NEECHY_HANDLER_CORE_PATH, $this->folder_name(), 'html');
     }

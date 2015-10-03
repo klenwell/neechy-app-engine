@@ -12,6 +12,7 @@ require_once('../core/neechy/request.php');
 require_once('../core/neechy/templater.php');
 require_once('../core/neechy/response.php');
 require_once('../core/models/page.php');
+require_once('../core/handlers/error/handler.php');
 
 
 
@@ -19,7 +20,7 @@ class NeechyWebService extends NeechyService {
     #
     # Properties
     #
-    private $request = NULL;
+    private $request = null;
 
     #
     # Constructor
@@ -39,13 +40,13 @@ class NeechyWebService extends NeechyService {
             $this->validate_environment();
             $this->page = Page::find_by_title($this->request->page);
             $handler = $this->load_handler();
-            $content = $handler->handle();
+            $response = $handler->handle();
         }
         catch (NeechyError $e) {
-            $content = $e->getMessage();
+            $handler = new ErrorHandler($this->request, $this->page);
+            $response = $handler->handle($e);
         }
 
-        $response = $this->respond($content);
         $response->send_headers();
         $response->render();
     }
@@ -53,21 +54,6 @@ class NeechyWebService extends NeechyService {
     #
     # Private Functions
     #
-    private function respond($content) {
-        if ( $this->request->format == 'ajax' ) {
-            $body = $content;
-        }
-        else {
-            # Render web page
-            $templater = NeechyTemplater::load();
-            $templater->page = $this->page;
-            $templater->set('content', $content);
-            $body = $templater->render();
-        }
-
-        return new NeechyResponse($body, 200);
-    }
-
     private function validate_environment() {
         if ( NeechyConfig::environment() == 'app' ) {
             return true;
@@ -117,7 +103,8 @@ class NeechyWebService extends NeechyService {
         }
         else {
             throw new NeechyWebServiceError(sprintf('handler %s not found',
-                $this->request->handler));
+                                                    $this->request->handler),
+                                            404);
         }
 
         $handler = new $HandlerClass($this->request, $this->page);

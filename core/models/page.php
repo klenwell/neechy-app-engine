@@ -11,6 +11,7 @@
 require_once('../core/models/base.php');
 require_once('../core/models/user.php');
 require_once('../core/neechy/path.php');
+require_once('../lib/parsedown/Parsedown.php');
 
 
 class Page extends NeechyModel {
@@ -185,5 +186,11 @@ MYSQL;
 
     public function get_title($default='Page') {
         return $this->field('title', $this->field('slug', $default));
+    }
+
+    public function body_to_html() {
+        # Returns body as html.
+        $markdown = new Parsedown();
+        return $markdown->text($this->field('body'));
     }
 }

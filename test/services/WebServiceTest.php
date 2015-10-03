@@ -31,6 +31,15 @@ class WebServiceTest extends PHPUnit_Framework_TestCase {
     /**
      * Tests
      */
+    public function testShouldRenderPage() {
+        # Cannot test using PhpUnit. Unable to mock NeechyRequest call within NeechyWebService
+        # serve method call without refactoring code.
+    }
+
+    public function testShouldReturn404StatusForMissingHandler() {
+        # Cannot test using PhpUnit. See note above.
+    }
+
     public function testInstantiates() {
         $config = NeechyConfig::init();
         $web_service = new NeechyWebService($config);
