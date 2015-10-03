@@ -24,7 +24,6 @@ class HistoryHandlerTest extends PHPUnit_Framework_TestCase {
         PageFixture::init();
 
         $this->request = new NeechyRequest();
-        $this->request->format = 'ajax';
         $this->page = Page::find_by_title('NeechyPage');
     }
 
@@ -39,11 +38,12 @@ class HistoryHandlerTest extends PHPUnit_Framework_TestCase {
      */
     public function testShouldReturnPageHistory() {
         $handler = new HistoryHandler($this->request, $this->page);
-        $content = $handler->handle();
+        $response = $handler->handle();
 
-        $this->assertContains('<td class="id">1</td>', $content);
-        $this->assertContains('<td class="id">2</td>', $content);
-        $this->assertContains('<td class="id">3</td>', $content);
+        $this->assertEquals(200, $response->status);
+        $this->assertContains('<td class="id">1</td>', $response->body);
+        $this->assertContains('<td class="id">2</td>', $response->body);
+        $this->assertContains('<td class="id">3</td>', $response->body);
     }
 
     public function testInstantiates() {

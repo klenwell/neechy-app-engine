@@ -26,13 +26,13 @@ class PageHandler extends NeechyHandler {
         $this->t->data('page-title', $page_title);
         $this->t->data('panel-content', $this->page->body_to_html());
         $this->t->data('last-edited', $last_edited);
-        $content = $this->render_view('content');
 
         # Return response
-        if ( $this->request->format == 'json' ) {
+        if ( $this->request->format == 'ajax' ) {
             return new NeechyResponse($this->page->to_json(), 200);
         }
         else {
+            $content = $this->render_view('content');
             return $this->respond($content);
         }
     }
