@@ -1,0 +1,35 @@
+<?php
+/**
+ * Neechy App Configuration File
+ *
+ * Move to enable before editing:
+ * mv -v app.conf.php{-dist,}
+ *
+ */
+
+$neechy_core_config = array(
+    'default' => array(
+        # Database Settings
+        'mysql_database'    => 'NULL',
+        'mysql_host'        => 'NULL',
+        'mysql_password'    => 'NULL',
+        'mysql_user'        => 'NULL',
+
+        # Wiki Settings
+        'title'             => 'Neechy',
+        'keywords'          => 'wikka, wiki, niche, nietzsche',
+        'description'       => 'a lightweight wiki platform adapted from WikkaWiki',
+        'theme'             => 'bootstrap'
+    ),
+
+    # For dev environment, override default settings here.
+    'dev' => array(),
+
+    # For cloud/production environment, override settings here.
+    'cloud' => array(
+        'mysql_host'        => 'unix_socket=/cloudsql',
+        'mysql_database'    => 'TBA',
+        'mysql_password'    => 'root',
+        'mysql_user'        => '',
+    )
+);
