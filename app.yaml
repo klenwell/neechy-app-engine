@@ -22,6 +22,10 @@ handlers:
 - url: /phpinfo
   script: phpinfo.php
   login: admin
+  
+- url: /ping(/.*)?
+  script: ping.php
+  login: admin
 
 - url: /.*
   script: public/index.php
