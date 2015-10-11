@@ -6,6 +6,7 @@
  *
  */
 require_once('../core/services/base.php');
+require_once('../core/neechy/errors.php');
 
 use google\appengine\api\users\User;
 use google\appengine\api\users\UserService;
@@ -60,8 +61,7 @@ class AppAuthService extends NeechyService {
     # Private Functions
     #
     protected function forbid_access() {
-        die('TODO: throw new AppAuthError($message, 404);');
-        return $this->respond($content);
+        throw new NeechyWebServiceError('You are not permitted to access this page.', 403);
     }
 
 }
