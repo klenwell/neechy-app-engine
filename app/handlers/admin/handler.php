@@ -34,7 +34,7 @@ class AdminHandler extends NeechyHandler {
     #
     protected function route() {
         if ( $this->request->action_is('test') ) {
-            return 'Admin test successful.';
+            return '<h4>Admin access test is successful.</h4>';
         }
         else {
             return $this->view_dashboard();
