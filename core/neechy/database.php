@@ -103,6 +103,17 @@ class NeechyDatabase {
         return $created_tables;
     }
 
+    static public function core_model_classes() {
+        $model_classes = array();
+
+        foreach ( self::$models as $model_name ) {
+            $model = new $model_name();
+            $model_classes[] = get_class($model);
+        }
+
+        return $model_classes;
+    }
+
     #
     # Private class function
     #

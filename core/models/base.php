@@ -71,6 +71,10 @@ MYSQL;
         return $schema;
     }
 
+    static public function table_name() {
+        return self::extract_table_name();
+    }
+
     static public function table_exists() {
         # http://stackoverflow.com/a/14355475/1093087
         $sql = sprintf('SELECT 1 FROM %s LIMIT 1', self::extract_table_name());
@@ -102,6 +106,12 @@ MYSQL;
         $pdo = NeechyDatabase::connect_to_db();
         $statement = $pdo->query($sql);
         return $statement->fetchAll();
+    }
+
+    static public function count() {
+        $sql = sprintf('SELECT COUNT(*) FROM %s', self::extract_table_name());
+        $pdo = NeechyDatabase::connect_to_db();
+        return $pdo->query($sql)->fetchColumn();
     }
 
     #
