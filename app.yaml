@@ -13,7 +13,7 @@ handlers:
   #
   # Static directories
   #
-- url: /public/themes
+- url: /themes
   static_dir: public/themes
   
   #
