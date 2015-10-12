@@ -101,6 +101,17 @@ MYSQL;
         }
     }
 
+    static public function drop_table_if_exists() {
+        $model_class = get_called_class();
+        $model = new $model_class();
+
+        if ( self::table_exists() ) {
+            $model->pdo->exec(sprintf('DROP TABLE IF EXISTS `%s`', $model->table));
+        }
+
+        return $model;
+    }
+
     static public function all() {
         $sql = sprintf('SELECT * FROM %s', self::extract_table_name());
         $pdo = NeechyDatabase::connect_to_db();

@@ -38,7 +38,7 @@ class NeechyWebService extends NeechyService {
             NeechySecurity::prevent_csrf();
             $this->request = NeechyRequest::load();
             $this->validate_environment();
-            $this->page = Page::find_by_title($this->request->page);
+            #$this->page = Page::find_by_title($this->request->page);
             $handler = $this->load_handler();
             $response = $handler->handle();
         }

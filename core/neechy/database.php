@@ -114,6 +114,11 @@ class NeechyDatabase {
         return $model_classes;
     }
 
+    static public function connection_status() {
+        $db = self::connect_to_db();
+        return $db->getAttribute(PDO::ATTR_CONNECTION_STATUS);
+    }
+
     #
     # Private class function
     #
