@@ -37,6 +37,17 @@ class AppAuthService extends NeechyService {
         }
     }
 
+    static public function user_email() {
+        $auth = new AppAuthService();
+
+        if ( ! $auth->user ) {
+            return null;
+        }
+        else {
+            return $auth->user->getEmail();
+        }
+    }
+
     #
     # Constructor
     #

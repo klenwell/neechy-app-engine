@@ -56,7 +56,8 @@ class AdminHandler extends NeechyHandler {
         if ( $this->request->post('confirmed-reset-db') ) {
             if ( $this->request->post('confirmed-reset-db') == $confirm_text ) {
                 $this->drop_tables();
-                NeechyDatabase::create_model_tables();
+                User::create_on_install();
+                Page::create_on_install();
                 $this->t->flash('Dropped and recreated database tables.', 'success');
             }
             else {
