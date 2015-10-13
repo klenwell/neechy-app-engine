@@ -15,6 +15,8 @@ class PageHandler extends NeechyHandler {
     # Public Methods
     #
     public function handle() {
+        $this->page = Page::find_by_title($this->request->page);
+
         # Partial variables
         $last_edited = sprintf('Last edited by %s on %s',
             $this->page->editor_link(),

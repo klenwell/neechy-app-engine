@@ -10,12 +10,9 @@ require_once('../app/services/auth.php');
 
 require_once('../core/neechy/path.php');
 require_once('../core/neechy/response.php');
-require_once('../core/models/user.php');
-require_once('../core/models/page.php');
+require_once('../app/models/user.php');
+require_once('../app/models/page.php');
 require_once('../core/handlers/auth/php/validator.php');
-
-
-
 
 
 class AdminHandler extends NeechyHandler {
@@ -33,7 +30,6 @@ class AdminHandler extends NeechyHandler {
     # Private
     #
     protected function route() {
-        #var_dump($this->request);
         if ( $this->request->action_is('test') ) {
             return '<h4>Admin access test is successful.</h4>';
         }
@@ -56,8 +52,9 @@ class AdminHandler extends NeechyHandler {
         if ( $this->request->post('confirmed-reset-db') ) {
             if ( $this->request->post('confirmed-reset-db') == $confirm_text ) {
                 $this->drop_tables();
-                User::create_on_install();
-                Page::create_on_install();
+                NeechyDatabase::create_model_tables();
+                AppUser::create_on_install();
+                AppPage::create_on_install();
                 $this->t->flash('Dropped and recreated database tables.', 'success');
             }
             else {
@@ -73,6 +70,8 @@ class AdminHandler extends NeechyHandler {
 
     protected function install_database() {
         $tables = NeechyDatabase::create_model_tables();
+        AppUser::create_on_install();
+        AppPage::create_on_install();
         $this->t->flash('Created database tables.', 'success');
         return $tables;
     }

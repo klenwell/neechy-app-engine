@@ -16,15 +16,24 @@ class AppUser extends User {
      */
     public static function create_on_install() {
         # Create System user
-        $name = NEECHY_USER;
-        $email = 'no-reply@neechy.github.com';
-        $password = NeechySecurity::random_hex();
-        $system_user = User::register($name, $email, $password);
+        $system_user_name = NEECHY_USER;
+        $system_user_email = 'no-reply@neechy.github.com';
+        $system_user = new User(array('name' => $system_user_name,
+                                      'email' => $system_user_email,
+                                      'status' => self::$STATUS_LEVELS['NEW']));
+        $system_user->set_password(NeechySecurity::random_hex());
+        $system_user->save();
 
         # Create Owner (user currently logged in)
         $app_engine_user = AppAuthService::user();
         $owner_name = $app_engine_user->getNickname();
         $owner_email = $app_engine_user->getEmail();
-        $owner = User::register($owner_name, $owner_email, NeechySecurity::random_hex());
+        $owner = new User(array('name' => $owner_name,
+                                'email' => $owner_email,
+                                'status' => self::$STATUS_LEVELS['NEW']));
+        $owner->set_password(NeechySecurity::random_hex());
+        $owner->save();
+
+        return array($system_user, $owner);
     }
 }

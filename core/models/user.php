@@ -38,8 +38,8 @@ MYSQL;
     #
     # Constants
     #
-    private static $STATUS_LEVELS = array('NEW'    => 1,
-                                          'ADMIN'   => 2);
+    protected static $STATUS_LEVELS = array('NEW'    => 1,
+                                            'ADMIN'   => 2);
 
     /*
      * Constructor

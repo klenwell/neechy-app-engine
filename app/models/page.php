@@ -15,7 +15,7 @@ require_once('../core/neechy/templater.php');
 
 class AppPage extends Page {
 
-    protected static $install_pages = array(
+    protected static $core_pages = array(
         'home',
         'NeechyFormatting',
         NEECHY_USER
@@ -26,10 +26,10 @@ class AppPage extends Page {
     #
     public static function create_on_install() {
         $pages_created = array();
-        $pages_dir = NeechyPath::join(NEECHY_CORE_PATH, 'templates/core_pages');
+        $pages_dir = NeechyPath::join(NEECHY_APP_PATH, 'templates/core_pages');
         $templater = NeechyTemplater::load();
 
-        foreach(self::$default_pages as $name) {
+        foreach(self::$core_pages as $name) {
             $basename = sprintf('%s.md.php', $name);
             $path = NeechyPath::join($pages_dir, $basename);
             $page_body = $templater->render_partial_by_path($path);
