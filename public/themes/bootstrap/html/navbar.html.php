@@ -39,7 +39,7 @@ $helper = new BootstrapHelper();
 
           <ul class="nav navbar-nav navbar-right">
             <li>
-              <?php echo $helper->user_button(); ?>
+              <?php echo $helper->app_engine_user_button(); ?>
             </li>
           </ul>
         </div><!--/.nav-collapse -->

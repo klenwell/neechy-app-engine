@@ -6,6 +6,7 @@
  *
  */
 require_once('../core/neechy/helper.php');
+require_once('../app/services/auth.php');
 
 
 class BootstrapHelper extends NeechyHelper {
@@ -157,6 +158,54 @@ HTML5;
 
             $link = $this->neechy_link('Login / SignUp', 'auth', 'login', null,
                                        array('class' => 'btn btn-primary navbar-btn'));
+            $user_button = sprintf($format, $link);
+        }
+
+        return $user_button;
+    }
+
+    public function app_engine_user_button() {
+        $logged_in_dropdown = <<<HTML5
+    <div class="btn btn-group user-button logged-in">
+      <button type="button" class="btn btn-info">%s</button>
+      <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown"
+        aria-haspopup="true" aria-expanded="false">
+        <span class="caret"></span>
+        <span class="sr-only">Toggle Dropdown</span>
+      </button>
+      <ul class="dropdown-menu">
+        %s
+      </ul>
+    </div>
+HTML5;
+
+        $app_engine_user = AppAuthService::user();
+
+        if ( $app_engine_user ) {
+            $user_email = $app_engine_user->getEmail();
+            $dropdown_links = array(
+                $this->link(AppAuthService::logout_url(), 'Logout')
+            );
+
+            $link_list = array();
+            foreach ( $dropdown_links as $dropdown_link ) {
+                $link_list[] = sprintf('<li>%s</li>', $dropdown_link);
+            }
+
+            $user_button = sprintf($logged_in_dropdown,
+                                   $user_email,
+                                   join('', $link_list));
+        }
+        else {
+            $format = <<<HTML5
+    <div class="user-button">
+      %s
+    </div>
+HTML5;
+
+            $link = $this->link(AppAuthService::login_url(),
+                                'Login',
+                                array('class' => 'btn btn-primary navbar-btn'));
             $user_button = sprintf($format, $link);
         }
 
