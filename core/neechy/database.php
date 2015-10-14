@@ -103,6 +103,18 @@ class NeechyDatabase {
         return $created_tables;
     }
 
+    static public function drop_model_tables() {
+        $dropped_tables = array();
+
+        foreach ( self::$models as $model_name ) {
+            $model = new $model_name();
+            $model_class = get_class($model);
+            $dropped_tables[] = $model_class::drop_table_if_exists();
+        }
+
+        return $dropped_tables;
+    }
+
     static public function core_model_classes() {
         $model_classes = array();
 
@@ -117,6 +129,17 @@ class NeechyDatabase {
     static public function connection_status() {
         $db = self::connect_to_db();
         return $db->getAttribute(PDO::ATTR_CONNECTION_STATUS);
+    }
+
+    static public function reset() {
+        # Require these here to avoid circular dependency error.
+        require_once('../app/models/user.php');
+        require_once('../app/models/page.php');
+
+        self::drop_model_tables();
+        self::create_model_tables();
+        AppUser::create_on_install();
+        AppPage::create_on_install();
     }
 
     #
