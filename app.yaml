@@ -23,8 +23,8 @@ handlers:
   script: phpinfo.php
   login: admin
   
-- url: /ping(/.*)?
-  script: ping.php
+- url: /reset(/.*)?
+  script: public/reset.php
   login: admin
 
 - url: /.*
