@@ -2,12 +2,18 @@
 
 $t = $this;   # templater object
 
+$auth = new AppAuthService();
+
 ?>
-    <?php if ( NeechyConfig::environment() == 'test' ) { ?>
+    <?php if ( NeechyConfig::stage() == 'dev' ) { ?>
       <div class="dev-footer">
-        <h4>Dev Environment</h4>
-        <p>Using test config settings.</p>
-        <p>To sign in: NeechyAdmin / neechy123</p>
+        <h4>App Engine Dev Server</h4>
+        <p>Using <?php echo NeechyConfig::environment(); ?> config settings.</p>
+        <?php if ( $auth->user ): ?>
+        <p>Logged in as <?php echo ( $auth->user_is_admin() ) ? 'admin' : 'user' ?>.</p>
+        <?php else: ?>
+        <p>Not logged in.</p>
+        <?php endif; ?>
       </div>
     <?php } ?>
 

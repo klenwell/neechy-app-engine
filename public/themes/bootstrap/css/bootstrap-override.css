@@ -121,3 +121,9 @@ div.dev-footer {
   border-top: 1px solid #660000;
   border-bottom: 1px solid #660000;
 }
+div.dev-footer h4 {
+  margin-bottom: 4px;
+}
+div.dev-footer p {
+  margin-bottom: 2px;
+}

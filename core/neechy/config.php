@@ -81,6 +81,10 @@ class NeechyConfig {
         return self::$instance->environment;
     }
 
+    static public function stage() {
+        return self::$instance->stage;
+    }
+
     static public function app_config_path() {
         return NeechyPath::join(NEECHY_ROOT, self::APP_PATH);
     }
