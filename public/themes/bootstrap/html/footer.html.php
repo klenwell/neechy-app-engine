@@ -5,7 +5,7 @@ $t = $this;   # templater object
 $auth = new AppAuthService();
 
 ?>
-    <?php if ( NeechyConfig::stage() == 'dev' ) { ?>
+    <?php if ( NeechyConfig::stage() == 'dev' ): ?>
       <div class="dev-footer">
         <h4>App Engine Dev Server</h4>
         <p>Using <?php echo NeechyConfig::environment(); ?> config settings.</p>
@@ -15,7 +15,11 @@ $auth = new AppAuthService();
         <p>Not logged in.</p>
         <?php endif; ?>
       </div>
-    <?php } ?>
+    <?php else: ?>
+      <div class="dev-footer">
+        Please note: Database data will be reset periodically.
+      </div>
+    <?php endif; ?>
 
     <footer>
       <div class="container">
