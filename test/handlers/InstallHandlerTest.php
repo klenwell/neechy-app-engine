@@ -110,6 +110,9 @@ class InstallHandlerTest extends PHPUnit_Framework_TestCase {
     }
 
     private function destroy_file_if_exists($path) {
+        # Disable this for app-engine version
+        return;
+
         if ( file_exists($path) ) {
             unlink($path);
         };
