@@ -74,7 +74,6 @@ class PageHelper extends BootstrapHelper {
         $panel_format = '<div class="%s" id="%s">%s</div>';
 
         foreach ( $page_tabs as $handler => $content ) {
-            list($label, $href) = $page_tabs[$handler];
             $classes = array( 'tab-pane', $handler );
 
             if ( $handler == $this->request->handler ) {

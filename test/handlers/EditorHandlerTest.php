@@ -23,11 +23,25 @@ class EditorHandlerTest extends PHPUnit_Framework_TestCase {
         UserFixture::init();
         PageFixture::init();
         $_SESSION['csrf_token'] = 'foo';
+
+        $this->mockCreateLoginUrl('index.php?page=HomePage');
     }
 
     public function tearDown() {
         NeechyTestHelper::tearDown();
         $_SESSION['csrf_token'] = null;
+    }
+
+    public function mockCreateLoginUrl($destination_url) {
+        $this->apiProxyMock = new google\appengine\testing\ApiProxyMock();
+        $this->apiProxyMock->init($this);
+
+        $req = new \google\appengine\CreateLoginURLRequest();
+        $req->setDestinationUrl($destination_url);
+        $resp = new \google\appengine\CreateLoginURLResponse();
+        $resp->setLoginUrl('http://www');
+
+        $this->apiProxyMock->expectCall('user', 'CreateLoginURL', $req, $resp);
     }
 
     /**

@@ -177,6 +177,18 @@ HEREPHP;
     # Private Instance Methods
     #
     private function compute_environment() {
+        $valid_envs = array('test', 'app');
+
+        if ( isset($_ENV['NEECHY_ENV']) ) {
+            if ( ! in_array($_ENV['NEECHY_ENV'], $valid_envs) ) {
+                throw new NeechyConfigError(sprintf('Invalid NEECHY_ENV: %s',
+                                                    $_ENV['NEECHY_ENV']));
+            }
+            else {
+                return $_ENV['NEECHY_ENV'];
+            }
+        }
+
         # If app file present, load file and assume app environment.
         if ( $this->app_config_file_present() ) {
             return 'app';

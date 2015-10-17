@@ -25,12 +25,26 @@ class HistoryHandlerTest extends PHPUnit_Framework_TestCase {
 
         $this->request = new NeechyRequest();
         $this->page = Page::find_by_title('NeechyPage');
+
+        $this->mockCreateLoginUrl('index.php?page=HomePage');
     }
 
     public function tearDown() {
         NeechyTestHelper::tearDown();
         $this->request = null;
         $this->page = null;
+    }
+
+    public function mockCreateLoginUrl($destination_url) {
+        $this->apiProxyMock = new google\appengine\testing\ApiProxyMock();
+        $this->apiProxyMock->init($this);
+
+        $req = new \google\appengine\CreateLoginURLRequest();
+        $req->setDestinationUrl($destination_url);
+        $resp = new \google\appengine\CreateLoginURLResponse();
+        $resp->setLoginUrl('http://www');
+
+        $this->apiProxyMock->expectCall('user', 'CreateLoginURL', $req, $resp);
     }
 
     /**
