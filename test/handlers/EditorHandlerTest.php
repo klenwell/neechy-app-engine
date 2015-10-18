@@ -49,9 +49,10 @@ class EditorHandlerTest extends PHPUnit_Framework_TestCase {
      */
     public function testShouldDisplayEditor() {
         $request = new NeechyRequest();
+        $request->page = 'NeechyPage';
         $page = Page::find_by_title('NeechyPage');
 
-        $handler = new EditorHandler($request, $page);
+        $handler = new EditorHandler($request);
         $response = $handler->handle();
 
         $this->assertEquals(200, $response->status);

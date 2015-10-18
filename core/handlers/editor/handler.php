@@ -15,6 +15,8 @@ class EditorHandler extends NeechyHandler {
     # Public Methods
     #
     public function handle() {
+        $this->page = Page::find_by_title($this->request->page);
+
         # Action tree
         if ( $this->request->action_is('save') ) {
             $this->page->set('body', $this->request->post('wmd-input'));

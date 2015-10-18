@@ -14,6 +14,10 @@ class AppUser extends User {
     /*
      * Static Methods
      */
+    public static function is_logged_in() {
+        return AppAuthService::user_is_logged_in();
+    }
+
     public static function create_on_install() {
         # Create System user
         $system_user_name = NEECHY_USER;

@@ -42,6 +42,11 @@ class AppAuthService extends NeechyService {
         return $auth->user;
     }
 
+    static public function user_is_logged_in() {
+        $auth = new AppAuthService();
+        return (bool) $auth->user;
+    }
+
     public function login_url() {
         return UserService::createLoginURL($_SERVER['REQUEST_URI']);
     }
