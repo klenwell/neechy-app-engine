@@ -11,6 +11,10 @@ require_once('../core/neechy/response.php');
 
 
 class EditorHandler extends NeechyHandler {
+
+    # A very simple temporary abuse control.
+    const MAX_BODY_LENGTH = 1000;
+
     #
     # Public Methods
     #
@@ -19,9 +23,16 @@ class EditorHandler extends NeechyHandler {
 
         # Action tree
         if ( $this->request->action_is('save') ) {
-            $this->page->set('body', $this->request->post('wmd-input'));
-            $this->page->save();
-            NeechyResponse::redirect($this->page->url());
+            # TODO: validate request before saving
+            if ( strlen($this->request->post('wmd-input')) > self::MAX_BODY_LENGTH ) {
+                $this->t->flash('Page content is too long. Please shorten.', 'warning');
+                $this->t->data('page-body', $this->request->post('wmd-input'));
+            }
+            else {
+                $this->page->set('body', $this->request->post('wmd-input'));
+                $this->page->save();
+                NeechyResponse::redirect($this->page->url());
+            }
         }
         elseif ( $this->request->action_is('preview') ) {
             $markdown = new Parsedown();
