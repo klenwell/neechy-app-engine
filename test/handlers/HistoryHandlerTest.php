@@ -24,7 +24,7 @@ class HistoryHandlerTest extends PHPUnit_Framework_TestCase {
         PageFixture::init();
 
         $this->request = new NeechyRequest();
-        $this->page = Page::find_by_title('NeechyPage');
+        $this->request->page = 'NeechyPage';
 
         $this->mockCreateLoginUrl('index.php?page=HomePage');
     }
@@ -32,7 +32,6 @@ class HistoryHandlerTest extends PHPUnit_Framework_TestCase {
     public function tearDown() {
         NeechyTestHelper::tearDown();
         $this->request = null;
-        $this->page = null;
     }
 
     public function mockCreateLoginUrl($destination_url) {
@@ -51,7 +50,7 @@ class HistoryHandlerTest extends PHPUnit_Framework_TestCase {
      * Tests
      */
     public function testShouldReturnPageHistory() {
-        $handler = new HistoryHandler($this->request, $this->page);
+        $handler = new HistoryHandler($this->request);
         $response = $handler->handle();
 
         $this->assertEquals(200, $response->status);
@@ -61,7 +60,7 @@ class HistoryHandlerTest extends PHPUnit_Framework_TestCase {
     }
 
     public function testInstantiates() {
-        $handler = new HistoryHandler($this->request, $this->page);
+        $handler = new HistoryHandler($this->request);
         $this->assertInstanceOf('HistoryHandler', $handler);
         $this->assertInstanceOf('NeechyHandler', $handler);
     }

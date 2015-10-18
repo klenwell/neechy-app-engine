@@ -1,6 +1,7 @@
 <?php
 
 $t = $this;   # templater object
+$page_url = NeechyPath::url($t->request->page, 'page');
 
 ?>
       <table class="table table-condensed">
@@ -19,3 +20,5 @@ $t = $this;   # templater object
         </tr>
         <?php endforeach ?>
       </table>
+
+      <p><a href="<?php echo $page_url; ?>">return to read view</a></p>

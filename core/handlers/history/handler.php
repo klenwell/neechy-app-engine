@@ -15,6 +15,7 @@ class HistoryHandler extends NeechyHandler {
     # Public Methods
     #
     public function handle() {
+        $this->page = Page::find_by_title($this->request->page);
         $edits = $this->page->load_history();
 
         if ( $this->request->format == 'ajax' ) {
