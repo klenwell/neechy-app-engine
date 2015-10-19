@@ -41,14 +41,22 @@ class NeechyDatabase {
             return self::$pdo;
         }
         else {
-            $dsn = sprintf('mysql:host=%s;dbname=%s',
-                NeechyConfig::get('mysql_host'),
-                NeechyConfig::get('mysql_database')
-            );
+            $dsn_format = 'mysql:%s;dbname=%s';
+            $db_host = NeechyConfig::get('mysql_host');
+
+            if ( strpos($db_host, 'unix_socket') === 0 ) {
+                $dsn_host = $db_host;
+            }
+            else {
+                $dsn_host = sprintf('host=%s', $db_host);
+            }
+
+            $dsn = sprintf($dsn_format,
+                           $dsn_host,
+                           NeechyConfig::get('mysql_database'));
             self::$pdo = new PDO($dsn,
-                NeechyConfig::get('mysql_user'),
-                NeechyConfig::get('mysql_password')
-            );
+                                 NeechyConfig::get('mysql_user'),
+                                 NeechyConfig::get('mysql_password'));
             self::$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             return self::$pdo;
         }
