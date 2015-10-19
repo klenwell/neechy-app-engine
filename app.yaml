@@ -11,8 +11,13 @@ version: i5noyb42
 handlers:
   
   #
-  # Static directories
+  # Public Theme Directories
+  # Allow both static and PHP (script) files
+  # http://stackoverflow.com/a/27598093/1093087
   #
+- url: /themes/(.*\.php)
+  script: themes/\1
+  
 - url: /themes
   static_dir: public/themes
   
