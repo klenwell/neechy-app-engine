@@ -12,14 +12,11 @@ handlers:
   
   #
   # Public Theme Directories
-  # Allow both static and PHP (script) files
-  # http://stackoverflow.com/a/27598093/1093087
+  # Only serve css, js, or images files as static
   #
-- url: /themes/(.*\.php)
-  script: themes/\1
-  
-- url: /themes
-  static_dir: public/themes
+- url: /themes/(.*\.(js|css|gif|png|jpg|ico))$
+  static_files: public/themes/\1
+  upload: public/themes/.*\.(js|css|gif|png|jpg|ico)$
   
   #
   # Admin Interface Endpoints
