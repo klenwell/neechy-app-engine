@@ -1,0 +1,61 @@
+# Reference: https://github.com/GoogleCloudPlatform/laravel/blob/5.0.22/app.yaml
+application: neechy-demo
+runtime: php55
+api_version: 1
+threadsafe: true
+
+# Default branch: production
+version: i5noyb42
+
+
+handlers:
+  
+  #
+  # Public Theme Directories
+  # Only serve css, js, or images files as static
+  #
+- url: /themes/(.*\.(js|css|gif|png|jpg|ico))$
+  static_files: public/themes/\1
+  upload: public/themes/.*\.(js|css|gif|png|jpg|ico)$
+  
+  #
+  # Admin Interface Endpoints
+  #
+- url: /phpinfo
+  script: phpinfo.php
+  login: admin
+  
+- url: /reset(/.*)?
+  script: public/reset.php
+  login: admin
+
+- url: /.*
+  script: public/index.php
+  
+
+env_variables:
+  # Uncomment the following to enable debug mode.
+  # APP_DEBUG: '1'
+
+  #DB_HOST: ':/cloudsql/<project-id>/<instance-id>'
+  #DB_USERNAME: 'root'
+  #DB_PASSWORD: ''
+  #DB_DATABASE: '<database-name>'
+
+  #CACHE_DRIVER: 'memcached'
+  #SESSION_DRIVER: 'memcached'
+  #MAIL_DRIVER: 'mail'
+  #LOG_DRIVER: 'syslog'
+
+  #STORAGE_PATH: 'gs://#default#/laravel/storage'
+  
+  
+skip_files:
+- ^(.*/)?#.*#$
+- ^(.*/)?.*~$
+- ^(.*/)?.*\.py[co]$
+- ^(.*/)?.*/RCS/.*$
+- ^(.*/)?\..*$
+- ^(.*/)?\.bak$
+- ^(.*/)?.*/simpletest/docs/.*$
+- ^(.*/)?.*/simpletest/test/.*$

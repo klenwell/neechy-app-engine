@@ -23,6 +23,8 @@ class EditorHandlerTest extends PHPUnit_Framework_TestCase {
         UserFixture::init();
         PageFixture::init();
         $_SESSION['csrf_token'] = 'foo';
+
+        $this->mockCreateLoginUrl('index.php?page=HomePage');
     }
 
     public function tearDown() {
@@ -30,14 +32,27 @@ class EditorHandlerTest extends PHPUnit_Framework_TestCase {
         $_SESSION['csrf_token'] = null;
     }
 
+    public function mockCreateLoginUrl($destination_url) {
+        $this->apiProxyMock = new google\appengine\testing\ApiProxyMock();
+        $this->apiProxyMock->init($this);
+
+        $req = new \google\appengine\CreateLoginURLRequest();
+        $req->setDestinationUrl($destination_url);
+        $resp = new \google\appengine\CreateLoginURLResponse();
+        $resp->setLoginUrl('http://www');
+
+        $this->apiProxyMock->expectCall('user', 'CreateLoginURL', $req, $resp);
+    }
+
     /**
      * Tests
      */
     public function testShouldDisplayEditor() {
         $request = new NeechyRequest();
+        $request->page = 'NeechyPage';
         $page = Page::find_by_title('NeechyPage');
 
-        $handler = new EditorHandler($request, $page);
+        $handler = new EditorHandler($request);
         $response = $handler->handle();
 
         $this->assertEquals(200, $response->status);

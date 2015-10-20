@@ -1,5 +1,6 @@
 <?php
 require_once('../public/themes/bootstrap/php/helper.php');
+require_once('../app/models/user.php');
 
 
 class PageHelper extends BootstrapHelper {
@@ -31,7 +32,7 @@ class PageHelper extends BootstrapHelper {
             'logged-in' => array_keys($page_tabs)
         );
 
-        $user_status = ( User::is_logged_in() ) ? 'logged-in' : 'default';
+        $user_status = ( AppUser::is_logged_in() ) ? 'logged-in' : 'default';
         $user_tabs = $tabs_by_user_status[$user_status];
 
         $tab_links = array();
@@ -74,7 +75,6 @@ class PageHelper extends BootstrapHelper {
         $panel_format = '<div class="%s" id="%s">%s</div>';
 
         foreach ( $page_tabs as $handler => $content ) {
-            list($label, $href) = $page_tabs[$handler];
             $classes = array( 'tab-pane', $handler );
 
             if ( $handler == $this->request->handler ) {

@@ -27,7 +27,11 @@ class PasswordFormValidator extends NeechyValidator {
     #
     # Public Methods
     #
-    public function validate($old_field, $new_field, $confirm_field) {
+    # public function validate($old_field, $new_field, $confirm_field) {
+    public function validate() {
+        # Overloading validate method: http://programmers.stackexchange.com/a/274135
+        list($old_field, $new_field, $confirm_field) = func_get_args();
+
         $user = User::current();
 
         $old_password = new PasswordValidator($this->request->post($old_field, ''),

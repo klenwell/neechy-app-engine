@@ -1,0 +1,13 @@
+cron:
+    
+# For more information:
+# https://cloud.google.com/appengine/docs/php/config/cron
+    
+# example (with default values)
+#- description: some backend foo
+#  url: /backend/foo     
+#  schedule: every 16 hours
+
+- description: Reset database
+  url: /reset/database   
+  schedule: every 66 mins
