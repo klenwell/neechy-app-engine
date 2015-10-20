@@ -15,29 +15,37 @@ Using git and the command line installation script, you can get set up quickly:
 
 1. Clone repository:
 
-    git clone https://github.com/klenwell/neechy-app-engine.git neechy-app-engine
+```
+git clone https://github.com/klenwell/neechy-app-engine.git neechy-app-engine
+```
 
 2. Create a mysql user (with appropriate password) for local dev server:
 
-    mysql -uroot -p -e "
-     CREATE USER 'neechy'@'localhost' IDENTIFIED BY '<PASSWORD>';
-     GRANT ALL PRIVILEGES ON * . * TO 'neechy'@'localhost';
-     FLUSH PRIVILEGES;
-    "
+```
+mysql -uroot -p -e "
+ CREATE USER 'neechy'@'localhost' IDENTIFIED BY '<PASSWORD>';
+ GRANT ALL PRIVILEGES ON * . * TO 'neechy'@'localhost';
+ FLUSH PRIVILEGES;
+"
+```
 
 3. Prepare the app configuration file to run dev server:
 
-    cd neechy
-    cp -v config/app.conf.php{-dist,}
+```
+cd neechy
+cp -v config/app.conf.php{-dist,}
+```
 
 Update the database user and password settings under the `default` key.
 
 4. Run the local Google App Engine development server at port 3333 from the project root directory:
 
-    cd ~/projects/neechy-app-engine
-    dev_appserver.py --port=3333 --admin_port=3334 --api_port=3335 \
-      --php_executable_path=/usr/bin/php-cgi \
-      ./
+```
+cd ~/projects/neechy-app-engine
+dev_appserver.py --port=3333 --admin_port=3334 --api_port=3335 \
+  --php_executable_path=/usr/bin/php-cgi \
+  ./
+```
 
 On Linux, specify the PHP executable path. To locate:
 
@@ -47,7 +55,7 @@ You should now be able to access a development version of the site at:
 
 - http://localhost:3333/
 
-Log in as a admin user to access the admin interface:
+Log in as an admin user to access the admin interface:
 
 - http://localhost:3333/admin
 
