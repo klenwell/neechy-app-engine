@@ -36,7 +36,7 @@ Using git and the command line installation script, you can get set up quickly:
     cp -v config/app.conf.php{-dist,}
     ```
 
-Update the database user and password settings under the `default` key.
+    Update the database user and password settings under the `default` key.
 
 4. Run the local Google App Engine development server at port 3333 from the project root directory:
 
@@ -47,9 +47,9 @@ Update the database user and password settings under the `default` key.
       ./
     ```
 
-On Linux, specify the PHP executable path. To locate:
+    On Linux, specify the PHP executable path. To locate:
 
-    which php
+        which php
 
 You should now be able to access a development version of the site at:
 
