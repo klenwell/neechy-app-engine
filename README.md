@@ -15,19 +15,19 @@ Using git and the command line installation script, you can get set up quickly:
 
 1. Clone repository:
 
-```
-git clone https://github.com/klenwell/neechy-app-engine.git neechy-app-engine
-```
+    ```
+    git clone https://github.com/klenwell/neechy-app-engine.git neechy-app-engine
+    ```
 
 2. Create a mysql user (with appropriate password) for local dev server:
 
-```
-mysql -uroot -p -e "
- CREATE USER 'neechy'@'localhost' IDENTIFIED BY '<PASSWORD>';
- GRANT ALL PRIVILEGES ON * . * TO 'neechy'@'localhost';
- FLUSH PRIVILEGES;
-"
-```
+    ```
+    mysql -uroot -p -e "
+     CREATE USER 'neechy'@'localhost' IDENTIFIED BY '<PASSWORD>';
+     GRANT ALL PRIVILEGES ON * . * TO 'neechy'@'localhost';
+     FLUSH PRIVILEGES;
+    "
+    ```
 
 3. Prepare the app configuration file to run dev server:
 
