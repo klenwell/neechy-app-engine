@@ -31,21 +31,21 @@ Using git and the command line installation script, you can get set up quickly:
 
 3. Prepare the app configuration file to run dev server:
 
-```
-cd neechy
-cp -v config/app.conf.php{-dist,}
-```
+    ```
+    cd neechy
+    cp -v config/app.conf.php{-dist,}
+    ```
 
 Update the database user and password settings under the `default` key.
 
 4. Run the local Google App Engine development server at port 3333 from the project root directory:
 
-```
-cd ~/projects/neechy-app-engine
-dev_appserver.py --port=3333 --admin_port=3334 --api_port=3335 \
-  --php_executable_path=/usr/bin/php-cgi \
-  ./
-```
+    ```
+    cd ~/projects/neechy-app-engine
+    dev_appserver.py --port=3333 --admin_port=3334 --api_port=3335 \
+      --php_executable_path=/usr/bin/php-cgi \
+      ./
+    ```
 
 On Linux, specify the PHP executable path. To locate:
 
