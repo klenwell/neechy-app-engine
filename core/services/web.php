@@ -38,13 +38,12 @@ class NeechyWebService extends NeechyService {
             NeechySecurity::prevent_csrf();
             $this->request = NeechyRequest::load();
             $this->validate_environment();
-            #$this->page = Page::find_by_title($this->request->page);
             $handler = $this->load_handler();
             $response = $handler->handle();
         }
         catch (NeechyError $e) {
-            $handler = new ErrorHandler($this->request, $this->page);
-            $response = $handler->handle($e);
+            $handler = new ErrorHandler($this->request);
+            $response = $handler->handle_error($e);
         }
 
         $response->send_headers();
@@ -107,7 +106,7 @@ class NeechyWebService extends NeechyService {
                                             404);
         }
 
-        $handler = new $HandlerClass($this->request, $this->page);
+        $handler = new $HandlerClass($this->request);
         return $handler;
     }
 }

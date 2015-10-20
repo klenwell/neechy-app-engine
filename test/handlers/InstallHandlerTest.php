@@ -38,7 +38,7 @@ class InstallHandlerTest extends PHPUnit_Framework_TestCase {
         $this->assertDatabaseDoesNotExist($this->test_db_name);
     }
 
-    public function onNotSuccessfulTest($e){
+    public function onNotSuccessfulTest(Exception $e){
         $this->destroy_file_if_exists(NeechyConfig::app_config_path());
         parent::onNotSuccessfulTest($e);
     }

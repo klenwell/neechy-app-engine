@@ -2,6 +2,9 @@
 #
 # Phpunit Bootstrap File
 #
+# Want to see STRICT errors
+error_reporting(E_ALL);
+
 # App expects to execute from subdirectory (pubic for web, test for tests)
 $test_dir = dirname(__FILE__);
 chdir($test_dir);

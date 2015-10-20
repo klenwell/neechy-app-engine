@@ -41,8 +41,8 @@ class ErrorHandlerTest extends PHPUnit_Framework_TestCase {
            throw new NeechyWebServiceError('Testing 404 Error', 404);
         }
         catch (NeechyError $e) {
-            $handler = new ErrorHandler($request, $page);
-            $response = $handler->handle($e);
+            $handler = new ErrorHandler($request);
+            $response = $handler->handle_error($e);
         }
 
         $this->assertEquals(404, $response->status);

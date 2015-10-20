@@ -47,11 +47,11 @@ class AppAuthService extends NeechyService {
         return (bool) $auth->user;
     }
 
-    public function login_url() {
+    static public function login_url() {
         return UserService::createLoginURL($_SERVER['REQUEST_URI']);
     }
 
-    public function logout_url() {
+    static public function logout_url() {
         return UserService::createLogoutUrl('/');
     }
 
