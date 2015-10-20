@@ -5,7 +5,7 @@ api_version: 1
 threadsafe: true
 
 # Default branch: production
-version: dev
+version: production
 
 
 handlers:
@@ -55,7 +55,9 @@ skip_files:
 - ^(.*/)?.*~$
 - ^(.*/)?.*\.py[co]$
 - ^(.*/)?.*/RCS/.*$
-- ^(.*/)?\..*$
 - ^(.*/)?\.bak$
 - ^(.*/)?.*/simpletest/docs/.*$
 - ^(.*/)?.*/simpletest/test/.*$
+
+# Files or directories starting with . (like .git/)
+- ^(.*/)?\..*$
