@@ -30,13 +30,19 @@ class AppUser extends User {
 
         # Create Owner (user currently logged in)
         $app_engine_user = AppAuthService::user();
-        $owner_name = $app_engine_user->getNickname();
-        $owner_email = $app_engine_user->getEmail();
-        $owner = new User(array('name' => $owner_name,
-                                'email' => $owner_email,
-                                'status' => self::$STATUS_LEVELS['NEW']));
-        $owner->set_password(NeechySecurity::random_hex());
-        $owner->save();
+
+        if ( $app_engine_user ) {
+            $owner_name = $app_engine_user->getNickname();
+            $owner_email = $app_engine_user->getEmail();
+            $owner = new User(array('name' => $owner_name,
+                                    'email' => $owner_email,
+                                    'status' => self::$STATUS_LEVELS['NEW']));
+            $owner->set_password(NeechySecurity::random_hex());
+            $owner->save();
+        }
+        else {
+            $owner = null;
+        }
 
         return array($system_user, $owner);
     }
