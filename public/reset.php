@@ -18,7 +18,6 @@ $json = array('params' => $params, 'action' => $action);
 if ( $action == 'database' ) {
     NeechyDatabase::reset();
     $json['result'] = 'ok';
-    syslog(LOG_INFO, 'Database reset.');
 }
 else {
     $json['warning'] = 'Invalid action.';
