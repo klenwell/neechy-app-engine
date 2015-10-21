@@ -5,7 +5,7 @@ api_version: 1
 threadsafe: true
 
 # Default branch: production
-version: dev
+version: production
 
 
 handlers:
