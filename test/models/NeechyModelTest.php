@@ -28,6 +28,11 @@ class NeechyModelTest extends PHPUnit_Framework_TestCase {
     /**
      * Tests
      */
+    public function testCount() {
+        $neechy = new NeechyModel();
+        $this->assertEquals(3, $neechy->count());
+    }
+
     public function testFindById() {
         $neechy = new NeechyModel();
         $foo_rows = $neechy->find_by_column_value('neech', 'foo');
