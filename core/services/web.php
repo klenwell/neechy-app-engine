@@ -88,6 +88,7 @@ class NeechyWebService extends NeechyService {
     }
 
     private function load_handler() {
+
         $handler_app_path = NeechyPath::join(NEECHY_HANDLER_APP_PATH,
             $this->request->handler, 'handler.php');
         $handler_core_path = NeechyPath::join(NEECHY_HANDLER_CORE_PATH,

@@ -12,10 +12,16 @@ require_once('../core/neechy/response.php');
 
 class PageHandler extends NeechyHandler {
     #
+    # Constants
+    #
+    const DEFAULT_PAGE = 'home';
+
+    #
     # Public Methods
     #
     public function handle() {
-        $this->page = Page::find_by_title($this->request->page);
+        $page_title = ( $this->request->action ) ? $this->request->action : self::DEFAULT_PAGE;
+        $this->page = Page::find_by_title($page_title);
 
         # Partial variables
         $last_edited = sprintf('Last edited by %s on %s',
