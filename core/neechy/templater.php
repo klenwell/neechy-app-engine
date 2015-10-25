@@ -8,6 +8,10 @@
 require_once('../core/neechy/constants.php');
 require_once('../core/neechy/path.php');
 require_once('../core/neechy/request.php');
+require_once('../core/neechy/errors.php');
+
+
+class NeechyTemplatingError extends NeechyError {}
 
 
 class NeechyTemplater {
@@ -52,6 +56,10 @@ class NeechyTemplater {
         }
     }
 
+    static public function clear($theme='bootstrap') {
+        self::$instance = null;
+    }
+
     static public function titleize_camel_case($input) {
         # Based on: http://stackoverflow.com/a/1993772/1093087
         $regex = '!([A-Z][A-Z0-9]*(?=$|[A-Z][a-z0-9])|[A-Za-z][a-z0-9]+)!';
@@ -92,16 +100,25 @@ class NeechyTemplater {
         return $html;
     }
 
-    public function render_partial_by_path($partial_path) {
-        return $this->buffer($partial_path);
+    public function render_partial_by_path($partial_path, $default=null) {
+        if ( file_exists($partial_path) ) {
+            return $this->buffer($partial_path);
+        }
+        elseif ( ! is_null($default) ) {
+            return $default;
+        }
+        else {
+            $error_message = sprintf('Partial path %s not found.', $partial_path);
+            throw new NeechyTemplatingError($error_message, 500);
+        }
     }
 
-    public function render_partial_by_token($token) {
+    public function render_partial_by_token($token, $default='') {
         $id = preg_replace(RE_EXTRACT_BRACKET_TOKEN_ID, '', $token);
-        return $this->render_partial_by_id($id);
+        return $this->render_partial_by_id($id, $default);
     }
 
-    public function render_partial_by_id($id) {
+    public function render_partial_by_id($id, $default='') {
         $partial_file = sprintf('%s.html.php', $id);
         $theme_path = NeechyPath::join($this->theme_path, 'html', $partial_file);
 
@@ -109,10 +126,15 @@ class NeechyTemplater {
             return $this->partial[$id];
         }
         elseif ( file_exists($theme_path) ) {
-            return $this->render_partial_by_path($theme_path);
+            $this->partial[$id] = $this->render_partial_by_path($theme_path);
+            return $this->partial[$id];
+        }
+        elseif ( ! is_null($default) ) {
+            return $default;
         }
         else {
-            return sprintf('<!-- block %s not found -->', $id);
+            $error_message = sprintf('Partial for id %s not found.', $id);
+            throw new NeechyTemplatingError($error_message, 500);
         }
     }
 
@@ -150,10 +172,10 @@ class NeechyTemplater {
     #
     public function set($id, $value) {
         #
-        # This sets values for partials, values which will replace {{ tokens }}
-        # in templates.
+        # Sets or replaces values for partials, values which will replace {{ tokens }}
+        # in templates. Returns current (replaced) value.
         #
-        $current_value = $this->render_partial_by_id($id);
+        $current_value = isset($this->partial[$id]) ? $this->partial[$id] : null;
         $this->partial[$id] = $value;
         return $current_value;
     }
