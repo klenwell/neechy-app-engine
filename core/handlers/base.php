@@ -83,7 +83,10 @@ class NeechyHandler {
     }
 
     protected function html_path() {
-        return NeechyPath::join(NEECHY_HANDLER_CORE_PATH, $this->folder_name(), 'html');
+        # Source: http://stackoverflow.com/q/3014254/1093087
+        $reflector = new ReflectionClass(get_class($this));
+        $handler_dir_path = dirname($reflector->getFileName());
+        return NeechyPath::join($handler_dir_path, 'html');
     }
 
     protected function folder_name() {
