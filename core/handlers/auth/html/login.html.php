@@ -9,7 +9,7 @@ $t->append_to_head($t->css_link($t->css_href('form.css')));
 
 # General vars
 $alert = $t->data('alert');
-$post_url = NeechyPath::url('login', 'auth');
+$post_url = NeechyPath::url('auth', 'login');
 $validation_errors = $t->data('validation-errors');
 
 #
@@ -115,7 +115,7 @@ foreach ( $signup_fields as $field => $attrs ) {
             <label class="checkbox">
               <input type="checkbox" value="remember-me"> Remember me
             </label>
-            <input name="action" type="hidden" value="login" />
+            <input name="purpose" type="hidden" value="login" />
             <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
           <?php echo $t->close_form(); ?>
         </div>
@@ -128,7 +128,7 @@ foreach ( $signup_fields as $field => $attrs ) {
             <?php echo $signup_html['signup-email']; ?>
             <?php echo $signup_html['signup-pass']; ?>
             <?php echo $signup_html['signup-pass-confirm']; ?>
-            <?php echo $t->input_field('hidden', 'action', 'signup'); ?>
+            <input name="purpose" type="hidden" value="signup" />
             <button class="btn btn-lg btn-primary btn-block" type="submit">Sign up</button>
           <?php echo $t->close_form(); ?>
         </div>

@@ -260,11 +260,8 @@ HTML5;
         return sprintf($format, implode(' ', $attrs), $text);
     }
 
-    public function neechy_link($label, $page=null, $handler=null, $action=null,
-        $options=array()) {
-
-        $page = (is_null($page)) ? $label : $page;
-        $href = NeechyPath::url($page, $handler, $action);
+    public function neechy_link($label, $handler=null, $action=null, $options=array()) {
+        $href = NeechyPath::url($handler, $action);
         return $this->link($href, $label, $options);
     }
 
@@ -287,7 +284,7 @@ HTML5;
     }
 
     public function nav_tab_class($link_page_tag) {
-        if ( strtolower($link_page_tag) == strtolower($this->request->page) ) {
+        if ( strtolower($link_page_tag) == strtolower($this->request->handler) ) {
             return 'active';
         }
         else {
@@ -322,13 +319,13 @@ HTML5;
         return $form_tag;
     }
 
-    public function close_form($action='') {
+    public function close_form($purpose='') {
         # $action will add a hidden field with action value.
         $format = "%s\n</form>";
         $hidden_field = '';
 
-        if ( $action ) {
-            $hidden_field = $this->input_field('hidden', 'action', $action);
+        if ( $purpose ) {
+            $hidden_field = $this->input_field('hidden', 'purpose', $purpose);
         }
 
         return sprintf($format, $hidden_field);

@@ -38,7 +38,7 @@ class PageHelper extends BootstrapHelper {
 
         foreach ( $user_tabs as $handler) {
             $label = $page_tabs[$handler];
-            $href = NeechyPath::url($this->request->page, $handler);
+            $href = NeechyPath::url($handler, $page_title);
             $classes = array( $handler );
 
             if ( $handler == 'page' ) {

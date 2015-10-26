@@ -106,8 +106,9 @@ MYSQL;
     /*
      * Instance Methods
      */
-    public function url($handler=NULL, $action=NULL, $params=array()) {
-        return NeechyPath::url($this->field('name'), $handler, $action, $params);
+    public function url($handler=null, $params=array()) {
+        $handler = ( is_null($handler) ) ? 'page' : $handler;
+        return NeechyPath::url($handler, $this->field('name'), $params);
     }
 
     public function set_password($password) {

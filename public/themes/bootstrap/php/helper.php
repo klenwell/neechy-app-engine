@@ -155,7 +155,7 @@ HTML5;
     </div>
 HTML5;
 
-            $link = $this->neechy_link('Login / SignUp', 'auth', 'login', null,
+            $link = $this->neechy_link('Login / SignUp', 'auth', 'login',
                                        array('class' => 'btn btn-primary navbar-btn'));
             $user_button = sprintf($format, $link);
         }

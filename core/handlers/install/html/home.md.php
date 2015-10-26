@@ -13,7 +13,7 @@ You're new wiki, <?php echo NeechyConfig::get('title'); ?>, is ready!
 
 ### Login and Start Editing
 
-Once you log in, you can start editing wiki pages. Neechy Wiki supports an extended markdown syntax. For more information, see the [NeechyFormatting page](/?page=NeechyFormatting).
+Once you log in, you can start editing wiki pages. Neechy Wiki supports an extended markdown syntax. For more information, see the [NeechyFormatting page](/page/NeechyFormatting).
 
 ### Administration
 

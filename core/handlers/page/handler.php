@@ -22,6 +22,9 @@ class PageHandler extends NeechyHandler {
     public function handle() {
         $page_title = ( $this->request->action ) ? $this->request->action : self::DEFAULT_PAGE;
         $this->page = Page::find_by_title($page_title);
+        #var_dump($page_title);
+        #var_dump($this->page);
+        #var_dump(NeechyConfig::get('mysql_database'));
 
         # Partial variables
         $last_edited = sprintf('Last edited by %s on %s',
