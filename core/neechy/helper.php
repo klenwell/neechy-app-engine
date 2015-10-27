@@ -100,10 +100,8 @@ class NeechyHelper {
         return sprintf($format, $optional_attrs, $label);
     }
 
-    public function neechy_link($label, $handler=null, $page=null, $action=null,
-                                $attrs=array()) {
-        $page = (is_null($page)) ? $label : $page;
-        $href = NeechyPath::url($page, $handler, $action);
+    public function neechy_link($label, $handler=null, $action=null, $attrs=array()) {
+        $href = NeechyPath::url($handler, $action);
         return $this->link($href, $label, $attrs);
     }
 

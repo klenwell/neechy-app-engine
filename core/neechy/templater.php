@@ -39,7 +39,7 @@ class NeechyTemplater {
     #
     public function __construct($theme='bootstrap') {
         $this->theme_path = $this->load_theme_path($theme);
-        $this->theme_url_path = sprintf('themes/%s/', $theme);
+        $this->theme_url_path = sprintf('/themes/%s/', $theme);
         $this->request = NeechyRequest::load();
     }
 
