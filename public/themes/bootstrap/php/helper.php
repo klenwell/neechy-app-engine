@@ -144,8 +144,7 @@ HTML5;
             $user_name = User::current('name');
             $user_button = sprintf($logged_in_dropdown,
                                    $user_name,
-                                   $this->neechy_link('Change Password', 'password',
-                                                      'change', $user_name),
+                                   $this->neechy_link('Change Password', 'password', 'change'),
                                    $this->neechy_link('Logout', 'auth', 'logout'));
         }
         else {

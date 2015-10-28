@@ -66,10 +66,6 @@ class AuthHandler extends NeechyHandler {
     #
     # Private
     #
-    private function purpose_is($purpose) {
-        return $this->request->post('purpose') == $purpose;
-    }
-
     private function save_user_page($user) {
         $path = NeechyPath::join($this->html_path(), 'new-page.md.php');
 

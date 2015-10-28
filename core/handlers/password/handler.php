@@ -32,7 +32,7 @@ class PasswordHandler extends NeechyHandler {
         }
 
         # Change password request
-        if ( $this->request->action_is('change-password') ) {
+        if ( $this->purpose_is('change-password') ) {
             $form = new PasswordFormValidator($this->request);
 
             if ( $form->validate('old-password', 'new-password', 'new-password-confirm') ) {

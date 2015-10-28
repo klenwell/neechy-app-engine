@@ -95,6 +95,10 @@ class NeechyHandler {
         return strtolower($folder_name);
     }
 
+    protected function purpose_is($purpose) {
+        return $this->request->post('purpose') == $purpose;
+    }
+
     #
     # Print Functions
     #

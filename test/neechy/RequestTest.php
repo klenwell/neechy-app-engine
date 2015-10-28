@@ -15,6 +15,7 @@ class NeechyRequestTest extends PHPUnit_Framework_TestCase {
      * Test Fixtures
      */
     public function setUp() {
+        $_SERVER['REQUEST_URI'] = '/';
         $this->request = new NeechyRequest();
     }
 
@@ -23,7 +24,7 @@ class NeechyRequestTest extends PHPUnit_Framework_TestCase {
         $this->request = null;
     }
 
-    public function simulate_cgi_request($GET=NULL, $POST=NULL) {
+    public function simulate_cgi_request($GET=null, $POST=null) {
         $_GET = is_array($GET) ? $GET : array();
         $_POST = is_array($POST) ? $POST : array();
     }
@@ -33,34 +34,48 @@ class NeechyRequestTest extends PHPUnit_Framework_TestCase {
      */
     public function testParams() {
         $get_array = array(
-            'page' => 'Home',
-            'handler' => 'GET',
-            'foo' => 'get'
+            'param1' => 'one',
+            'param2' => 'two'
         );
         $post_array = array(
-            'handler' => 'POST',
-            'action' => 'Save',
-            'foo' => 'post'
+            'purpose' => 'testing',
+            'param1' => 'one',
+            'param2' => 'two'
         );
 
+        $_SERVER['REQUEST_URI'] = '/request/test/param1/param2';
         $this->simulate_cgi_request($get_array, $post_array);
         $request = new NeechyRequest();
 
-        $this->assertEquals('Home', $request->page);
-        $this->assertEquals('post', $request->handler);
-        $this->assertEquals('save', $request->action);
-        $this->assertEquals('post', $request->param('foo'));
-        $this->assertEquals('GET', $request->get('handler'));
-        $this->assertEquals('POST', $request->post('handler'));
+        # Friendly URL: /handler/actions/params...
+        $this->assertEquals('request', $request->handler);
+        $this->assertEquals('test', $request->action);
+        $this->assertEquals('param1', $request->param(0));
+        $this->assertEquals('param2', $request->param(1));
+        $this->assertNull($request->param(2));
+
+        # GET/Query Params
+        $this->assertEquals('one', $request->query('param1'));
+        $this->assertEquals('two', $request->query('param2'));
+        $this->assertNull($request->query('param3'));
+        $this->assertEquals('one', $request->get('param1'));
+        $this->assertEquals('two', $request->get('param2'));
+        $this->assertNull($request->get('param3'));
+
+        # POST Params
+        $this->assertEquals('testing', $request->post('purpose'));
+        $this->assertEquals('one', $request->post('param1'));
+        $this->assertEquals('two', $request->post('param2'));
+        $this->assertNull($request->post('param3'));
     }
 
-    public function testRootUrlRequest() {
+    public function testShouldParseFriendlyUrlIntoHandlerAndAction() {
+        $_SERVER['REQUEST_URI'] = '/request/test';
         $this->simulate_cgi_request();
         $request = new NeechyRequest();
 
-        $this->assertEquals(NeechyRequest::DEFAULT_PAGE, $request->page);
-        $this->assertEquals(NeechyRequest::DEFAULT_HANDLER, $request->handler);
-        $this->assertNull($request->action);
+        $this->assertEquals('request', $request->handler);
+        $this->assertEquals('test', $request->action);
     }
 
     public function testInstantiates() {

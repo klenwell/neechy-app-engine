@@ -72,13 +72,13 @@ class NeechyHelper {
         return $form_tag;
     }
 
-    public function close_form($action='') {
+    public function close_form($purpose='') {
         # $action will add a hidden field with action value.
         $format = "%s\n</form>";
         $hidden_field = '';
 
-        if ( $action ) {
-            $hidden_field = $this->input_field('hidden', 'action', $action);
+        if ( $purpose ) {
+            $hidden_field = $this->input_field('hidden', 'purpose', $purpose);
         }
 
         return sprintf($format, $hidden_field);

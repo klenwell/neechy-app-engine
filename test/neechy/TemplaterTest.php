@@ -15,6 +15,7 @@ class NeechyTemplaterTest extends PHPUnit_Framework_TestCase {
      * Test Fixtures
      */
     public function setUp() {
+        $_SERVER['REQUEST_URI'] = '/';
         $this->templater = new NeechyTemplater();
     }
 
@@ -28,19 +29,18 @@ class NeechyTemplaterTest extends PHPUnit_Framework_TestCase {
      */
     public function testNeechyLink() {
         $link = $this->templater->neechy_link('HomePage');
-        $this->assertEquals('<a href="?page=HomePage">HomePage</a>', $link);
+        $this->assertEquals('<a href="/">HomePage</a>', $link);
 
-        $link = $this->templater->neechy_link('label',
-            'HomePage',
+        $link = $this->templater->neechy_link(
+            'label',
             'handler',
             'action',
             array(
-              'title' => 'home',
-              'class' => 'link',
-              'id' => 'home-link'
+              'title' => 'title',
+              'class' => 'class',
+              'id' => 'id'
         ));
-        $expect = '<a href="?page=HomePage&handler=handler&action=action" ' .
-            'title="home" class="link" id="home-link">label</a>';
+        $expect = '<a href="/handler/action" title="title" class="class" id="id">label</a>';
         $this->assertEquals($expect, $link);
     }
 

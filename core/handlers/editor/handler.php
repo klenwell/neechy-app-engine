@@ -19,10 +19,11 @@ class EditorHandler extends NeechyHandler {
     # Public Methods
     #
     public function handle() {
-        $this->page = Page::find_by_title($this->request->page);
+        $page_title = $this->request->action;
+        $this->page = Page::find_by_title($page_title);
 
         # Action tree
-        if ( $this->request->action_is('save') ) {
+        if ( $this->purpose_is('save') ) {
             # TODO: validate request before saving
             if ( strlen($this->request->post('wmd-input')) > self::MAX_BODY_LENGTH ) {
                 $this->t->flash('Page content is too long. Please shorten.', 'warning');
@@ -34,13 +35,13 @@ class EditorHandler extends NeechyHandler {
                 NeechyResponse::redirect($this->page->url());
             }
         }
-        elseif ( $this->request->action_is('preview') ) {
+        elseif ( $this->purpose_is('preview') ) {
             $markdown = new Parsedown();
             $preview_html = $markdown->text($this->request->post('wmd-input'));
             $this->t->data('preview', $preview_html);
             $this->t->data('page-body', $this->request->post('wmd-input'));
         }
-        elseif ( $this->request->action_is('edit') ) {
+        elseif ( $this->purpose_is('edit') ) {
             $this->t->data('page-body', $this->request->post('wmd-input'));
         }
         else {

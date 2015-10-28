@@ -75,12 +75,12 @@ class PasswordHandlerTest extends PHPUnit_Framework_TestCase {
         $_POST['old-password'] = 'password';
         $_POST['new-password'] = sprintf('%supdated', $_POST['old-password']);
         $_POST['new-password-confirm'] = $_POST['new-password'];
+        $_POST['purpose'] = 'change-password';
 
         $user = $this->loginUser($_POST['old-password']);
         $old_password = $user->field('password');
 
         $request = new NeechyRequest();
-        $request->action = 'change-password';
 
         $handler = new PasswordHandler($request);
         $content = $handler->handle();
@@ -93,12 +93,12 @@ class PasswordHandlerTest extends PHPUnit_Framework_TestCase {
         $_POST['old-password'] = null;
         $_POST['new-password'] = 'neechy123';
         $_POST['new-password-confirm'] = $_POST['new-password'];
+        $_POST['purpose'] = 'change-password';
 
         $user = $this->loginUser('password');
         $old_password = $user->field('password');
 
         $request = new NeechyRequest();
-        $request->action = 'change-password';
 
         $handler = new PasswordHandler($request);
         $content = $handler->handle();
@@ -112,12 +112,12 @@ class PasswordHandlerTest extends PHPUnit_Framework_TestCase {
         $_POST['old-password'] = 'password';
         $_POST['new-password'] = sprintf('%supdated', $_POST['old-password']);
         $_POST['new-password-confirm'] = $_POST['new-password'];
+        $_POST['purpose'] = 'change-password';
 
         $user = $this->loginUser('wrong-password');
         $old_password = $user->field('password');
 
         $request = new NeechyRequest();
-        $request->action = 'change-password';
 
         $handler = new PasswordHandler($request);
         $content = $handler->handle();
@@ -131,12 +131,12 @@ class PasswordHandlerTest extends PHPUnit_Framework_TestCase {
         $_POST['old-password'] = 'password';
         $_POST['new-password'] = sprintf('%supdated', $_POST['old-password']);
         $_POST['new-password-confirm'] = 'does-not-match-new-password';
+        $_POST['purpose'] = 'change-password';
 
         $user = $this->loginUser($_POST['old-password']);
         $old_password = $user->field('password');
 
         $request = new NeechyRequest();
-        $request->action = 'change-password';
 
         $handler = new PasswordHandler($request);
         $content = $handler->handle();
@@ -153,11 +153,11 @@ class PasswordHandlerTest extends PHPUnit_Framework_TestCase {
 
         $_POST['new-password'] = $user->field('name');
         $_POST['new-password-confirm'] = $user->field('name');
+        $_POST['purpose'] = 'change-password';
 
         $old_password = $user->field('password');
 
         $request = new NeechyRequest();
-        $request->action = 'change-password';
 
         $handler = new PasswordHandler($request);
         $content = $handler->handle();

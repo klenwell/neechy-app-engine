@@ -6,6 +6,10 @@
  *
  */
 require_once('../core/neechy/constants.php');
+require_once('../core/neechy/errors.php');
+
+
+class NeechyRequestError extends NeechyError {}
 
 
 class NeechyRequest {
@@ -75,7 +79,7 @@ class NeechyRequest {
     #
     private function parse_url() {
         if ( ! isset($_SERVER["REQUEST_URI"]) ) {
-            throw new NeechyRequestError('$_SERVER["REQUEST_URI"] not found.');
+            throw new NeechyRequestError('$_SERVER["REQUEST_URI"] not found.', 500);
         }
 
         $url = $_SERVER["REQUEST_URI"];

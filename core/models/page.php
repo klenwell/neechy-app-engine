@@ -169,8 +169,8 @@ MYSQL;
     #
     # Public Attibute Methods
     #
-    public function url($handler=NULL, $action=NULL, $params=array()) {
-        return NeechyPath::url($this->field('slug'), $handler, $action, $params);
+    public function url($handler='page', $options=array()) {
+        return NeechyPath::url($handler, $this->field('title'), $options);
     }
 
     public function editor_link() {

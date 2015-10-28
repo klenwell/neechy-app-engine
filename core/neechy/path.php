@@ -71,13 +71,19 @@ class NeechyPath {
     }
 
     static public function url($handler=null, $action=null, $params=array()) {
+        # returns /handler/action[/param1/param2...]
         $url_parts = array($handler, $action);
 
         foreach ( $params as $param ) {
             $url_parts[] = $param;
         }
 
-        # returns /handler/action/params...
-        return sprintf('/%s', implode('/', $url_parts));
+        $url = implode('/', $url_parts);
+
+        if ( substr($url, 0, 1) !== '/' ) {
+            $url = '/' . $url;
+        }
+
+        return $url;
     }
 }
