@@ -4,7 +4,7 @@ require_once('../core/handlers/page/php/helper.php');
 
 $t = $this;   # templater object
 
-$t->append_to_head($t->css_link('themes/bootstrap/css/editor.css'));
+$t->append_to_head($t->css_link('/themes/bootstrap/css/editor.css'));
 
 $page_helper = new PageHelper($t->request);
 

@@ -101,6 +101,7 @@ class NeechyRequest {
                 unset($url_params[$last_index]);
             }
 
+            $url_params = array_map('urldecode', $url_params);
             return $url_params;
         }
     }
