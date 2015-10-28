@@ -56,7 +56,7 @@ class EditorHandler extends NeechyHandler {
         $page_title = NeechyTemplater::titleize_camel_case($this->page->get_title());
 
         # Render partial
-        $this->t->data('action', $this->request->action);
+        $this->t->data('purpose', $this->request->post('purpose', 'lacking'));
         $this->t->data('page-title', $page_title);
         $this->t->data('last-edited', $last_edited);
         $content = $this->render_view('editor');

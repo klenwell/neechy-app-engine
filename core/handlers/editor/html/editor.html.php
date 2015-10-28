@@ -25,7 +25,7 @@ $page_helper = new PageHelper($t->request);
               <?php echo $t->open_form('', 'post', array('class' => 'save-page')); ?>
 
                 <?php # Preview Panel ?>
-                <?php if ( $t->data('action') == 'preview' ): ?>
+                <?php if ( $t->data('purpose') == 'preview' ): ?>
                 <div id="wmd-preview" class="wmd-panel wmd-preview well">
                   <?php echo $t->data('preview') ?>
                 </div>
@@ -44,12 +44,12 @@ $page_helper = new PageHelper($t->request);
                 <?php endif; ?>
 
                 <div class="actions">
-                  <?php if ( $t->data('action') == 'preview' ): ?>
-                  <input type="submit" class="btn btn-primary edit" name="action" value="edit" />
+                  <?php if ( $t->data('purpose') == 'preview' ): ?>
+                  <input type="submit" class="btn btn-primary edit" name="purpose" value="edit" />
                   <?php else: ?>
-                  <input type="submit" class="btn btn-primary preview" name="action" value="preview" />
+                  <input type="submit" class="btn btn-primary preview" name="purpose" value="preview" />
                   <?php endif; ?>
-                  <input type="submit" class="btn btn-info save" name="action" value="save" />
+                  <input type="submit" class="btn btn-info save" name="purpose" value="save" />
                 </div>
               <?php echo $t->close_form(); ?>
             </div>
