@@ -11,10 +11,14 @@ require_once('../core/neechy/response.php');
 
 
 class HistoryHandler extends NeechyHandler {
+    public $page = null;
+
     #
     # Public Methods
     #
     public function handle() {
+        $page_title = $this->request->action;
+        $this->page = Page::find_by_title($page_title);
         $edits = $this->page->load_history();
 
         if ( $this->request->format == 'ajax' ) {

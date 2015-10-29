@@ -24,7 +24,8 @@ class HistoryHandlerTest extends PHPUnit_Framework_TestCase {
         PageFixture::init();
 
         $this->request = new NeechyRequest();
-        $this->page = Page::find_by_title('NeechyPage');
+        $this->request->handler = 'history';
+        $this->request->action = 'NeechyPage';
     }
 
     public function tearDown() {
@@ -37,7 +38,7 @@ class HistoryHandlerTest extends PHPUnit_Framework_TestCase {
      * Tests
      */
     public function testShouldReturnPageHistory() {
-        $handler = new HistoryHandler($this->request, $this->page);
+        $handler = new HistoryHandler($this->request);
         $response = $handler->handle();
 
         $this->assertEquals(200, $response->status);
@@ -47,7 +48,7 @@ class HistoryHandlerTest extends PHPUnit_Framework_TestCase {
     }
 
     public function testInstantiates() {
-        $handler = new HistoryHandler($this->request, $this->page);
+        $handler = new HistoryHandler($this->request);
         $this->assertInstanceOf('HistoryHandler', $handler);
         $this->assertInstanceOf('NeechyHandler', $handler);
     }
