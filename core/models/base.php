@@ -256,7 +256,7 @@ MYSQL;
             return $records[0];
         }
         else {
-            return NULL;
+            return null;
         }
     }
 

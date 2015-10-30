@@ -158,12 +158,16 @@ MYSQL;
         $rows = $query->fetchAll(PDO::FETCH_ASSOC);
 
         $edits = array();
+        $augmented_rows = array();
         foreach ( $rows as $row ) {
-            $edits[] = new Page($row);
+            $page = new Page($row);
+            $edits[$row['id']] = $page;
+            $row['history_url'] = $page->historical_url();
+            $augmented_rows[] = $row;
         }
         $this->edits = $edits;
 
-        return $rows;
+        return $augmented_rows;
     }
 
     #
@@ -171,6 +175,10 @@ MYSQL;
     #
     public function url($handler='page', $options=array()) {
         return NeechyPath::url($handler, $this->field('title'), $options);
+    }
+
+    public function historical_url() {
+        return sprintf('/history/%s/%s', $this->field('title'), $this->field('id'));
     }
 
     public function editor_link() {

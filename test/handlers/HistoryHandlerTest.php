@@ -42,9 +42,12 @@ class HistoryHandlerTest extends PHPUnit_Framework_TestCase {
         $response = $handler->handle();
 
         $this->assertEquals(200, $response->status);
-        $this->assertContains('<td class="id">1</td>', $response->body);
-        $this->assertContains('<td class="id">2</td>', $response->body);
-        $this->assertContains('<td class="id">3</td>', $response->body);
+        $this->assertContains('<td class="id"><a href="/history/NeechyPage/1">1</a></td>',
+                              $response->body);
+        $this->assertContains('<td class="id"><a href="/history/NeechyPage/2">2</a></td>',
+                              $response->body);
+        $this->assertContains('<td class="id"><a href="/history/NeechyPage/3">3</a></td>',
+                              $response->body);
     }
 
     public function testInstantiates() {

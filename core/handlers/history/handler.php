@@ -17,9 +17,24 @@ class HistoryHandler extends NeechyHandler {
     # Public Methods
     #
     public function handle() {
+        $page_id = $this->request->param(0);
+
+
+        if ( $page_id ) {
+            return $this->show_page_version($page_id);
+        }
+        else {
+            return $this->show_index();
+        }
+    }
+
+    #
+    # Private Methods
+    #
+    private function show_index() {
         $page_title = $this->request->action;
-        $this->page = Page::find_by_title($page_title);
-        $edits = $this->page->load_history();
+        $page = Page::find_by_title($page_title);
+        $edits = $page->load_history();
 
         if ( $this->request->format == 'ajax' ) {
             return new NeechyResponse(json_encode($edits), 200);
@@ -31,7 +46,11 @@ class HistoryHandler extends NeechyHandler {
         }
     }
 
-    #
-    # Private Methods
-    #
+    private function show_page_version($page_id) {
+        $page = Page::init();
+        $page = $page->find_by_id($page_id);
+        $this->t->data('page', $page);
+        $content = $this->render_view('show');
+        return $this->respond($content);
+    }
 }
