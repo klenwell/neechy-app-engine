@@ -40,6 +40,7 @@ class HistoryHandler extends NeechyHandler {
             return new NeechyResponse(json_encode($edits), 200);
         }
         else {
+            $this->t->data('page', $page);
             $this->t->data('edits', $edits);
             $content = $this->render_view('table');
             return $this->respond($content);

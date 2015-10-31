@@ -1,8 +1,20 @@
 <?php
 
+require_once('../core/handlers/page/php/helper.php');
+
 $t = $this;   # templater object
 
+$page_helper = new PageHelper($t->request);
+$page = $t->data('page');
+
 ?>
+      <!-- Tabs -->
+      <div id="page-header">
+        <ul id="page-tabs" class="nav nav-tabs">
+          <?php echo $page_helper->build_page_tab_menu($page->field('title')); ?>
+        </ul>
+      </div>
+
       <table class="table table-condensed">
         <tr>
           <th>id</th>

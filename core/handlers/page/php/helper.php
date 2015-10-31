@@ -18,6 +18,17 @@ class PageHelper extends BootstrapHelper {
     #
     # Public Methods
     #
+    public function new_page_tab_menu() {
+        $user_status = ( User::is_logged_in() ) ? 'logged-in' : 'default';
+
+        if ( $user_status == 'logged-in' ) {
+        }
+        else {
+        }
+
+        $helper->build_tab_menu($tab_items, array('id' => 'page-tabs'));
+    }
+
     public function build_page_tab_menu($page_title) {
         $page_tabs = array(
             # handler => label
