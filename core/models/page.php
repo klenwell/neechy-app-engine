@@ -135,7 +135,7 @@ MYSQL;
             return new Page($row);
         }
         else {
-            return NULL;
+            return null;
         }
     }
 
