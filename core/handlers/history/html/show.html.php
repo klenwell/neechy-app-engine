@@ -16,6 +16,11 @@ $page = $t->data('page');
 
       <!-- Tab Panes -->
       <div id="main-content">
+        <div class="timestamp alert alert-info">
+          You are looking at the version of this page saved on <strong>
+          <?php echo date('l jS F Y \a\t g:ia', strtotime($page->field('created_at'))); ?>
+          </strong>.
+        </div>
         <div class="tab-content">
           <?php echo $page->body_to_html(); ?>
         </div>
