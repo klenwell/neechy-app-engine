@@ -3,11 +3,9 @@
 require_once('../core/handlers/page/php/helper.php');
 
 $t = $this;   # templater object
-
-$t->append_to_head($t->css_link('/themes/bootstrap/css/editor.css'));
-
 $page_helper = new PageHelper($t->request);
 
+$t->append_to_head($t->css_link('/themes/bootstrap/css/editor.css'));
 
 ?>
       <!-- Tabs -->
@@ -22,7 +20,7 @@ $page_helper = new PageHelper($t->request);
         <div class="tab-content">
           <div class="tab-pane editor" id="editor">
             <div id="neechy-editor">
-              <?php echo $t->open_form('', 'post', array('class' => 'save-page')); ?>
+              <?php echo $page_helper->open_form('', 'post', array('class' => 'save-page')); ?>
 
                 <?php # Preview Panel ?>
                 <?php if ( $t->data('purpose') == 'preview' ): ?>
@@ -51,7 +49,7 @@ $page_helper = new PageHelper($t->request);
                   <?php endif; ?>
                   <input type="submit" class="btn btn-info save" name="purpose" value="save" />
                 </div>
-              <?php echo $t->close_form(); ?>
+              <?php echo $page_helper->close_form(); ?>
             </div>
           </div>
         </div>

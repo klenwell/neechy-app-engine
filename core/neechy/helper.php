@@ -17,7 +17,7 @@ class NeechyHelper {
     #
     # Constructor
     #
-    public function __construct($request=NULL) {
+    public function __construct($request=null) {
         $this->request = $request;
     }
 
@@ -39,19 +39,10 @@ class NeechyHelper {
         return sprintf($format, $type, $name, $value_attr, $attr_string);
     }
 
-    public function open_bootstrap_form($url, $method='POST', $attrs=array(),
-                                        $hidden_fields=array()) {
+    public function open_form($url, $method='POST', $options=array(),
+                              $hidden_fields=array()) {
         $format = '<form role="form" method="%s" action="%s"%s />';
-        $bootstrap_class = 'form-login';
-
-        if ( isset($attrs['class']) ) {
-            $attrs['class'] = sprintf('%s %s', $bootstrap_class, $attrs['class']);
-        }
-        else {
-            $attrs['class'] = $bootstrap_class;
-        }
-
-        $attr_string = $this->array_to_attr_string($attrs);
+        $attr_string = $this->array_to_attr_string($options);
         $form_tag = sprintf($format, $method, $url, $attr_string);
 
         # Add CSRF token for POST forms
@@ -82,22 +73,6 @@ class NeechyHelper {
         }
 
         return sprintf($format, $hidden_field);
-    }
-
-    public function bootstrap_submit_button($label, $state='primary', $attrs=array()) {
-        $format = '<button type="submit" %s>%s</button>';
-        $state_class = sprintf('btn-%s', $state);
-        $bootstrap_class = sprintf('btn btn-lg %s btn-block', $state_class);
-
-        if ( isset($attrs['class']) ) {
-            $attrs['class'] = sprintf('%s %s', $bootstrap_class, $attrs['class']);
-        }
-        else {
-            $attrs['class'] = $bootstrap_class;
-        }
-
-        $optional_attrs = $this->array_to_attr_string($attrs);
-        return sprintf($format, $optional_attrs, $label);
     }
 
     public function neechy_link($label, $handler=null, $action=null, $attrs=array()) {

@@ -3,8 +3,12 @@
 # Neechy Signup/Login Form
 # Source: http://getbootstrap.com/examples/signin/
 #
+require_once('../core/neechy/path.php');
+require_once('../public/themes/bootstrap/php/helper.php');
 
 $t = $this;   # templater object
+$helper = new BootstrapHelper($t->request);
+
 $t->append_to_head($t->css_link($t->css_href('form.css')));
 
 # General vars
@@ -108,7 +112,7 @@ foreach ( $signup_fields as $field => $attrs ) {
 
       <div id="neechy-auth" class="row">
         <div id="neechy-login" class="well-sm col-xs-offset-2 col-xs-3">
-          <?php echo $t->open_form($post_url, 'post', array('class' => 'form-login')); ?>
+          <?php echo $helper->open_form($post_url, 'post', array('class' => 'form-login')); ?>
             <h3>Sign In</h3>
             <?php echo $login_html['login-name']; ?>
             <?php echo $login_html['login-pass']; ?>
@@ -117,11 +121,11 @@ foreach ( $signup_fields as $field => $attrs ) {
             </label>
             <input name="purpose" type="hidden" value="login" />
             <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
-          <?php echo $t->close_form(); ?>
+          <?php echo $helper->close_form(); ?>
         </div>
 
         <div id="neechy-signup" class="well-sm col-xs-offset-2 col-xs-3">
-          <?php echo $t->open_form($post_url, 'post', array('class' => 'form-signup')); ?>
+          <?php echo $helper->open_form($post_url, 'post', array('class' => 'form-signup')); ?>
             <h3>Sign Up</h3>
             <h4>And get your own wiki page!</h4>
             <?php echo $signup_html['signup-name']; ?>
@@ -130,7 +134,7 @@ foreach ( $signup_fields as $field => $attrs ) {
             <?php echo $signup_html['signup-pass-confirm']; ?>
             <input name="purpose" type="hidden" value="signup" />
             <button class="btn btn-lg btn-primary btn-block" type="submit">Sign up</button>
-          <?php echo $t->close_form(); ?>
+          <?php echo $helper->close_form(); ?>
         </div>
       </div>
     </div>

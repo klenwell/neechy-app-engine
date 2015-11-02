@@ -56,7 +56,7 @@ class NeechyTemplater {
         }
     }
 
-    static public function clear($theme='bootstrap') {
+    static public function clear() {
         self::$instance = null;
     }
 
@@ -295,42 +295,6 @@ HTML5;
     #
     # Form Helper Methods
     #
-    public function open_form($url, $method='POST', $options=array(),
-                              $hidden_fields=array()) {
-        $format = '<form role="form" method="%s" action="%s"%s />';
-        $attr_string = $this->array_to_attr_string($options);
-        $form_tag = sprintf($format, $method, $url, $attr_string);
-
-        # Add CSRF token for POST forms
-        if (strtoupper($method) == 'POST') {
-            $hidden_fields['csrf_token'] = $_SESSION['csrf_token'];
-        }
-
-        $hidden_tags = array();
-        foreach ( $hidden_fields as $field => $value ) {
-            $hidden_tags[] = $this->input_field('hidden', $field, $value);
-        }
-
-        if ( $hidden_tags ) {
-            $hidden_tag_list = implode("\n", $hidden_tags);
-            $form_tag = implode("\n", array($form_tag, $hidden_tag_list));
-        }
-
-        return $form_tag;
-    }
-
-    public function close_form($purpose='') {
-        # $action will add a hidden field with action value.
-        $format = "%s\n</form>";
-        $hidden_field = '';
-
-        if ( $purpose ) {
-            $hidden_field = $this->input_field('hidden', 'purpose', $purpose);
-        }
-
-        return sprintf($format, $hidden_field);
-    }
-
     public function input_field($type, $name, $value=NULL, $options=array()) {
         $format = '<input type="%s" name="%s"%s%s />';
 
