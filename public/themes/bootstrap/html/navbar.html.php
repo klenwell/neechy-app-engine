@@ -3,7 +3,7 @@ require_once('../public/themes/bootstrap/php/helper.php');
 
 
 $t = $this;   # templater object
-$helper = new BootstrapHelper();
+$helper = new BootstrapHelper($t->request);
 
 ?>
     <!-- Bootstrap Navbar -->
@@ -22,18 +22,18 @@ $helper = new BootstrapHelper();
 
         <div class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
-            <li class="<?php echo $t->nav_tab_class('PageIndex'); ?>">
-              <?php echo $t->neechy_link('PageIndex'); ?>
+            <li class="<?php echo $helper->nav_tab_class('PageIndex'); ?>">
+              <?php echo $helper->neechy_link('PageIndex'); ?>
             </li>
             <!-- TODO: dynamically build menu
-            <li class="<?php #echo $t->nav_tab_class('Niches'); ?>">
-              <?php #echo $t->neechy_link('Niches'); ?>
+            <li class="<?php #echo $helper->nav_tab_class('Niches'); ?>">
+              <?php #echo $helper->neechy_link('Niches'); ?>
             </li>
-            <li class="<?php #echo $t->nav_tab_class('RecentChanges'); ?>">
-              <?php #echo $t->neechy_link('RecentChanges'); ?>
+            <li class="<?php #echo $helper->nav_tab_class('RecentChanges'); ?>">
+              <?php #echo $helper->neechy_link('RecentChanges'); ?>
             </li>
-            <li class="<?php #echo $t->nav_tab_class('RecentComments'); ?>">
-              <?php #echo $t->neechy_link('RecentComments'); ?>
+            <li class="<?php #echo $helper->nav_tab_class('RecentComments'); ?>">
+              <?php #echo $helper->neechy_link('RecentComments'); ?>
             </li>
             -->
           </ul>

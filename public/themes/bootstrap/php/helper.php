@@ -18,7 +18,7 @@ class BootstrapHelper extends NeechyHelper {
     #
     # Constructor
     #
-    public function __construct($request=NULL) {
+    public function __construct($request=null) {
         $this->request = $request;
     }
 
@@ -160,5 +160,14 @@ HTML5;
         }
 
         return $user_button;
+    }
+
+    public function nav_tab_class($link_page_tag) {
+        if ( strtolower($link_page_tag) == strtolower($this->request->handler) ) {
+            return 'active';
+        }
+        else {
+            return 'inactive';
+        }
     }
 }

@@ -283,15 +283,6 @@ HTML5;
         return sprintf($format, $href);
     }
 
-    public function nav_tab_class($link_page_tag) {
-        if ( strtolower($link_page_tag) == strtolower($this->request->handler) ) {
-            return 'active';
-        }
-        else {
-            return 'inactive';
-        }
-    }
-
     #
     # Private Methods
     #
@@ -322,29 +313,5 @@ HTML5;
         else {
             return array();
         }
-    }
-
-    private function array_to_attr_string($options) {
-        $attr_list = array();
-
-        foreach( $options as $attr => $val ) {
-            if ( is_null($val) ) {
-                $attr_list[] = $attr;
-            }
-            else {
-                $attr_list[] = sprintf(' %s="%s"',
-                    $attr,
-                    str_replace('"', '\"', $val));
-            }
-        }
-
-        if ($attr_list) {
-            $attr_string = ' ' . implode(' ', $attr_list);
-        }
-        else {
-            $attr_string = '';
-        }
-
-        return $attr_string;
     }
 }
