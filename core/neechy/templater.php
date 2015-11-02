@@ -293,34 +293,6 @@ HTML5;
     }
 
     #
-    # Form Helper Methods
-    #
-    public function input_field($type, $name, $value=NULL, $options=array()) {
-        $format = '<input type="%s" name="%s"%s%s />';
-
-        if ( ! is_null($value) ) {
-            $value_attr = sprintf(' value="%s"', str_replace('"', '\"', $value));
-        }
-        else {
-            $value_attr = '';
-        }
-
-        $optional_attrs = $this->array_to_attr_string($options);
-
-        return sprintf($format, $type, $name, $value_attr, $optional_attrs);
-    }
-
-    public function password_field($name, $value=NULL, $options=array()) {
-        return $this->input_field('password', $name, $value, $options);
-    }
-
-    public function submit_button($label, $attrs=array()) {
-        $format = '<button type="submit" %s>%s</button>';
-        $optional_attrs = $this->array_to_attr_string($attrs);
-        return sprintf($format, $optional_attrs, $label);
-    }
-
-    #
     # Private Methods
     #
     private function load_theme_path($theme) {

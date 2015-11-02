@@ -19,7 +19,7 @@ $validation_errors = $t->data('validation-errors');
 #
 # Helper function
 #
-function auth_field($field, $attrs, $t) {
+function auth_field($field, $attrs, $t, $helper) {
   $type = $attrs[0];
   $placeholder = $attrs[1];
   $autofocus = isset($attrs[2]) ? $attrs[2] : false;
@@ -33,7 +33,7 @@ function auth_field($field, $attrs, $t) {
   if ( $autofocus ) {
     $options['autofocus'] = NULL;
   }
-  $html = $t->input_field($type, $field, $value, $options);
+  $html = $helper->input_field($type, $field, $value, $options);
 
 
   # Apply error styling if appropriate
@@ -65,7 +65,7 @@ $login_fields = array(
 # Generate html
 $login_html = array();
 foreach ( $login_fields as $field => $attrs ) {
-  $login_html[$field] = auth_field($field, $attrs, $t);
+  $login_html[$field] = auth_field($field, $attrs, $t, $helper);
 }
 
 #
@@ -84,7 +84,7 @@ $signup_fields = array(
 # Generate html
 $signup_html = array();
 foreach ( $signup_fields as $field => $attrs ) {
-  $signup_html[$field] = auth_field($field, $attrs, $t);
+  $signup_html[$field] = auth_field($field, $attrs, $t, $helper);
 }
 
 ?>
