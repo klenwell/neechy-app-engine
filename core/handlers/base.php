@@ -8,6 +8,7 @@
 require_once('../core/neechy/constants.php');
 require_once('../core/neechy/templater.php');
 require_once('../core/neechy/path.php');
+require_once('../core/neechy/response.php');
 require_once('../core/neechy/errors.php');
 require_once('../core/models/page.php');
 

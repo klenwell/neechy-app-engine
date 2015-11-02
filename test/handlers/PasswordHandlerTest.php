@@ -83,10 +83,11 @@ class PasswordHandlerTest extends PHPUnit_Framework_TestCase {
         $request = new NeechyRequest();
 
         $handler = new PasswordHandler($request);
-        $content = $handler->handle();
+        $response = $handler->handle();
+
+        $this->assertEquals(200, $response->status);
         $this->assertPasswordChanged($user->field('name'), $old_password);
-        $this->assertEquals('Your password has been changed.',
-                            $_SESSION['neechy-flash']['success'][0]);
+        $this->assertContains('Your password has been changed.', $response->body);
     }
 
     public function testShouldNotUpdatePasswordWhenNewPasswordFieldIsMissing() {
@@ -101,11 +102,13 @@ class PasswordHandlerTest extends PHPUnit_Framework_TestCase {
         $request = new NeechyRequest();
 
         $handler = new PasswordHandler($request);
-        $content = $handler->handle();
+        $response = $handler->handle();
+
+        $this->assertEquals(200, $response->status);
         $this->assertPasswordUnchanged($user->field('name'), $old_password);
 
         $needle = '<span class="help-block">Password required.</span>';
-        $this->assertContains($needle, $content);
+        $this->assertContains($needle, $response->body);
     }
 
     public function testShouldNotUpdatePasswordWhenCurrentPasswordFieldIsIncorrect() {
@@ -120,11 +123,13 @@ class PasswordHandlerTest extends PHPUnit_Framework_TestCase {
         $request = new NeechyRequest();
 
         $handler = new PasswordHandler($request);
-        $content = $handler->handle();
+        $response = $handler->handle();
+
+        $this->assertEquals(200, $response->status);
         $this->assertPasswordUnchanged($user->field('name'), $old_password);
 
         $needle = '<span class="help-block">Password is incorrect. Please try again.</span>';
-        $this->assertContains($needle, $content);
+        $this->assertContains($needle, $response->body);
     }
 
     public function testShouldNotUpdatePasswordWhenNewPasswordConfirmationDoesNotMatch() {
@@ -139,12 +144,14 @@ class PasswordHandlerTest extends PHPUnit_Framework_TestCase {
         $request = new NeechyRequest();
 
         $handler = new PasswordHandler($request);
-        $content = $handler->handle();
+        $response = $handler->handle();
+
+        $this->assertEquals(200, $response->status);
         $this->assertPasswordUnchanged($user->field('name'), $old_password);
 
         $needle = sprintf('<span class="help-block">%s</span>',
                           'Password fields do not match. Please try again.');
-        $this->assertContains($needle, $content);
+        $this->assertContains($needle, $response->body);
     }
 
     public function testShouldNotUpdatePasswordWhenNewPasswordIsUserName() {
@@ -160,12 +167,14 @@ class PasswordHandlerTest extends PHPUnit_Framework_TestCase {
         $request = new NeechyRequest();
 
         $handler = new PasswordHandler($request);
-        $content = $handler->handle();
+        $response = $handler->handle();
+
+        $this->assertEquals(200, $response->status);
         $this->assertPasswordUnchanged($user->field('name'), $old_password);
 
         $needle = sprintf('<span class="help-block">%s</span>',
                           'User name and password should not match.');
-        $this->assertContains($needle, $content);
+        $this->assertContains($needle, $response->body);
     }
 
     public function testInstantiates() {

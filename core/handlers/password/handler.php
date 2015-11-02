@@ -19,7 +19,7 @@ class PasswordHandler extends NeechyHandler {
     # Public Methods
     #
     public function handle() {
-        #
+        # Console
         if ( $this->is_console ) {
             $this->params = $this->service->params;
             return $this->console();
@@ -57,7 +57,7 @@ class PasswordHandler extends NeechyHandler {
             $content = $this->render_view('content');
         }
 
-        return $content;
+        return $this->respond($content);
     }
 
     #
