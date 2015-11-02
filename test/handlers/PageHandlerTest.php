@@ -35,17 +35,18 @@ class PageHandlerTest extends PHPUnit_Framework_TestCase {
      */
     public function testShouldDisplayPage() {
         $request = new NeechyRequest();
-        $page = Page::find_by_title('NeechyPage');
+        $request->handler = 'page';
+        $request->action = 'NeechyPage';
 
-        $handler = new PageHandler($request, $page);
+        $handler = new PageHandler($request);
         $response = $handler->handle();
 
         $this->assertEquals(200, $response->status);
         $this->assertContains('<div class="tab-pane page active" id="read">',
                               $response->body);
 
-        # TODO: Figure out why this doesn't pass as expected.
-        #$this->assertContains($page->body_to_html(), $response->body);
+        $page = Page::find_by_title('NeechyPage');
+        $this->assertContains($page->body_to_html(), $response->body);
     }
 
     public function testInstantiates() {

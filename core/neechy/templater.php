@@ -27,7 +27,6 @@ class NeechyTemplater {
     static private $instance = null;
 
     public $request = null;
-    public $page = null;
 
     private $_data = array();
     private $partial = array();

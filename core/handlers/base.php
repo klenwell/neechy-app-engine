@@ -19,16 +19,14 @@ class NeechyHandler {
     # Properties
     #
     public $request = null;
-    public $page = null;
     public $t = null;
     public $is_console = false;
 
     #
     # Constructor
     #
-    public function __construct($request=null, $page=null) {
+    public function __construct($request=null) {
         $this->request = $request;
-        $this->page = $page;
         $this->t = NeechyTemplater::load();
         $this->t->data('handler', get_class($this));
     }
@@ -75,7 +73,6 @@ class NeechyHandler {
         else {
             # Render web page
             $templater = NeechyTemplater::load();
-            $templater->page = $this->page;
             $templater->set('content', $content);
             $body = $templater->render();
         }
