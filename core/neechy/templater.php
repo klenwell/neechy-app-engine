@@ -249,22 +249,6 @@ HTML5;
         return sprintf($format, implode("\n", $alerts));
     }
 
-    public function link($href, $text, $options=array()) {
-        $format = '<a %s>%s</a>';
-        $attrs = array(sprintf('href="%s"', $href));
-
-        foreach ( $options as $attr => $value ) {
-            $attrs[] = sprintf('%s="%s"', $attr, $value);
-        }
-
-        return sprintf($format, implode(' ', $attrs), $text);
-    }
-
-    public function neechy_link($label, $handler=null, $action=null, $options=array()) {
-        $href = NeechyPath::url($handler, $action);
-        return $this->link($href, $label, $options);
-    }
-
     public function js_src($fpath='') {
         return NeechyPath::join($this->theme_url_path, 'js', $fpath);
     }

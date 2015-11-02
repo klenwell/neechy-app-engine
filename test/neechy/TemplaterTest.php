@@ -16,47 +16,15 @@ class NeechyTemplaterTest extends PHPUnit_Framework_TestCase {
      */
     public function setUp() {
         $_SERVER['REQUEST_URI'] = '/';
-        $this->templater = new NeechyTemplater();
     }
 
     public function tearDown() {
         $_SERVER = array();
-        $this->templater = null;
     }
 
     /**
      * Tests
      */
-    public function testNeechyLink() {
-        $link = $this->templater->neechy_link('HomePage');
-        $this->assertEquals('<a href="/">HomePage</a>', $link);
-
-        $link = $this->templater->neechy_link(
-            'label',
-            'handler',
-            'action',
-            array(
-              'title' => 'title',
-              'class' => 'class',
-              'id' => 'id'
-        ));
-        $expect = '<a href="/handler/action" title="title" class="class" id="id">label</a>';
-        $this->assertEquals($expect, $link);
-    }
-
-    public function testLink() {
-        $link = $this->templater->link('http://github.com/', 'github');
-        $this->assertEquals('<a href="http://github.com/">github</a>', $link);
-
-        $link = $this->templater->link('/', 'home', array(
-            'title' => 'go home',
-            'class' => 'link',
-            'id' => 'home-link'
-        ));
-        $expect = '<a href="/" title="go home" class="link" id="home-link">home</a>';
-        $this->assertEquals($expect, $link);
-    }
-
     public function testSetLayoutTokens() {
         $tokens = array(
             'head' => '<title>Neechy</title>',
@@ -79,6 +47,7 @@ class NeechyTemplaterTest extends PHPUnit_Framework_TestCase {
     }
 
     public function testInstantiates() {
-        $this->assertInstanceOf('NeechyTemplater', $this->templater);
+        $templater = new NeechyTemplater('no-theme');
+        $this->assertInstanceOf('NeechyTemplater', $templater);
     }
 }

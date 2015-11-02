@@ -11,6 +11,7 @@
 require_once('../core/models/base.php');
 require_once('../core/models/user.php');
 require_once('../core/neechy/path.php');
+require_once('../core/neechy/helper.php');
 require_once('../lib/parsedown/Parsedown.php');
 
 
@@ -186,9 +187,8 @@ MYSQL;
             return 'N/A';
         }
         else {
-            $t = NeechyTemplater::load();
             $editor_name = $this->editor->field('name');
-            return $t->neechy_link($editor_name);
+            return NeechyHelper::neechy_link($editor_name, 'page', $editor_name);
         }
     }
 

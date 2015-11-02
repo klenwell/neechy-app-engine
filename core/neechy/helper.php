@@ -22,6 +22,25 @@ class NeechyHelper {
     }
 
     #
+    # Static Methods
+    #
+    public static function link($href, $text, $attrs=array()) {
+        $format = '<a %s>%s</a>';
+        $tag_attrs = array(sprintf('href="%s"', $href));
+
+        foreach ( $attrs as $attr => $value ) {
+            $tag_attrs[] = sprintf('%s="%s"', $attr, $value);
+        }
+
+        return sprintf($format, implode(' ', $tag_attrs), $text);
+    }
+
+    public static function neechy_link($label, $handler=null, $action=null, $attrs=array()) {
+        $href = NeechyPath::url($handler, $action);
+        return self::link($href, $label, $attrs);
+    }
+
+    #
     # Public Methods
     #
     public function input_field($type, $name, $value=NULL, $attrs=array()) {
@@ -73,22 +92,6 @@ class NeechyHelper {
         }
 
         return sprintf($format, $hidden_field);
-    }
-
-    public function neechy_link($label, $handler=null, $action=null, $attrs=array()) {
-        $href = NeechyPath::url($handler, $action);
-        return $this->link($href, $label, $attrs);
-    }
-
-    public function link($href, $text, $attrs=array()) {
-        $format = '<a %s>%s</a>';
-        $tag_attrs = array(sprintf('href="%s"', $href));
-
-        foreach ( $attrs as $attr => $value ) {
-            $tag_attrs[] = sprintf('%s="%s"', $attr, $value);
-        }
-
-        return sprintf($format, implode(' ', $tag_attrs), $text);
     }
 
     #
