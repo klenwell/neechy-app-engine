@@ -61,9 +61,8 @@ MYSQL;
     #
     # Static Methods
     #
-    public static function find_by_title($title) {
+    public static function find_by_slug($slug) {
         $sql = "SELECT * FROM pages WHERE slug = ? ORDER BY created_at DESC LIMIT 1";
-        $slug = self::title_to_slug($title);
 
         $pdo = NeechyDatabase::connect_to_db();
         $query = $pdo->prepare($sql);
@@ -74,12 +73,16 @@ MYSQL;
             $page = new Page($row);
         }
         else {
-            $page = new Page(array(
-                'title' => $title,
-                'slug' => $slug
-            ));
+            $page = new Page(array('slug' => $slug));
         }
 
+        return $page;
+    }
+
+    public static function find_by_title($title) {
+        $slug = self::title_to_slug($title);
+        $page = self::find_by_slug($slug);
+        $page->set('title', $title);
         return $page;
     }
 
@@ -175,7 +178,7 @@ MYSQL;
     # Public Attibute Methods
     #
     public function url($handler='page', $options=array()) {
-        return NeechyPath::url($handler, $this->field('title'), $options);
+        return NeechyPath::url($handler, $this->field('slug'), $options);
     }
 
     public function historical_url() {

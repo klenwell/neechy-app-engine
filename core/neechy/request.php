@@ -31,7 +31,12 @@ class NeechyRequest {
     # Constructor
     #
     public function __construct() {
-        $this->url_params = $this->parse_url();
+        if ( ! isset($_SERVER["REQUEST_URI"]) ) {
+            throw new NeechyRequestError('$_SERVER["REQUEST_URI"] not found.', 500);
+        }
+
+        $this->uri = $_SERVER["REQUEST_URI"];
+        $this->url_params = $this->parse_url($this->uri);
         $this->query_params = array_merge($_GET, $_POST);
         $this->format = $this->set_format();
         $this->handler = (count($this->url_params) > 0) ? $this->url_params[0] : DEFAULT_HANDLER;
@@ -77,13 +82,7 @@ class NeechyRequest {
     #
     # Private Methods
     #
-    private function parse_url() {
-        if ( ! isset($_SERVER["REQUEST_URI"]) ) {
-            throw new NeechyRequestError('$_SERVER["REQUEST_URI"] not found.', 500);
-        }
-
-        $url = $_SERVER["REQUEST_URI"];
-
+    private function parse_url($url) {
         if ( substr_count($url, '?') > 0 ) {
             $url_part = explode('?', $url);
             $url = $url_part[0];

@@ -10,9 +10,7 @@ $page = $t->data('page');
 ?>
       <!-- Tabs -->
       <div id="page-header">
-        <ul id="page-tabs" class="nav nav-tabs">
-          <?php echo $page_helper->build_page_tab_menu($page->field('title')); ?>
-        </ul>
+        <?php echo $page_helper->build_page_tab_menu($page); ?>
       </div>
 
       <table class="table table-condensed">

@@ -4,15 +4,14 @@ require_once('../core/handlers/page/php/helper.php');
 
 $t = $this;   # templater object
 $page_helper = new PageHelper($t->request);
+$page = $t->data('page');
 
 $t->append_to_head($t->css_link('/themes/bootstrap/css/editor.css'));
 
 ?>
       <!-- Tabs -->
       <div id="page-header">
-        <ul id="page-tabs" class="nav nav-tabs">
-          <?php echo $page_helper->build_page_tab_menu($t->data('page-title')); ?>
-        </ul>
+        <?php echo $page_helper->build_page_tab_menu($page); ?>
       </div>
 
       <!-- Tab Panes -->

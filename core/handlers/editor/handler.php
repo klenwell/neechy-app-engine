@@ -19,8 +19,8 @@ class EditorHandler extends NeechyHandler {
     # Public Methods
     #
     public function handle() {
-        $page_title = $this->request->action;
-        $this->page = Page::find_by_title($page_title);
+        $page_slug = $this->request->action;
+        $this->page = Page::find_by_slug($page_slug);
 
         # Action tree
         if ( $this->purpose_is('save') ) {
@@ -59,6 +59,7 @@ class EditorHandler extends NeechyHandler {
         $this->t->data('purpose', $this->request->post('purpose', 'lacking'));
         $this->t->data('page-title', $page_title);
         $this->t->data('last-edited', $last_edited);
+        $this->t->data('page', $this->page);
         $content = $this->render_view('editor');
 
         # Return response

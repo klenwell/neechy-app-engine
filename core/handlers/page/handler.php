@@ -31,8 +31,8 @@ class PageHandler extends NeechyHandler {
         $page_title = NeechyTemplater::titleize_camel_case($this->page->get_title());
 
         # Render partial
+        $this->t->data('page', $this->page);
         $this->t->data('page-title', $page_title);
-        $this->t->data('panel-content', $this->page->body_to_html());
         $this->t->data('last-edited', $last_edited);
 
         # Return response

@@ -4,20 +4,18 @@ require_once('../core/handlers/page/php/helper.php');
 
 $t = $this;   # templater object
 $helper = new PageHelper($t->request);
+$page = $t->data('page');
 
 ?>
       <!-- Tabs -->
       <div id="page-header">
-        <?php #echo $helper->build_tab_menu($tab_items, array('id' => 'page-tabs')); ?>
-        <ul id="page-tabs" class="nav nav-tabs">
-          <?php echo $helper->build_page_tab_menu($t->data('page-title')); ?>
-        </ul>
+        <?php echo $helper->build_page_tab_menu($page); ?>
       </div>
 
       <!-- Tab Panes -->
       <div id="main-content">
         <div class="tab-content">
-          <?php echo $helper->build_tab_panels($t->data('panel-content')); ?>
+          <?php echo $helper->build_tab_panels($page->body_to_html()); ?>
         </div>
       </div>
 
