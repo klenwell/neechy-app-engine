@@ -1,6 +1,6 @@
 <?php
 require_once('../public/themes/bootstrap/php/helper.php');
-require_once('../public/themes/bootstrap/php/page_tab_helper.php');
+require_once('../public/themes/bootstrap/php/page_tab_menu.php');
 
 
 class PageHelper extends BootstrapHelper {
@@ -22,7 +22,6 @@ class PageHelper extends BootstrapHelper {
     public function build_page_tab_menu($page) {
         $user_logged_in = User::is_logged_in();
         $page_slug = $page->field('slug');
-        var_dump($page_slug);
 
         $read_tab = array($page->field('title'), 'page', $page_slug);
         $edit_tab = array('Edit', 'edit', $page_slug);
