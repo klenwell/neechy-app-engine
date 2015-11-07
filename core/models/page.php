@@ -191,7 +191,7 @@ MYSQL;
         }
         else {
             $editor_name = $this->editor->field('name');
-            return NeechyHelper::neechy_link($editor_name, 'page', $editor_name);
+            return NeechyHelper::handler_link($editor_name, 'page', $editor_name);
         }
     }
 

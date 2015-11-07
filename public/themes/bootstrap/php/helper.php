@@ -144,8 +144,8 @@ HTML5;
             $user_name = User::current('name');
             $user_button = sprintf($logged_in_dropdown,
                                    $user_name,
-                                   $this->neechy_link('Change Password', 'password', 'change'),
-                                   $this->neechy_link('Logout', 'auth', 'logout'));
+                                   $this->handler_link('Change Password', 'password', 'change'),
+                                   $this->handler_link('Logout', 'auth', 'logout'));
         }
         else {
             $format = <<<HTML5
@@ -154,7 +154,7 @@ HTML5;
     </div>
 HTML5;
 
-            $link = $this->neechy_link('Login / SignUp', 'auth', 'login',
+            $link = $this->handler_link('Login / SignUp', 'auth', 'login',
                                        array('class' => 'btn btn-primary navbar-btn'));
             $user_button = sprintf($format, $link);
         }

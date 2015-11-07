@@ -35,7 +35,7 @@ class NeechyHelper {
         return sprintf($format, implode(' ', $tag_attrs), $text);
     }
 
-    public static function neechy_link($label, $handler=null, $action=null, $attrs=array()) {
+    public static function handler_link($label, $handler=null, $action=null, $attrs=array()) {
         $href = NeechyPath::url($handler, $action);
         return self::link($href, $label, $attrs);
     }

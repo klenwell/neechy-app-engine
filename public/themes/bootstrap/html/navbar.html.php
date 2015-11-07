@@ -22,20 +22,13 @@ $helper = new BootstrapHelper($t->request);
 
         <div class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
-            <li class="<?php echo $helper->nav_tab_class('PageIndex'); ?>">
-              <?php echo $helper->neechy_link('PageIndex'); ?>
+            <!-- TODO: dynamically build menu -->
+            <li class="<?php echo $helper->nav_tab_class('page-index'); ?>">
+              <?php echo $helper->handler_link('PageIndex', 'admin', 'page-index'); ?>
             </li>
-            <!-- TODO: dynamically build menu
-            <li class="<?php #echo $helper->nav_tab_class('Niches'); ?>">
-              <?php #echo $helper->neechy_link('Niches'); ?>
+            <li class="<?php echo $helper->nav_tab_class('recent-changes'); ?>">
+              <?php echo $helper->handler_link('RecentChanges', 'recent', 'changes'); ?>
             </li>
-            <li class="<?php #echo $helper->nav_tab_class('RecentChanges'); ?>">
-              <?php #echo $helper->neechy_link('RecentChanges'); ?>
-            </li>
-            <li class="<?php #echo $helper->nav_tab_class('RecentComments'); ?>">
-              <?php #echo $helper->neechy_link('RecentComments'); ?>
-            </li>
-            -->
           </ul>
           <ul class="nav navbar-nav navbar-right">
             <li>

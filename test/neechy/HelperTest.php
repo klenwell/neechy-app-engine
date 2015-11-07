@@ -25,11 +25,11 @@ class NeechyHelperTest extends PHPUnit_Framework_TestCase {
     /**
      * Tests
      */
-    public function testNeechyLink() {
-        $link = NeechyHelper::neechy_link('HomePage');
+    public function testHandlerLink() {
+        $link = NeechyHelper::handler_link('HomePage');
         $this->assertEquals('<a href="/">HomePage</a>', $link);
 
-        $link = NeechyHelper::neechy_link(
+        $link = NeechyHelper::handler_link(
             'label',
             'handler',
             'action',
