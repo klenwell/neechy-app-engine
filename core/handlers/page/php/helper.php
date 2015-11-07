@@ -23,7 +23,7 @@ class PageHelper extends BootstrapHelper {
         $user_logged_in = User::is_logged_in();
         $page_slug = $page->field('slug');
 
-        $read_tab = array($page->field('title'), 'page', $page_slug);
+        $read_tab = array($page->title(), 'page', $page_slug);
         $edit_tab = array('Edit', 'edit', $page_slug);
         $history_tab = array('History', 'history', $page_slug);
 

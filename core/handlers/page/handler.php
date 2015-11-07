@@ -20,19 +20,17 @@ class PageHandler extends NeechyHandler {
     # Public Methods
     #
     public function handle() {
-        $page_title = ( $this->request->action ) ? $this->request->action : self::DEFAULT_PAGE;
-        $this->page = Page::find_by_title($page_title);
+        $page_slug = ( $this->request->action ) ? $this->request->action : self::DEFAULT_PAGE;
+        $this->page = Page::find_by_slug($page_slug);
 
         # Partial variables
         $last_edited = sprintf('Last edited by %s on %s',
             $this->page->editor_link(),
             $this->page->field('created_at')
         );
-        $page_title = NeechyTemplater::titleize_camel_case($this->page->get_title());
 
         # Render partial
         $this->t->data('page', $this->page);
-        $this->t->data('page-title', $page_title);
         $this->t->data('last-edited', $last_edited);
 
         # Return response

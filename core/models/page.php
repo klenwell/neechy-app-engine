@@ -182,7 +182,7 @@ MYSQL;
     }
 
     public function historical_url() {
-        return sprintf('/history/%s/%s', $this->field('title'), $this->field('id'));
+        return sprintf('/history/%s/%s', $this->field('slug'), $this->field('id'));
     }
 
     public function editor_link() {
@@ -197,6 +197,10 @@ MYSQL;
 
     public function get_title($default='Page') {
         return $this->field('title', $this->field('slug', $default));
+    }
+
+    public function title() {
+        return NeechyTemplater::titleize_camel_case($this->get_title());
     }
 
     public function body_to_html() {
