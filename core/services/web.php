@@ -38,13 +38,12 @@ class NeechyWebService extends NeechyService {
             NeechySecurity::prevent_csrf();
             $this->request = NeechyRequest::load();
             $this->validate_environment();
-            $this->page = Page::find_by_title($this->request->page);
             $handler = $this->load_handler();
             $response = $handler->handle();
         }
         catch (NeechyError $e) {
-            $handler = new ErrorHandler($this->request, $this->page);
-            $response = $handler->handle($e);
+            $handler = new ErrorHandler($this->request);
+            $response = $handler->handle_error($e);
         }
 
         $response->send_headers();
@@ -89,6 +88,7 @@ class NeechyWebService extends NeechyService {
     }
 
     private function load_handler() {
+
         $handler_app_path = NeechyPath::join(NEECHY_HANDLER_APP_PATH,
             $this->request->handler, 'handler.php');
         $handler_core_path = NeechyPath::join(NEECHY_HANDLER_CORE_PATH,
@@ -107,7 +107,7 @@ class NeechyWebService extends NeechyService {
                                             404);
         }
 
-        $handler = new $HandlerClass($this->request, $this->page);
+        $handler = new $HandlerClass($this->request);
         return $handler;
     }
 }

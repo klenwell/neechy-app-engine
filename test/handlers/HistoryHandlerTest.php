@@ -22,32 +22,43 @@ class HistoryHandlerTest extends PHPUnit_Framework_TestCase {
         NeechyTestHelper::setUp();
         UserFixture::init();
         PageFixture::init();
-
-        $this->request = new NeechyRequest();
-        $this->page = Page::find_by_title('NeechyPage');
     }
 
     public function tearDown() {
         NeechyTestHelper::tearDown();
-        $this->request = null;
-        $this->page = null;
     }
 
     /**
      * Tests
      */
     public function testShouldReturnPageHistory() {
-        $handler = new HistoryHandler($this->request, $this->page);
+        $_SERVER['REQUEST_URI'] = '/history/neechypage';
+        $request = new NeechyRequest();
+        $handler = new HistoryHandler($request);
         $response = $handler->handle();
 
         $this->assertEquals(200, $response->status);
-        $this->assertContains('<td class="id">1</td>', $response->body);
-        $this->assertContains('<td class="id">2</td>', $response->body);
-        $this->assertContains('<td class="id">3</td>', $response->body);
+        $this->assertContains('<td class="id"><a href="/history/neechypage/1">1</a></td>',
+                              $response->body);
+        $this->assertContains('<td class="id"><a href="/history/neechypage/2">2</a></td>',
+                              $response->body);
+        $this->assertContains('<td class="id"><a href="/history/neechypage/3">3</a></td>',
+                              $response->body);
+    }
+
+    public function testShouldShowHistoricalVersion() {
+        $_SERVER['REQUEST_URI'] = '/history/neechypage/1';
+        $request = new NeechyRequest();
+        $handler = new HistoryHandler($request);
+        $response = $handler->handle();
+
+        $this->assertEquals(200, $response->status);
     }
 
     public function testInstantiates() {
-        $handler = new HistoryHandler($this->request, $this->page);
+        $request = new NeechyRequest();
+        $request->handler = 'history';
+        $handler = new HistoryHandler($request);
         $this->assertInstanceOf('HistoryHandler', $handler);
         $this->assertInstanceOf('NeechyHandler', $handler);
     }

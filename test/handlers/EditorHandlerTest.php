@@ -35,9 +35,11 @@ class EditorHandlerTest extends PHPUnit_Framework_TestCase {
      */
     public function testShouldDisplayEditor() {
         $request = new NeechyRequest();
+        $request->handler = 'edit';
+        $request->action = 'NeechyPage';
         $page = Page::find_by_title('NeechyPage');
 
-        $handler = new EditorHandler($request, $page);
+        $handler = new EditorHandler($request);
         $response = $handler->handle();
 
         $this->assertEquals(200, $response->status);
@@ -47,13 +49,15 @@ class EditorHandlerTest extends PHPUnit_Framework_TestCase {
     }
 
     public function testShouldDisplayPreview() {
-        $_GET['action'] = 'preview';
+        $_POST['purpose'] = 'preview';
         $_POST['wmd-input'] = '**Bold** and *italics*';
 
         $request = new NeechyRequest();
+        $request->handler = 'edit';
+        $request->action = 'NeechyPage';
         $page = Page::find_by_title('NeechyPage');
 
-        $handler = new EditorHandler($request, $page);
+        $handler = new EditorHandler($request);
         $response = $handler->handle();
 
         $this->assertEquals(200, $response->status);
@@ -66,13 +70,15 @@ class EditorHandlerTest extends PHPUnit_Framework_TestCase {
         $page = Page::find_by_title('NeechyPage');
 
         # Edit action requires hidden textarea.
-        $_POST['action'] = 'edit';
+        $_POST['purpose'] = 'edit';
         $_POST['wmd-input'] = $page->field('body');
 
         # POST vars must be set before NeechyRequest called.
         $request = new NeechyRequest();
+        $request->handler = 'edit';
+        $request->action = 'NeechyPage';
 
-        $handler = new EditorHandler($request, $page);
+        $handler = new EditorHandler($request);
         $response = $handler->handle();
 
         $this->assertEquals(200, $response->status);

@@ -27,13 +27,13 @@
     <!-- Placed at the end of the document so the pages load faster -->
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script
-      src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js">
+      src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js">
     </script>
     <script
       src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js">
     </script>
     <script
-      src="themes/bootstrap/js/neechy.js">
+      src="/themes/bootstrap/js/neechy.js">
     </script>
 
     {{ body_appendix }}

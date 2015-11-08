@@ -1,6 +1,8 @@
 <?php
+require_once('../public/themes/bootstrap/php/helper.php');
 
 $t = $this;   # templater object
+$helper = new BootstrapHelper($t->request);
 
 ?>
     <?php if ( NeechyConfig::environment() == 'test' ) { ?>
@@ -15,11 +17,11 @@ $t = $this;   # templater object
       <div class="container">
         <p>
           Template theme built with <?php echo
-            $t->link('http://twitter.github.io/bootstrap/', 'Bootstrap'); ?>
+            $helper->link('http://twitter.github.io/bootstrap/', 'Bootstrap'); ?>
         </p>
         <p>
           Powered by <?php echo
-            $t->link('https://github.com/klenwell/neechy', 'Neechy'); ?>
+            $helper->link('https://github.com/klenwell/neechy', 'Neechy'); ?>
         </p>
       </div>
     </footer>

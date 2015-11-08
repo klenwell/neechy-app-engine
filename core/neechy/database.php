@@ -41,14 +41,22 @@ class NeechyDatabase {
             return self::$pdo;
         }
         else {
-            $dsn = sprintf('mysql:host=%s;dbname=%s',
-                NeechyConfig::get('mysql_host'),
-                NeechyConfig::get('mysql_database')
-            );
+            $dsn_format = 'mysql:%s;dbname=%s';
+            $db_host = NeechyConfig::get('mysql_host');
+
+            if ( strpos($db_host, 'unix_socket') === 0 ) {
+                $dsn_host = $db_host;
+            }
+            else {
+                $dsn_host = sprintf('host=%s', $db_host);
+            }
+
+            $dsn = sprintf($dsn_format,
+                           $dsn_host,
+                           NeechyConfig::get('mysql_database'));
             self::$pdo = new PDO($dsn,
-                NeechyConfig::get('mysql_user'),
-                NeechyConfig::get('mysql_password')
-            );
+                                 NeechyConfig::get('mysql_user'),
+                                 NeechyConfig::get('mysql_password'));
             self::$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             return self::$pdo;
         }
@@ -101,6 +109,34 @@ class NeechyDatabase {
         }
 
         return $created_tables;
+    }
+
+    static public function drop_model_tables() {
+        $dropped_tables = array();
+
+        foreach ( self::$models as $model_name ) {
+            $model = new $model_name();
+            $model_class = get_class($model);
+            $dropped_tables[] = $model_class::drop_table_if_exists();
+        }
+
+        return $dropped_tables;
+    }
+
+    static public function core_model_classes() {
+        $model_classes = array();
+
+        foreach ( self::$models as $model_name ) {
+            $model = new $model_name();
+            $model_classes[] = get_class($model);
+        }
+
+        return $model_classes;
+    }
+
+    static public function connection_status() {
+        $db = self::connect_to_db();
+        return $db->getAttribute(PDO::ATTR_CONNECTION_STATUS);
     }
 
     #

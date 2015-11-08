@@ -3,6 +3,7 @@
 require_once('../core/neechy/constants.php');
 require_once('../core/neechy/config.php');
 require_once('../core/neechy/database.php');
+require_once('../core/neechy/templater.php');
 
 
 class NeechyTestHelper {
@@ -21,6 +22,7 @@ class NeechyTestHelper {
 
     static public function tearDown() {
         $_SERVER = array();
+        NeechyTemplater::clear();
         NeechyDatabase::destroy_database();
         NeechyDatabase::disconnect_from_db();
     }

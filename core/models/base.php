@@ -60,18 +60,22 @@ MYSQL;
     /*
      * Static Methods
      */
-    static public function init($fields=array()) {
+    public static function init($fields=array()) {
         $class = get_called_class();
         $instance = new $class($fields);
         return $instance;
     }
 
-    static public function get_schema() {
+    public static function get_schema() {
         $schema = str_replace('{{ engine }}', MYSQL_ENGINE, static::$schema);
         return $schema;
     }
 
-    static public function table_exists() {
+    public static function table_name() {
+        return self::extract_table_name();
+    }
+
+    public static function table_exists() {
         # http://stackoverflow.com/a/14355475/1093087
         $sql = sprintf('SELECT 1 FROM %s LIMIT 1', self::extract_table_name());
         $pdo = NeechyDatabase::connect_to_db();
@@ -85,7 +89,7 @@ MYSQL;
         return $found !== FALSE;
     }
 
-    static public function create_table_if_not_exists() {
+    public static function create_table_if_not_exists() {
         if ( ! self::table_exists() ) {
             $model_class = get_called_class();
             $model = new $model_class();
@@ -97,11 +101,62 @@ MYSQL;
         }
     }
 
-    static public function all() {
+    public static function drop_table_if_exists() {
+        $model_class = get_called_class();
+        $model = new $model_class();
+
+        if ( self::table_exists() ) {
+            $model->pdo->exec(sprintf('DROP TABLE IF EXISTS `%s`', $model->table));
+        }
+
+        return $model;
+    }
+
+    /*
+     * Static Query Methods
+     */
+    public static function find_by_id($id) {
+        # Note: since there is no reference to $this, this method can also be called
+        # from within an instance. See NeechyModelTest for examples.
+        $records = self::find_by_column_value('id', $id);
+
+        if ( $records ) {
+            return $records[0];
+        }
+        else {
+            return null;
+        }
+    }
+
+    public static function find_by_column_value($column, $value) {
+        $records = array();
+        $table = self::table_name();
+        $ModelClass = get_called_class();
+
+        $sql = sprintf('SELECT * FROM %s WHERE %s = ? ORDER BY id DESC', $table, $column);
+        $pdo = NeechyDatabase::connect_to_db();
+        $query = $pdo->prepare($sql);
+        $query->execute(array($value));
+        $rows = $query->fetchAll(PDO::FETCH_ASSOC);
+
+        foreach ( $rows as $row ) {
+            $records[] = new $ModelClass($row);
+        }
+
+        return $records;
+    }
+
+    public static function all() {
         $sql = sprintf('SELECT * FROM %s', self::extract_table_name());
         $pdo = NeechyDatabase::connect_to_db();
         $statement = $pdo->query($sql);
         return $statement->fetchAll();
+    }
+
+    public static function count() {
+        $sql = sprintf('SELECT COUNT(*) FROM %s', self::extract_table_name());
+        $pdo = NeechyDatabase::connect_to_db();
+        return $pdo->query($sql)->fetchColumn();
     }
 
     #
@@ -132,7 +187,7 @@ MYSQL;
         }
     }
 
-    public function field($name, $default=NULL) {
+    public function field($name, $default=null) {
         if ( isset($this->fields[$name]) ) {
             return $this->fields[$name];
         }
@@ -207,36 +262,6 @@ MYSQL;
         }
 
         return $this->rows_affected > 0;
-    }
-
-    #
-    # Public Select Methods
-    #
-    public function find_by_column_value($column, $value) {
-        $records = array();
-        $ModelClass = get_class($this);
-
-        $sql = sprintf('SELECT * FROM %s WHERE %s = ?', $this->table, $column);
-        $query = $this->pdo->prepare($sql);
-        $query->execute(array($value));
-        $rows = $query->fetchAll(PDO::FETCH_ASSOC);
-
-        foreach ( $rows as $row ) {
-            $records[] = new $ModelClass($row);
-        }
-
-        return $records;
-    }
-
-    public function find_by_id($id) {
-        $records = $this->find_by_column_value('id', $id);
-
-        if ( $records ) {
-            return $records[0];
-        }
-        else {
-            return NULL;
-        }
     }
 
     #

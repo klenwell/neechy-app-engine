@@ -18,7 +18,7 @@ class BootstrapHelper extends NeechyHelper {
     #
     # Constructor
     #
-    public function __construct($request=NULL) {
+    public function __construct($request=null) {
         $this->request = $request;
     }
 
@@ -144,9 +144,8 @@ HTML5;
             $user_name = User::current('name');
             $user_button = sprintf($logged_in_dropdown,
                                    $user_name,
-                                   $this->neechy_link('Change Password', 'password',
-                                                      'change', $user_name),
-                                   $this->neechy_link('Logout', 'auth', 'logout'));
+                                   $this->handler_link('Change Password', 'password', 'change'),
+                                   $this->handler_link('Logout', 'auth', 'logout'));
         }
         else {
             $format = <<<HTML5
@@ -155,11 +154,20 @@ HTML5;
     </div>
 HTML5;
 
-            $link = $this->neechy_link('Login / SignUp', 'auth', 'login', null,
+            $link = $this->handler_link('Login / SignUp', 'auth', 'login',
                                        array('class' => 'btn btn-primary navbar-btn'));
             $user_button = sprintf($format, $link);
         }
 
         return $user_button;
+    }
+
+    public function nav_tab_class($link_page_tag) {
+        if ( strtolower($link_page_tag) == strtolower($this->request->handler) ) {
+            return 'active';
+        }
+        else {
+            return 'inactive';
+        }
     }
 }

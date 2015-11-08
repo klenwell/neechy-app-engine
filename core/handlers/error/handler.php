@@ -14,7 +14,7 @@ class ErrorHandler extends NeechyHandler {
     #
     # Public Methods
     #
-    public function handle($e) {
+    public function handle_error($e) {
         $content = $this->render_error($e);
         return $this->respond($content, $e->status_code);
     }

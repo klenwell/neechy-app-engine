@@ -25,19 +25,18 @@ class NeechyPathTest extends PHPUnit_Framework_TestCase {
      */
     public function testUrl() {
         $cases = array(
-            array(array('MyPage', NULL, NULL), '?page=MyPage'),
-            array(array('MyPage', 'handler', NULL), '?page=MyPage&handler=handler'),
-            array(array('MyPage', NULL, 'action'), '?page=MyPage&action=action'),
-            array(array('MyPage', 'handler', 'action'),
-                '?page=MyPage&handler=handler&action=action'),
+            # array(handler, action, params, expect)
+            array(null, null, array(), '/'),
+            array('handler', null, array(), '/handler/'),
+            array(null, 'action', array(), '/action'),
+            array('handler', 'action', array(), '/handler/action'),
+            array('handler', 'action', array('p1', 'p2'), '/handler/action/p1/p2')
         );
 
         foreach ( $cases as $case ) {
-            list($args, $expected) = $case;
-            list($page, $handler, $action) = $args;
-            $url = NeechyPath::url($page, $handler, $action);
-            $this->assertEquals($expected, $url);
+            list($handler, $action, $params, $expected) = $case;
+            $url = NeechyPath::url($handler, $action, $params);
+            $this->assertEquals($expected, $url, sprintf('Case expecting %s failed', $expected));
         }
     }
 }
-

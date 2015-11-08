@@ -17,8 +17,27 @@ class NeechyHelper {
     #
     # Constructor
     #
-    public function __construct($request=NULL) {
+    public function __construct($request=null) {
         $this->request = $request;
+    }
+
+    #
+    # Static Methods
+    #
+    public static function link($href, $text, $attrs=array()) {
+        $format = '<a %s>%s</a>';
+        $tag_attrs = array(sprintf('href="%s"', $href));
+
+        foreach ( $attrs as $attr => $value ) {
+            $tag_attrs[] = sprintf('%s="%s"', $attr, $value);
+        }
+
+        return sprintf($format, implode(' ', $tag_attrs), $text);
+    }
+
+    public static function handler_link($label, $handler=null, $action=null, $attrs=array()) {
+        $href = NeechyPath::url($handler, $action);
+        return self::link($href, $label, $attrs);
     }
 
     #
@@ -39,19 +58,10 @@ class NeechyHelper {
         return sprintf($format, $type, $name, $value_attr, $attr_string);
     }
 
-    public function open_bootstrap_form($url, $method='POST', $attrs=array(),
-                                        $hidden_fields=array()) {
+    public function open_form($url, $method='POST', $options=array(),
+                              $hidden_fields=array()) {
         $format = '<form role="form" method="%s" action="%s"%s />';
-        $bootstrap_class = 'form-login';
-
-        if ( isset($attrs['class']) ) {
-            $attrs['class'] = sprintf('%s %s', $bootstrap_class, $attrs['class']);
-        }
-        else {
-            $attrs['class'] = $bootstrap_class;
-        }
-
-        $attr_string = $this->array_to_attr_string($attrs);
+        $attr_string = $this->array_to_attr_string($options);
         $form_tag = sprintf($format, $method, $url, $attr_string);
 
         # Add CSRF token for POST forms
@@ -72,50 +82,16 @@ class NeechyHelper {
         return $form_tag;
     }
 
-    public function close_form($action='') {
+    public function close_form($purpose='') {
         # $action will add a hidden field with action value.
         $format = "%s\n</form>";
         $hidden_field = '';
 
-        if ( $action ) {
-            $hidden_field = $this->input_field('hidden', 'action', $action);
+        if ( $purpose ) {
+            $hidden_field = $this->input_field('hidden', 'purpose', $purpose);
         }
 
         return sprintf($format, $hidden_field);
-    }
-
-    public function bootstrap_submit_button($label, $state='primary', $attrs=array()) {
-        $format = '<button type="submit" %s>%s</button>';
-        $state_class = sprintf('btn-%s', $state);
-        $bootstrap_class = sprintf('btn btn-lg %s btn-block', $state_class);
-
-        if ( isset($attrs['class']) ) {
-            $attrs['class'] = sprintf('%s %s', $bootstrap_class, $attrs['class']);
-        }
-        else {
-            $attrs['class'] = $bootstrap_class;
-        }
-
-        $optional_attrs = $this->array_to_attr_string($attrs);
-        return sprintf($format, $optional_attrs, $label);
-    }
-
-    public function neechy_link($label, $handler=null, $page=null, $action=null,
-                                $attrs=array()) {
-        $page = (is_null($page)) ? $label : $page;
-        $href = NeechyPath::url($page, $handler, $action);
-        return $this->link($href, $label, $attrs);
-    }
-
-    public function link($href, $text, $attrs=array()) {
-        $format = '<a %s>%s</a>';
-        $tag_attrs = array(sprintf('href="%s"', $href));
-
-        foreach ( $attrs as $attr => $value ) {
-            $tag_attrs[] = sprintf('%s="%s"', $attr, $value);
-        }
-
-        return sprintf($format, implode(' ', $tag_attrs), $text);
     }
 
     #

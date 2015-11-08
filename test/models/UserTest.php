@@ -65,7 +65,7 @@ class UserModelTest extends PHPUnit_Framework_TestCase {
 
     public function testShouldReturnUrlForUserPage() {
         $user = User::find_by_name('NeechyUser');
-        $this->assertEquals('?page=NeechyUser', $user->url());
+        $this->assertEquals('/page/NeechyUser', $user->url());
     }
 
     public function testShouldSetSecureUserPassword() {

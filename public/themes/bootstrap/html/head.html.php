@@ -16,14 +16,14 @@ $t = $this;
     <meta name="keywords" content="<?php echo NeechyConfig::get('keywords'); ?>" />
     <meta name="description" content="<?php echo NeechyConfig::get('description'); ?>" />
     <link rel="icon" type="image/x-icon"
-		  href="themes/bootstrap/images/favicon.ico"  />
+		  href="/themes/bootstrap/images/favicon.ico"  />
     <link rel="shortcut icon" type="image/x-icon"
-		  href="themes/bootstrap/images/favicon.ico"  />
+		  href="/themes/bootstrap/images/favicon.ico"  />
 
     <!-- Stylesheets -->
     <link rel="stylesheet"
       href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="themes/bootstrap/css/bootstrap-override.css" />
+    <link rel="stylesheet" href="/themes/bootstrap/css/bootstrap-override.css" />
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
