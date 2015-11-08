@@ -52,12 +52,11 @@ For more information on tests, see the README in the test directory.
 
 ## Development
 
-### Models
-
 ### Handlers
+Neechy is organized around handler. These are pluggable libraries or packages that provide a coherent set of features, much like applications in Django. User requests are mapped to handlers through the URL as follows:
 
-### Tasks
+- http://my-domain.com/handler/action
 
-### Themes
+Thus, **http://my-domain.com/page/home** would route a request to the core **PageHandler** which is responsible for simply displaying the **home** page to the viewer.
 
-### Capsules
+Neechy includes a core set of handlers. Use these as examples for your own handler. If you wish to add new features for your application, it is recommended that you add a handler directory to your app directory. Each handler must have a unique name.

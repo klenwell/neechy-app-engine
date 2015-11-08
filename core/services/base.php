@@ -14,6 +14,7 @@ class NeechyService {
     # Properties
     #
     public $type = 'base';
+    public $config = null;
 
     #
     # Constructor

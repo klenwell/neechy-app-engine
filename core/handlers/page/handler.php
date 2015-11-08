@@ -12,19 +12,25 @@ require_once('../core/neechy/response.php');
 
 class PageHandler extends NeechyHandler {
     #
+    # Constants
+    #
+    const DEFAULT_PAGE = 'home';
+
+    #
     # Public Methods
     #
     public function handle() {
+        $page_slug = ( $this->request->action ) ? $this->request->action : self::DEFAULT_PAGE;
+        $this->page = Page::find_by_slug($page_slug);
+
         # Partial variables
         $last_edited = sprintf('Last edited by %s on %s',
             $this->page->editor_link(),
             $this->page->field('created_at')
         );
-        $page_title = NeechyTemplater::titleize_camel_case($this->page->get_title());
 
         # Render partial
-        $this->t->data('page-title', $page_title);
-        $this->t->data('panel-content', $this->page->body_to_html());
+        $this->t->data('page', $this->page);
         $this->t->data('last-edited', $last_edited);
 
         # Return response
@@ -40,12 +46,12 @@ class PageHandler extends NeechyHandler {
     #
     # Private Methods
     #
-    protected function respond($content) {
+    protected function respond($content, $status=200) {
         # No AJAX response
         $templater = NeechyTemplater::load();
         $templater->page = $this->page;
         $templater->set('content', $content);
         $body = $templater->render();
-        return new NeechyResponse($body, 200);
+        return new NeechyResponse($body, $status);
     }
 }

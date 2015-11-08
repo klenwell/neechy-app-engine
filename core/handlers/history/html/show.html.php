@@ -14,8 +14,12 @@ $page = $t->data('page');
 
       <!-- Tab Panes -->
       <div id="main-content">
+        <div class="timestamp alert alert-info">
+          You are looking at the version of this page saved on <strong>
+          <?php echo date('l jS F Y \a\t g:ia', strtotime($page->field('created_at'))); ?></strong>.
+        </div>
         <div class="tab-content">
-          <?php echo $helper->build_tab_panels($page->body_to_html()); ?>
+          <?php echo $page->body_to_html(); ?>
         </div>
       </div>
 
@@ -23,7 +27,10 @@ $page = $t->data('page');
       <div id="page-controls" class="navbar">
         <div class="container">
           <ul class="nav navbar-nav">
-            <li><p class="navbar-text"><?php echo $t->data('last-edited'); ?></p></li>
+            <li><p class="navbar-text"><?php echo sprintf('Edited by %s on %s',
+                                                          $page->editor_link(),
+                                                          $page->field('created_at')); ?></p>
+            </li>
           </ul>
         </div>
       </div>

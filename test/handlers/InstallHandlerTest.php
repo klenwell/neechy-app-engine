@@ -19,6 +19,14 @@ class InstallHandlerTestError extends Exception {}
 
 class InstallHandlerTest extends PHPUnit_Framework_TestCase {
 
+    # Sometimes this test will start to fail silently. Enable this flag to help
+    # debug the issue when it does.
+    private $IS_FAILING_SILENTLY = false;
+
+    # Enable this and call $this->skip at beginning of tests to help troubleshoot
+    # silently failure issues.
+    private $SKIP_MARKED_TESTS = true;
+
     public $test_db_name = 'neechy_install_test';
     public $test_admin_name = 'InstallTestAdmin';
 
@@ -36,9 +44,10 @@ class InstallHandlerTest extends PHPUnit_Framework_TestCase {
         $this->destroy_database_if_exists($this->test_db_name);
         $this->destroy_file_if_exists(NeechyConfig::app_config_path());
         $this->assertDatabaseDoesNotExist($this->test_db_name);
+        $_ENV['NEECHY_ENV'] = 'test';
     }
 
-    public function onNotSuccessfulTest($e){
+    public function onNotSuccessfulTest(Exception $e){
         $this->destroy_file_if_exists(NeechyConfig::app_config_path());
         parent::onNotSuccessfulTest($e);
     }
@@ -48,7 +57,8 @@ class InstallHandlerTest extends PHPUnit_Framework_TestCase {
     }
 
     public function assertDatabaseDoesNotExist($db_name) {
-        $this->assertFalse((bool) $this->select_database($db_name));
+        $this->assertFalse((bool) $this->select_database($db_name),
+                           sprintf('Database %s should not exist at this time.', $db_name));
     }
 
     public function assertUserExists($name) {
@@ -115,55 +125,23 @@ class InstallHandlerTest extends PHPUnit_Framework_TestCase {
         };
     }
 
+    private function skip($message) {
+        if ( $this->SKIP_MARKED_TESTS ) {
+            $skip_message = sprintf("\n*** SKIPPING TEST: %s ***", $message);
+            $this->markTestSkipped($message);
+        }
+        else {
+            return;
+        }
+    }
+
     /*
      * Tests
      */
-    public function testShouldReloadConfigSettingsInputByUser() {
-        # Mock handler
-        $mocked_methods = array('preamble',
-                                'create_model_tables',
-                                'create_neechy_user',
-                                'create_default_pages',
-                                'create_admin_user',
-                                'println',
-                                'prompt_user');
-        $handler = $this->mock_install_handler($mocked_methods);
-        $handler->is_console = true;
-
-        # Mock handler methods
-        $handler->expects($this->any())->method('preamble');
-        $handler->expects($this->any())->method('create_model_tables');
-        $handler->expects($this->any())->method('create_neechy_user');
-        $handler->expects($this->any())->method('create_default_pages');
-        $handler->expects($this->any())->method('create_admin_user');
-        $handler->expects($this->any())->method('println');
-
-        # Mock prompt user method.
-        $mockedPromptUserValues = array(
-            array('Enter database host', 'localhost', NeechyConfig::get('mysql_host')),
-            array('Enter database user name', '', NeechyConfig::get('mysql_user')),
-            array('Enter database user password', '', NeechyConfig::get('mysql_password')),
-            array('Enter database name', 'neechy', $this->test_db_name),
-        );
-        $handler->expects($this->any())
-                ->method('prompt_user')
-                ->will($this->returnValueMap($mockedPromptUserValues));
-
-        # Assert pre-exercise conditions
-        $this->assertDatabaseDoesNotExist($this->test_db_name);
-        $this->assertEquals('test', NeechyConfig::environment());
-
-        # Exercise
-        $handler->handle();
-
-        # Verify
-        $this->assertTrue($handler->is_console);
-        $this->assertEquals($this->test_db_name, NeechyConfig::get('mysql_database'));
-        $this->assertDatabaseExists($this->test_db_name);
-        $this->assertEquals('app', NeechyConfig::environment());
-    }
-
     public function testShouldSuccessfullySetupNeechyFromConsole() {
+        #$this->skip('testShouldSuccessfullySetupNeechyFromConsole');
+        if ( $this->IS_FAILING_SILENTLY ) echo 'testShouldSuccessfullySetupNeechyFromConsole';
+
         # Mock handler
         $mocked_methods = array('preamble',
                                 'println',
@@ -195,6 +173,11 @@ class InstallHandlerTest extends PHPUnit_Framework_TestCase {
         # Assert pre-exercise conditions
         $this->assertDatabaseDoesNotExist($this->test_db_name);
 
+        # Recreate production console context.
+        unset($_ENV['NEECHY_ENV']);
+        $reloaded_config = NeechyConfig::init();
+        $this->assertEquals('test', NeechyConfig::environment());
+
         # Exercise
         $handler->handle();
 
@@ -210,6 +193,8 @@ class InstallHandlerTest extends PHPUnit_Framework_TestCase {
     }
 
     public function testShouldInputInvalidDbCredentialsAndFail() {
+        if ( $this->IS_FAILING_SILENTLY ) echo 'testShouldInputInvalidDbCredentialsAndFail';
+
         # Mock handler
         $mocked_methods = array('preamble',
                                 'println',
@@ -245,6 +230,8 @@ class InstallHandlerTest extends PHPUnit_Framework_TestCase {
     }
 
     public function testShouldInputInvalidEmailAddressAndFail() {
+        if ( $this->IS_FAILING_SILENTLY ) echo 'testShouldInputInvalidEmailAddressAndFail';
+
         # Mock handler
         $mocked_methods = array('preamble',
                                 'println',
@@ -291,6 +278,8 @@ class InstallHandlerTest extends PHPUnit_Framework_TestCase {
     }
 
     public function testShouldThrowErrorWhenAppConfigFilePresent() {
+        if ( $this->IS_FAILING_SILENTLY ) echo 'testShouldThrowErrorWhenAppConfigFilePresent';
+
         # Setup NeechyConfig with App Config present
         $test_db_name = NeechyConfig::get('mysql_database');
         $this->assertEquals('test', NeechyConfig::environment());
@@ -303,6 +292,7 @@ class InstallHandlerTest extends PHPUnit_Framework_TestCase {
         file_put_contents(NeechyConfig::app_config_path(), $app_config_contents);
 
         # Reload NeechyConfig with App Config present
+        $_ENV['NEECHY_ENV'] = 'app';
         NeechyConfig::init();
         $this->assertEquals('app', NeechyConfig::environment());
         $this->assertEquals($test_db_name, NeechyConfig::get('mysql_database'));
@@ -321,6 +311,8 @@ class InstallHandlerTest extends PHPUnit_Framework_TestCase {
     }
 
     public function testHandlerFromWeb() {
+        if ( $this->IS_FAILING_SILENTLY ) echo 'testHandlerFromWeb';
+
         $request = new NeechyRequest();
         $handler = new InstallHandler($request);
         $handler->is_console = false;
@@ -329,6 +321,8 @@ class InstallHandlerTest extends PHPUnit_Framework_TestCase {
     }
 
     public function testInstantiates() {
+        if ( $this->IS_FAILING_SILENTLY ) echo 'testInstantiates';
+
         $handler = new InstallHandler();
         $this->assertInstanceOf('InstallHandler', $handler);
     }
