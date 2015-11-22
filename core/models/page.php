@@ -12,7 +12,7 @@ require_once('../core/models/base.php');
 require_once('../core/models/user.php');
 require_once('../core/neechy/path.php');
 require_once('../core/neechy/helper.php');
-require_once('../lib/parsedown/Parsedown.php');
+require_once('../core/neechy/formatter.php');
 
 
 class Page extends NeechyModel {
@@ -205,7 +205,7 @@ MYSQL;
 
     public function body_to_html() {
         # Returns body as html.
-        $markdown = new Parsedown();
-        return $markdown->text($this->field('body'));
+        $formatter = new NeechyFormatter();
+        return $formatter->wml_to_html($this->field('body'));
     }
 }
