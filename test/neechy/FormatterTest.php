@@ -23,15 +23,11 @@ class FormatterTest extends PHPUnit_Framework_TestCase {
     /**
      * Tests
      */
-    public function testWikkaLinkTranslation() {
+    public function testWikiLinkTranslation() {
         $test_cases = array(
             # [$wml, $expected]
             array('[CamelLink](/page/CamelLink)',
                   '<p><a href="/page/CamelLink">CamelLink</a></p>'),
-            array('CamelLink',
-                  '<p><a href="/page/CamelLink">CamelLink</a></p>'),
-            array('word CamelLink word',
-                  '<p>word <a href="/page/CamelLink">CamelLink</a> word</p>'),
             array('[[CamelLink Camel Link]]',
                   '<p><a href="/page/CamelLink">Camel Link</a></p>'),
             array('x [[CamelLink Camel Link]] x',
@@ -47,7 +43,13 @@ class FormatterTest extends PHPUnit_Framework_TestCase {
 
             # Leave links in code blocks alone
             array('    NeechyFormatting',
-                  '<pre><code>NeechyFormatting</code></pre>')
+                  '<pre><code>NeechyFormatting</code></pre>'),
+
+            # TitleCase
+            array('CamelLink',
+                  '<p><a href="/page/CamelLink">CamelLink</a></p>'),
+            array('word CamelLink word',
+                  '<p>word <a href="/page/CamelLink">CamelLink</a> word</p>')
         );
 
         $formatter = new NeechyFormatter();
