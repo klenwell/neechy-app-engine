@@ -40,16 +40,18 @@ class FormatterTest extends PHPUnit_Framework_TestCase {
                   '<p>x <a href="http://github.com/">Github</a> x</p>'),
             array('[[http://github.com/ | Github]]',
                   '<p><a href="http://github.com/">Github</a></p>'),
+            array('http://github.com/',
+                  '<p><a href="http://github.com/">http://github.com/</a></p>'),
 
             # Leave links in code blocks alone
             array('    NeechyFormatting',
                   '<pre><code>NeechyFormatting</code></pre>'),
 
-            # TitleCase
-            array('CamelLink',
-                  '<p><a href="/page/CamelLink">CamelLink</a></p>'),
-            array('word CamelLink word',
-                  '<p>word <a href="/page/CamelLink">CamelLink</a> word</p>')
+            # TitleCase (not currently supported)
+            #array('TitleCase',
+            #      '<p><a href="/page/TitleCase">TitleCase</a></p>'),
+            #array('word TitleCase word',
+            #      '<p>word <a href="/page/TitleCase">TitleCase</a> word</p>')
         );
 
         $formatter = new NeechyFormatter();
