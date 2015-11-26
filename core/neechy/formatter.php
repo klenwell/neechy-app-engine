@@ -118,7 +118,13 @@ class NeechyDown extends Parsedown {
             list($href, $label) = explode('|', $link, 2);
         }
         else {
-            list($href, $label) = explode(' ', $link, 2);
+            $parts = explode(' ', $link, 2);
+            if ( count($parts) > 1 ) {
+                list($href, $label) = $parts;
+            }
+            else {
+                list($href, $label) = array($parts[0], $parts[0]);
+            }
         }
 
         $protocol_regex = sprintf('~(%s)://~su', 'http|https|ftp|news|irc|gopher');
@@ -157,21 +163,22 @@ class NeechyFormatter  {
     # Public Methods
     #
     public function wml_to_html($wml) {
-        #$wml = $this->wikka_links_to_markdown_links($wml);
         $html = $this->markdown->text($wml);
         return $html;
     }
 
     #
     # Protected Methods
+    # TODO: The following methods are all deprecated and should be removed. They
+    # are kept for now for reference.
     #
-    protected function wikka_links_to_markdown_links($wml) {
+    protected function deprecated_wikka_links_to_markdown_links($wml) {
         $wml = $this->replace_double_bracket_links($wml);
         $wml = $this->replace_title_case_links($wml);
         return $wml;
     }
 
-    protected function replace_title_case_links($wml) {
+    protected function deprecated_replace_title_case_links($wml) {
         # Source: http://stackoverflow.com/a/815849/1093087
         $regex_parts = array(
             '(?<=\s|^)',    # either a word boundary or position 0
@@ -193,7 +200,7 @@ class NeechyFormatter  {
         return $wml;
     }
 
-    protected function replace_double_bracket_links($wml) {
+    protected function deprecated_replace_double_bracket_links($wml) {
         $regex_parts = array("\[\[\s*(.*?)\s*\]\]");
         $regex = sprintf('/%s/msu', join('', $regex_parts));
         $wml = preg_replace_callback($regex,
@@ -202,13 +209,13 @@ class NeechyFormatter  {
         return $wml;
     }
 
-    protected function title_case_to_markdown_link($matches) {
+    protected function deprecated_title_case_to_markdown_link($matches) {
         $markdown_format = '[%s](/page/%s)';
         $camel_case = $matches[0];
         return sprintf($markdown_format, $camel_case, $camel_case);
     }
 
-    protected function double_brackets_to_markdown_link($matches) {
+    protected function deprecated_double_brackets_to_markdown_link($matches) {
         $markdown_format = '[%s](%s)';
         $meat = $matches[1];
 
