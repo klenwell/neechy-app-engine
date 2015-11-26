@@ -24,7 +24,7 @@ class PageHelper extends BootstrapHelper {
         $page_slug = $page->field('slug');
 
         $read_tab = array($page->title(), 'page', $page_slug);
-        $edit_tab = array('Edit', 'edit', $page_slug);
+        $edit_tab = array('Edit', 'editor', $page_slug);
         $history_tab = array('History', 'history', $page_slug);
 
         $tab_menu = new PageTabMenu($this->request, 'page-tabs');
