@@ -46,8 +46,8 @@ class FormatterTest extends PHPUnit_Framework_TestCase {
                   '<p><a href="http://github.com/">http://github.com/</a></p>'),
 
             # Leave links in code blocks alone
-            array('    NeechyFormatting',
-                  '<pre><code>NeechyFormatting</code></pre>'),
+            array('    [[TitleLink Title Link]]',
+                  '<pre><code>[[TitleLink Title Link]]</code></pre>'),
 
             # TitleCase (not currently supported)
             #array('TitleCase',
