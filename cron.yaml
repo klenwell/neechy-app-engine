@@ -10,5 +10,5 @@ cron:
 
 - description: Reset database
   url: /reset/database   
-  schedule: every 3 hours
+  schedule: every 6 hours
   
