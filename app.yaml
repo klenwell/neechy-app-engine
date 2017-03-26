@@ -30,7 +30,7 @@ handlers:
   login: admin
 
 - url: /.*
-  script: public/index.php
+  script: public/app.php
   
 
 env_variables:
