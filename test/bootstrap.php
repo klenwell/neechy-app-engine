@@ -10,7 +10,7 @@ $test_dir = dirname(__FILE__);
 chdir($test_dir);
 
 # Need to load Google SDK
-$app_engine_sdk_path = '../../../google-cloud-sdk/platform/google_appengine/php/sdk';
+$app_engine_sdk_path = '../../../../google-cloud-sdk/platform/google_appengine/php/sdk';
 set_include_path(get_include_path() . PATH_SEPARATOR . $app_engine_sdk_path);
 
 require_once 'google/appengine/runtime/autoloader.php';
