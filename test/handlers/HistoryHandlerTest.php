@@ -22,45 +22,43 @@ class HistoryHandlerTest extends PHPUnit_Framework_TestCase {
         NeechyTestHelper::setUp();
         UserFixture::init();
         PageFixture::init();
-
-        $this->request = new NeechyRequest();
-        $this->request->page = 'NeechyPage';
-
-        $this->mockCreateLoginUrl('index.php?page=HomePage');
     }
 
     public function tearDown() {
         NeechyTestHelper::tearDown();
-        $this->request = null;
-    }
-
-    public function mockCreateLoginUrl($destination_url) {
-        $this->apiProxyMock = new google\appengine\testing\ApiProxyMock();
-        $this->apiProxyMock->init($this);
-
-        $req = new \google\appengine\CreateLoginURLRequest();
-        $req->setDestinationUrl($destination_url);
-        $resp = new \google\appengine\CreateLoginURLResponse();
-        $resp->setLoginUrl('http://www');
-
-        $this->apiProxyMock->expectCall('user', 'CreateLoginURL', $req, $resp);
     }
 
     /**
      * Tests
      */
     public function testShouldReturnPageHistory() {
-        $handler = new HistoryHandler($this->request);
+        $_SERVER['REQUEST_URI'] = '/history/neechypage';
+        $request = new NeechyRequest();
+        $handler = new HistoryHandler($request);
         $response = $handler->handle();
 
         $this->assertEquals(200, $response->status);
-        $this->assertContains('<td class="id">1</td>', $response->body);
-        $this->assertContains('<td class="id">2</td>', $response->body);
-        $this->assertContains('<td class="id">3</td>', $response->body);
+        $this->assertContains('<td class="id"><a href="/history/neechypage/1">1</a></td>',
+                              $response->body);
+        $this->assertContains('<td class="id"><a href="/history/neechypage/2">2</a></td>',
+                              $response->body);
+        $this->assertContains('<td class="id"><a href="/history/neechypage/3">3</a></td>',
+                              $response->body);
+    }
+
+    public function testShouldShowHistoricalVersion() {
+        $_SERVER['REQUEST_URI'] = '/history/neechypage/1';
+        $request = new NeechyRequest();
+        $handler = new HistoryHandler($request);
+        $response = $handler->handle();
+
+        $this->assertEquals(200, $response->status);
     }
 
     public function testInstantiates() {
-        $handler = new HistoryHandler($this->request);
+        $request = new NeechyRequest();
+        $request->handler = 'history';
+        $handler = new HistoryHandler($request);
         $this->assertInstanceOf('HistoryHandler', $handler);
         $this->assertInstanceOf('NeechyHandler', $handler);
     }

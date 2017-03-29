@@ -10,7 +10,7 @@ $validator = $t->data('form-validator');
 $helper = new PasswordHelper();
 
 # General vars
-$post_url = NeechyPath::url('change', 'password');
+$post_url = NeechyPath::url('password', 'change');
 
 
 ?>

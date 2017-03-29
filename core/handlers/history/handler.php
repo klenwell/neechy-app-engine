@@ -11,24 +11,47 @@ require_once('../core/neechy/response.php');
 
 
 class HistoryHandler extends NeechyHandler {
+    public $page = null;
+
     #
     # Public Methods
     #
     public function handle() {
-        $this->page = Page::find_by_title($this->request->page);
-        $edits = $this->page->load_history();
+        $page_id = $this->request->param(0);
 
-        if ( $this->request->format == 'ajax' ) {
-            return new NeechyResponse(json_encode($edits), 200);
+
+        if ( $page_id ) {
+            return $this->show_page_version($page_id);
         }
         else {
-            $this->t->data('edits', $edits);
-            $content = $this->render_view('table');
-            return $this->respond($content);
+            return $this->show_index();
         }
     }
 
     #
     # Private Methods
     #
+    private function show_index() {
+        $page_title = $this->request->action;
+        $page = Page::find_by_title($page_title);
+        $edits = $page->load_history();
+
+        if ( $this->request->format == 'ajax' ) {
+            return new NeechyResponse(json_encode($edits), 200);
+        }
+        else {
+            $this->t->data('page', $page);
+            $this->t->data('edits', $edits);
+            $content = $this->render_view('table');
+            return $this->respond($content);
+        }
+    }
+
+    private function show_page_version($page_id) {
+        $page = Page::init();
+        $page = $page->find_by_id($page_id);
+        $this->t->data('page', $page);
+        $content = $this->render_view('show');
+        return $this->respond($content);
+    }
 }

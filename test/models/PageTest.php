@@ -50,7 +50,7 @@ class PageModelTest extends PHPUnit_Framework_TestCase {
 
     public function testUrl() {
         $page = Page::find_by_title('NeechyPage');
-        $this->assertEquals('?page=neechypage', $page->url());
+        $this->assertEquals('/page/neechypage', $page->url());
     }
 
     public function testFindByTitle() {

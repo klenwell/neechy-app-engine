@@ -60,7 +60,7 @@ class LoginValidator extends NeechyValidator {
         $user = User::find_by_name($value);
         if ( $user->exists() ) {
             $this->user = $user;
-            return TRUE;
+            return true;
         }
         else {
             $this->add_error($form_key, self::FAILURE_MESSAGE);
@@ -80,7 +80,7 @@ class LoginValidator extends NeechyValidator {
         }
 
         if ( NeechySecurity::verify_password($value, $this->user->field('password')) ) {
-            return TRUE;
+            return true;
         }
         else {
             $this->add_error($form_key, self::FAILURE_MESSAGE);

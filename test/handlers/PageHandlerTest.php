@@ -23,8 +23,6 @@ class PageHandlerTest extends PHPUnit_Framework_TestCase {
         UserFixture::init();
         PageFixture::init();
         $_SESSION['csrf_token'] = 'foo';
-
-        $this->mockCreateLoginUrl('index.php?page=HomePage');
     }
 
     public function tearDown() {
@@ -32,34 +30,23 @@ class PageHandlerTest extends PHPUnit_Framework_TestCase {
         $_SESSION['csrf_token'] = null;
     }
 
-    public function mockCreateLoginUrl($destination_url) {
-        $this->apiProxyMock = new google\appengine\testing\ApiProxyMock();
-        $this->apiProxyMock->init($this);
-
-        $req = new \google\appengine\CreateLoginURLRequest();
-        $req->setDestinationUrl($destination_url);
-        $resp = new \google\appengine\CreateLoginURLResponse();
-        $resp->setLoginUrl('http://www');
-
-        $this->apiProxyMock->expectCall('user', 'CreateLoginURL', $req, $resp);
-    }
-
     /**
      * Tests
      */
     public function testShouldDisplayPage() {
         $request = new NeechyRequest();
-        $page = Page::find_by_title('NeechyPage');
+        $request->handler = 'page';
+        $request->action = 'NeechyPage';
 
-        $handler = new PageHandler($request, $page);
+        $handler = new PageHandler($request);
         $response = $handler->handle();
 
         $this->assertEquals(200, $response->status);
         $this->assertContains('<div class="tab-pane page active" id="read">',
                               $response->body);
 
-        # TODO: Figure out why this doesn't pass as expected.
-        #$this->assertContains($page->body_to_html(), $response->body);
+        $page = Page::find_by_title('NeechyPage');
+        $this->assertContains($page->body_to_html(), $response->body);
     }
 
     public function testInstantiates() {

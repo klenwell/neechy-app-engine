@@ -42,3 +42,4 @@ define('RE_EXTRACT_BRACKET_TOKEN_ID', '/[\{\}\s]/');
 # Miscellaneous
 #
 define('NEECHY_USER', 'NeechySystem');
+define('DEFAULT_HANDLER', 'page');

@@ -37,7 +37,7 @@ class NeechyPath {
         return NeechyPath::join($root, $sub_path);
     }
 
-    static public function url($page, $handler=NULL, $action=NULL, $params=array()) {
+    static public function old_url($page, $handler=NULL, $action=NULL, $params=array()) {
         # TODO: Detect rewrite mode; Add query param support
         $parts = array(
             'page' => $page,
@@ -65,6 +65,23 @@ class NeechyPath {
             }
 
             $url = sprintf('?%s', http_build_query($parts));
+        }
+
+        return $url;
+    }
+
+    static public function url($handler=null, $action=null, $params=array()) {
+        # returns /handler/action[/param1/param2...]
+        $url_parts = array($handler, $action);
+
+        foreach ( $params as $param ) {
+            $url_parts[] = $param;
+        }
+
+        $url = implode('/', $url_parts);
+
+        if ( substr($url, 0, 1) !== '/' ) {
+            $url = '/' . $url;
         }
 
         return $url;
