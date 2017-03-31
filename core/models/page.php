@@ -17,6 +17,8 @@ require_once('../core/neechy/formatter.php');
 
 class Page extends NeechyModel {
 
+    const MAX_BODY_LENGTH = 1000;
+
     protected static $schema = <<<MYSQL
 CREATE TABLE pages (
     id int(11) NOT NULL auto_increment,
@@ -41,6 +43,7 @@ MYSQL;
     public $primogenitor = NULL;
     public $editor = NULL;
     public $edits = array();
+    public $validation_errors = array();
 
     #
     # Constructor
@@ -127,6 +130,40 @@ MYSQL;
     }
 
     #
+    # Validation Methods
+    #
+    public function is_valid() {
+        $this->validation_errors = array();
+        $this->validate_body();
+        return count($this->validation_errors) < 1;
+    }
+
+    public function validate_body() {
+        # empty pre-PHP 5.5 needs a variable.
+        # See http://stackoverflow.com/a/2173318/1093087.
+        $body = $this->field('body');
+
+        if ( empty($body) ) {
+            $this->validation_errors['body'] = 'Body field required.';
+        }
+        elseif ( strlen($body) > self::MAX_BODY_LENGTH ) {
+            $this->validation_errors['body'] =
+                sprintf('Page length can be no longer than %s characters. Please shorten.',
+                        self::MAX_BODY_LENGTH);
+        }
+    }
+
+    public function error_message() {
+        $messages = array();
+
+        foreach ( $this->validation_errors as $field => $error ) {
+            $messages[] = sprintf('<p>%s</p>', $error);
+        }
+
+        return implode("\n", $messages);
+    }
+
+    #
     # Public Find Methods
     #
     public function find_primogenitor_by_title($title) {
@@ -175,7 +212,7 @@ MYSQL;
     }
 
     #
-    # Public Attibute Methods
+    # Public Attribute Methods
     #
     public function url($handler='page', $options=array()) {
         return NeechyPath::url($handler, $this->field('slug'), $options);
@@ -183,6 +220,10 @@ MYSQL;
 
     public function historical_url() {
         return sprintf('/history/%s/%s', $this->field('slug'), $this->field('id'));
+    }
+
+    public function editor_url() {
+        return sprintf('/editor/%s', $this->field('slug'));
     }
 
     public function editor_link() {

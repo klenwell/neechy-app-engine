@@ -22,13 +22,11 @@ $helper = new BootstrapHelper($t->request);
 
         <div class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
-            <!-- TODO: dynamically build menu -->
-            <li class="<?php echo $helper->nav_tab_class('page-index'); ?>">
-              <?php echo $helper->handler_link('PageIndex', 'admin', 'page-index'); ?>
+            <!-- ASYNC: App-Engine Specific
+            <li class="inactive">
+              <a href="https://github.com/klenwell/neechy-app-engine">Github Source</a>
             </li>
-            <li class="<?php echo $helper->nav_tab_class('recent-changes'); ?>">
-              <?php echo $helper->handler_link('RecentChanges', 'recent', 'changes'); ?>
-            </li>
+             -->
           </ul>
           <ul class="nav navbar-nav navbar-right">
             <li>
