@@ -11,10 +11,13 @@
 require_once('../core/models/base.php');
 require_once('../core/models/user.php');
 require_once('../core/neechy/path.php');
-require_once('../lib/parsedown/Parsedown.php');
+require_once('../core/neechy/helper.php');
+require_once('../core/neechy/formatter.php');
 
 
 class Page extends NeechyModel {
+
+    const MAX_BODY_LENGTH = 1000;
 
     protected static $schema = <<<MYSQL
 CREATE TABLE pages (
@@ -40,6 +43,7 @@ MYSQL;
     public $primogenitor = NULL;
     public $editor = NULL;
     public $edits = array();
+    public $validation_errors = array();
 
     #
     # Constructor
@@ -60,9 +64,8 @@ MYSQL;
     #
     # Static Methods
     #
-    public static function find_by_title($title) {
+    public static function find_by_slug($slug) {
         $sql = "SELECT * FROM pages WHERE slug = ? ORDER BY created_at DESC LIMIT 1";
-        $slug = self::title_to_slug($title);
 
         $pdo = NeechyDatabase::connect_to_db();
         $query = $pdo->prepare($sql);
@@ -73,12 +76,16 @@ MYSQL;
             $page = new Page($row);
         }
         else {
-            $page = new Page(array(
-                'title' => $title,
-                'slug' => $slug
-            ));
+            $page = new Page(array('slug' => $slug));
         }
 
+        return $page;
+    }
+
+    public static function find_by_title($title) {
+        $slug = self::title_to_slug($title);
+        $page = self::find_by_slug($slug);
+        $page->set('title', $title);
         return $page;
     }
 
@@ -123,6 +130,40 @@ MYSQL;
     }
 
     #
+    # Validation Methods
+    #
+    public function is_valid() {
+        $this->validation_errors = array();
+        $this->validate_body();
+        return count($this->validation_errors) < 1;
+    }
+
+    public function validate_body() {
+        # empty pre-PHP 5.5 needs a variable.
+        # See http://stackoverflow.com/a/2173318/1093087.
+        $body = $this->field('body');
+
+        if ( empty($body) ) {
+            $this->validation_errors['body'] = 'Body field required.';
+        }
+        elseif ( strlen($body) > self::MAX_BODY_LENGTH ) {
+            $this->validation_errors['body'] =
+                sprintf('Page length can be no longer than %s characters. Please shorten.',
+                        self::MAX_BODY_LENGTH);
+        }
+    }
+
+    public function error_message() {
+        $messages = array();
+
+        foreach ( $this->validation_errors as $field => $error ) {
+            $messages[] = sprintf('<p>%s</p>', $error);
+        }
+
+        return implode("\n", $messages);
+    }
+
+    #
     # Public Find Methods
     #
     public function find_primogenitor_by_title($title) {
@@ -135,7 +176,7 @@ MYSQL;
             return new Page($row);
         }
         else {
-            return NULL;
+            return null;
         }
     }
 
@@ -158,19 +199,31 @@ MYSQL;
         $rows = $query->fetchAll(PDO::FETCH_ASSOC);
 
         $edits = array();
+        $augmented_rows = array();
         foreach ( $rows as $row ) {
-            $edits[] = new Page($row);
+            $page = new Page($row);
+            $edits[$row['id']] = $page;
+            $row['history_url'] = $page->historical_url();
+            $augmented_rows[] = $row;
         }
         $this->edits = $edits;
 
-        return $rows;
+        return $augmented_rows;
     }
 
     #
-    # Public Attibute Methods
+    # Public Attribute Methods
     #
-    public function url($handler=NULL, $action=NULL, $params=array()) {
-        return NeechyPath::url($this->field('slug'), $handler, $action, $params);
+    public function url($handler='page', $options=array()) {
+        return NeechyPath::url($handler, $this->field('slug'), $options);
+    }
+
+    public function historical_url() {
+        return sprintf('/history/%s/%s', $this->field('slug'), $this->field('id'));
+    }
+
+    public function editor_url() {
+        return sprintf('/editor/%s', $this->field('slug'));
     }
 
     public function editor_link() {
@@ -178,9 +231,8 @@ MYSQL;
             return 'N/A';
         }
         else {
-            $t = NeechyTemplater::load();
             $editor_name = $this->editor->field('name');
-            return $t->neechy_link($editor_name);
+            return NeechyHelper::handler_link($editor_name, 'page', $editor_name);
         }
     }
 
@@ -188,9 +240,13 @@ MYSQL;
         return $this->field('title', $this->field('slug', $default));
     }
 
+    public function title() {
+        return NeechyTemplater::titleize_camel_case($this->get_title());
+    }
+
     public function body_to_html() {
         # Returns body as html.
-        $markdown = new Parsedown();
-        return $markdown->text($this->field('body'));
+        $formatter = new NeechyFormatter();
+        return $formatter->wml_to_html($this->field('body'));
     }
 }

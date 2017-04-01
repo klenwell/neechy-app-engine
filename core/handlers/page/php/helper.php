@@ -1,6 +1,7 @@
 <?php
 require_once('../public/themes/bootstrap/php/helper.php');
 require_once('../app/models/user.php');
+require_once('../public/themes/bootstrap/php/page_tab_menu.php');
 
 
 class PageHelper extends BootstrapHelper {
@@ -19,47 +20,27 @@ class PageHelper extends BootstrapHelper {
     #
     # Public Methods
     #
-    public function build_page_tab_menu($page_title) {
-        $page_tabs = array(
-            # handler => label
-            'page' => $page_title,
-            'editor' => 'Edit',
-            'history' => 'History'
-        );
+    public function build_page_tab_menu($page) {
+        $user_logged_in = AppUser::is_logged_in();
+        $page_slug = $page->field('slug');
 
-        $tabs_by_user_status = array(
-            'default' => array('page', 'history'),
-            'logged-in' => array_keys($page_tabs)
-        );
+        $read_tab = array($page->title(), 'page', $page_slug);
+        $edit_tab = array('Edit', 'editor', $page_slug);
+        $history_tab = array('History', 'history', $page_slug);
 
-        $user_status = ( AppUser::is_logged_in() ) ? 'logged-in' : 'default';
-        $user_tabs = $tabs_by_user_status[$user_status];
+        $tab_menu = new PageTabMenu($this->request, 'page-tabs');
 
-        $tab_links = array();
-
-        foreach ( $user_tabs as $handler) {
-            $label = $page_tabs[$handler];
-            $href = NeechyPath::url($this->request->page, $handler);
-            $classes = array( $handler );
-
-            if ( $handler == 'page' ) {
-                $classes[] = 'title';
-            }
-
-            if ( $handler == $this->request->handler ) {
-                $classes[] = 'active';
-            }
-
-            if ( $this->request->handler == 'editor' &&
-                 $handler == $this->request->handler &&
-                 $this->request->action == 'preview' ) {
-                $label = 'Preview';
-            }
-
-            $tab_links[] = $this->build_page_tab_link($label, $href, $classes);
+        if ( $user_logged_in ) {
+            $tab_menu->add_tabs(array($read_tab,
+                                      $edit_tab,
+                                      $history_tab));
+        }
+        else {
+            $tab_menu->add_tabs(array($read_tab,
+                                      $history_tab));
         }
 
-        return implode("\n", $tab_links);
+        return $tab_menu->render();
     }
 
     public function build_tab_panels($panel_content) {
@@ -93,18 +74,6 @@ class PageHelper extends BootstrapHelper {
     #
     # Private Methods
     #
-    private function build_page_tab_link($label, $href, $classes=array()) {
-        # Change data-toggle-off to data-toggle below to reenable Bootstrap tab panels.
-        $tab_format = '<li class="%s"><a href="%s" data-toggle-off="tab">%s</a></li>';
-
-        $class_attr = implode(' ', $classes);
-
-        return sprintf($tab_format,
-                       $class_attr,
-                       $href,
-                       $label);
-    }
-
     private function history_tab_content($templater) {
         $html_f = <<<HTML5
     <div id="history-content">

@@ -5,7 +5,7 @@ api_version: 1
 threadsafe: true
 
 # Default branch: production
-version: production
+version: 7tl4vehp
 
 
 handlers:
@@ -30,7 +30,7 @@ handlers:
   login: admin
 
 - url: /.*
-  script: public/index.php
+  script: public/app.php
   
 
 env_variables:

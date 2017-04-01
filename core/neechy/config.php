@@ -47,6 +47,7 @@ class NeechyConfig {
     private $settings = array();
     private $environment = null;    # app, test, or core
     private $stage = null;          # dev or cloud
+
     private $core_loaded = false;
     private $test_loaded = false;
     private $app_loaded = false;
@@ -56,13 +57,13 @@ class NeechyConfig {
     #
     static public function init() {
         self::$instance = new NeechyConfig();
+        self::$instance->load_settings();
         return self::$instance;
     }
 
     public function __construct() {
         $this->environment = $this->compute_environment();
         $this->stage = $this->compute_stage();
-        $this->settings = $this->load_settings();
     }
 
     #
@@ -91,6 +92,15 @@ class NeechyConfig {
 
     static public function test_config_path() {
         return NeechyPath::join(NEECHY_ROOT, self::TEST_PATH);
+    }
+
+    # TODO: remove
+    static public function deprecated_load_app_config($path=null) {
+        $app_config = new NeechyConfig();
+        $app_config->path = self::app_config_path();
+        $app_config->settings = $app_config->load_core_config_file($path);
+        unset($app_config->settings['core-loaded']);
+        return $app_config;
     }
 
     #
@@ -131,7 +141,7 @@ class NeechyConfig {
         $this->settings[$setting] = $value;
     }
 
-    public function save() {
+    public function save_app_config_file() {
         $format = <<<HEREPHP
 <?php
 /**
@@ -147,7 +157,7 @@ class NeechyConfig {
 HEREPHP;
 
         $config_lines = array();
-        foreach ( $this->_settings as $setting => $value ) {
+        foreach ( $this->settings as $setting => $value ) {
             $config_lines[] = sprintf("'%s' => '%s',",
                 str_replace("'", "/'", $setting),
                 str_replace("'", "/'", $value)
@@ -163,7 +173,8 @@ HEREPHP;
         );
 
         # Write file
-        $file = @fopen($this->path, "w");
+        $path = self::app_config_path();
+        $file = @fopen($path, "w");
         fwrite($file, $content);
         fclose($file);
     }

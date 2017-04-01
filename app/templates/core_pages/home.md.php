@@ -10,7 +10,7 @@ This is a demo of the Neechy PHP wiki project. It is designed to run on the [Goo
 
 ### Login and Start Editing
 
-Login by clicking the login button in the navbar and using your Google account. Once you log in, you can start editing wiki pages. Neechy Wiki supports an extended markdown syntax. For more information, see the [NeechyFormatting page](/?page=NeechyFormatting).
+Login by clicking the login button in the navbar and using your Google account. Once you log in, you can start editing wiki pages. Neechy Wiki supports an extended markdown syntax. For more information, see the [NeechyFormatting page](/page/NeechyFormatting).
 
 ### Developers
 

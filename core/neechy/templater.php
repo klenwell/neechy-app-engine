@@ -8,6 +8,10 @@
 require_once('../core/neechy/constants.php');
 require_once('../core/neechy/path.php');
 require_once('../core/neechy/request.php');
+require_once('../core/neechy/errors.php');
+
+
+class NeechyTemplatingError extends NeechyError {}
 
 
 class NeechyTemplater {
@@ -23,7 +27,6 @@ class NeechyTemplater {
     static private $instance = null;
 
     public $request = null;
-    public $page = null;
 
     private $_data = array();
     private $partial = array();
@@ -35,7 +38,7 @@ class NeechyTemplater {
     #
     public function __construct($theme='bootstrap') {
         $this->theme_path = $this->load_theme_path($theme);
-        $this->theme_url_path = sprintf('themes/%s/', $theme);
+        $this->theme_url_path = sprintf('/themes/%s/', $theme);
         $this->request = NeechyRequest::load();
     }
 
@@ -50,6 +53,10 @@ class NeechyTemplater {
             self::$instance = new NeechyTemplater($theme);
             return self::$instance;
         }
+    }
+
+    static public function clear() {
+        self::$instance = null;
     }
 
     static public function titleize_camel_case($input) {
@@ -92,16 +99,25 @@ class NeechyTemplater {
         return $html;
     }
 
-    public function render_partial_by_path($partial_path) {
-        return $this->buffer($partial_path);
+    public function render_partial_by_path($partial_path, $default=null) {
+        if ( file_exists($partial_path) ) {
+            return $this->buffer($partial_path);
+        }
+        elseif ( ! is_null($default) ) {
+            return $default;
+        }
+        else {
+            $error_message = sprintf('Partial path %s not found.', $partial_path);
+            throw new NeechyTemplatingError($error_message, 500);
+        }
     }
 
-    public function render_partial_by_token($token) {
+    public function render_partial_by_token($token, $default='') {
         $id = preg_replace(RE_EXTRACT_BRACKET_TOKEN_ID, '', $token);
-        return $this->render_partial_by_id($id);
+        return $this->render_partial_by_id($id, $default);
     }
 
-    public function render_partial_by_id($id) {
+    public function render_partial_by_id($id, $default='') {
         $partial_file = sprintf('%s.html.php', $id);
         $theme_path = NeechyPath::join($this->theme_path, 'html', $partial_file);
 
@@ -109,10 +125,15 @@ class NeechyTemplater {
             return $this->partial[$id];
         }
         elseif ( file_exists($theme_path) ) {
-            return $this->render_partial_by_path($theme_path);
+            $this->partial[$id] = $this->render_partial_by_path($theme_path);
+            return $this->partial[$id];
+        }
+        elseif ( ! is_null($default) ) {
+            return $default;
         }
         else {
-            return sprintf('<!-- block %s not found -->', $id);
+            $error_message = sprintf('Partial for id %s not found.', $id);
+            throw new NeechyTemplatingError($error_message, 500);
         }
     }
 
@@ -150,10 +171,10 @@ class NeechyTemplater {
     #
     public function set($id, $value) {
         #
-        # This sets values for partials, values which will replace {{ tokens }}
-        # in templates.
+        # Sets or replaces values for partials, values which will replace {{ tokens }}
+        # in templates. Returns current (replaced) value.
         #
-        $current_value = $this->render_partial_by_id($id);
+        $current_value = isset($this->partial[$id]) ? $this->partial[$id] : null;
         $this->partial[$id] = $value;
         return $current_value;
     }
@@ -227,25 +248,6 @@ HTML5;
         return sprintf($format, implode("\n", $alerts));
     }
 
-    public function link($href, $text, $options=array()) {
-        $format = '<a %s>%s</a>';
-        $attrs = array(sprintf('href="%s"', $href));
-
-        foreach ( $options as $attr => $value ) {
-            $attrs[] = sprintf('%s="%s"', $attr, $value);
-        }
-
-        return sprintf($format, implode(' ', $attrs), $text);
-    }
-
-    public function neechy_link($label, $page=null, $handler=null, $action=null,
-        $options=array()) {
-
-        $page = (is_null($page)) ? $label : $page;
-        $href = NeechyPath::url($page, $handler, $action);
-        return $this->link($href, $label, $options);
-    }
-
     public function js_src($fpath='') {
         return NeechyPath::join($this->theme_url_path, 'js', $fpath);
     }
@@ -262,79 +264,6 @@ HTML5;
     public function css_link($href) {
         $format = '<link rel="stylesheet" href="%s" />';
         return sprintf($format, $href);
-    }
-
-    public function nav_tab_class($link_page_tag) {
-        if ( strtolower($link_page_tag) == strtolower($this->request->page) ) {
-            return 'active';
-        }
-        else {
-            return 'inactive';
-        }
-    }
-
-    #
-    # Form Helper Methods
-    #
-    public function open_form($url, $method='POST', $options=array(),
-                              $hidden_fields=array()) {
-        $format = '<form role="form" method="%s" action="%s"%s />';
-        $attr_string = $this->array_to_attr_string($options);
-        $form_tag = sprintf($format, $method, $url, $attr_string);
-
-        # Add CSRF token for POST forms
-        if (strtoupper($method) == 'POST') {
-            $hidden_fields['csrf_token'] = $_SESSION['csrf_token'];
-        }
-
-        $hidden_tags = array();
-        foreach ( $hidden_fields as $field => $value ) {
-            $hidden_tags[] = $this->input_field('hidden', $field, $value);
-        }
-
-        if ( $hidden_tags ) {
-            $hidden_tag_list = implode("\n", $hidden_tags);
-            $form_tag = implode("\n", array($form_tag, $hidden_tag_list));
-        }
-
-        return $form_tag;
-    }
-
-    public function close_form($action='') {
-        # $action will add a hidden field with action value.
-        $format = "%s\n</form>";
-        $hidden_field = '';
-
-        if ( $action ) {
-            $hidden_field = $this->input_field('hidden', 'action', $action);
-        }
-
-        return sprintf($format, $hidden_field);
-    }
-
-    public function input_field($type, $name, $value=NULL, $options=array()) {
-        $format = '<input type="%s" name="%s"%s%s />';
-
-        if ( ! is_null($value) ) {
-            $value_attr = sprintf(' value="%s"', str_replace('"', '\"', $value));
-        }
-        else {
-            $value_attr = '';
-        }
-
-        $optional_attrs = $this->array_to_attr_string($options);
-
-        return sprintf($format, $type, $name, $value_attr, $optional_attrs);
-    }
-
-    public function password_field($name, $value=NULL, $options=array()) {
-        return $this->input_field('password', $name, $value, $options);
-    }
-
-    public function submit_button($label, $attrs=array()) {
-        $format = '<button type="submit" %s>%s</button>';
-        $optional_attrs = $this->array_to_attr_string($attrs);
-        return sprintf($format, $optional_attrs, $label);
     }
 
     #
@@ -367,29 +296,5 @@ HTML5;
         else {
             return array();
         }
-    }
-
-    private function array_to_attr_string($options) {
-        $attr_list = array();
-
-        foreach( $options as $attr => $val ) {
-            if ( is_null($val) ) {
-                $attr_list[] = $attr;
-            }
-            else {
-                $attr_list[] = sprintf(' %s="%s"',
-                    $attr,
-                    str_replace('"', '\"', $val));
-            }
-        }
-
-        if ($attr_list) {
-            $attr_string = ' ' . implode(' ', $attr_list);
-        }
-        else {
-            $attr_string = '';
-        }
-
-        return $attr_string;
     }
 }

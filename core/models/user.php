@@ -49,15 +49,10 @@ MYSQL;
      * Static Methods
      */
     public static function find_by_name($name) {
-        $sql = "SELECT * FROM users WHERE name = ? ORDER BY updated_at DESC LIMIT 1";
+        $users = self::find_by_column_value('name', $name);
 
-        $pdo = NeechyDatabase::connect_to_db();
-        $query = $pdo->prepare($sql);
-        $query->execute(array($name));
-        $row = $query->fetch(PDO::FETCH_ASSOC);
-
-        if ( $row ) {
-            $user = new User($row);
+        if ( $users ) {
+            $user = $users[0];
         }
         else {
             $user = new User(array('name' => $name));
@@ -106,8 +101,9 @@ MYSQL;
     /*
      * Instance Methods
      */
-    public function url($handler=NULL, $action=NULL, $params=array()) {
-        return NeechyPath::url($this->field('name'), $handler, $action, $params);
+    public function url($handler=null, $params=array()) {
+        $handler = ( is_null($handler) ) ? 'page' : $handler;
+        return NeechyPath::url($handler, $this->field('name'), $params);
     }
 
     public function set_password($password) {
