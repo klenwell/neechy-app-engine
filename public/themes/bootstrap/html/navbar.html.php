@@ -3,10 +3,10 @@ require_once('../public/themes/bootstrap/php/helper.php');
 
 
 $t = $this;   # templater object
-$helper = new BootstrapHelper();
+$helper = new BootstrapHelper($t->request);
 
 ?>
-
+    <!-- Bootstrap Navbar -->
     <div role="navigation" class="navbar navbar-inverse navbar-static-top">
       <div class="container">
         <div class="navbar-header">
@@ -22,16 +22,12 @@ $helper = new BootstrapHelper();
 
         <div class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
-            <!-- TODO: dynamically build menu
-            <li class="<?php echo $t->nav_tab_class('Niches'); ?>">
-              <?php echo $t->neechy_link('Niches'); ?>
+            <!-- ASYNC: App-Engine Specific
+            <li class="inactive">
+              <a href="https://github.com/klenwell/neechy-app-engine">Github Source</a>
             </li>
-            <li class="<?php echo $t->nav_tab_class('PageIndex'); ?>">
-              <?php echo $t->neechy_link('PageIndex'); ?>
-            </li>
-            -->
+             -->
           </ul>
-
           <ul class="nav navbar-nav navbar-right">
             <li>
               <?php echo $helper->app_engine_user_button(); ?>

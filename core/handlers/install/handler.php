@@ -134,14 +134,14 @@ PREAMBLE;
     }
 
     protected function save_and_reload_app_config_file() {
-        $app_config = NeechyConfig::load_app_config();
+        $app_config = NeechyConfig::init();
 
         # Replace database settings
         $app_config->update_setting('mysql_host', $this->db_host);
         $app_config->update_setting('mysql_user', $this->db_user);
         $app_config->update_setting('mysql_password', $this->db_pass);
         $app_config->update_setting('mysql_database', $this->db_name);
-        $app_config->save();
+        $app_config->save_app_config_file();
 
         # Reload config settings
         $app_config->reload();

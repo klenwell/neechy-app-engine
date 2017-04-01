@@ -5,38 +5,46 @@
  * Neechy Request class.
  *
  */
+require_once('../core/neechy/constants.php');
+require_once('../core/neechy/errors.php');
+
+
+class NeechyRequestError extends NeechyError {}
 
 
 class NeechyRequest {
-    #
-    # Constants
-    #
-    const DEFAULT_PAGE = 'home';
-    const DEFAULT_HANDLER = 'page';
-
     #
     # Properties
     #
     static private $instance = null;
 
-    public $page = NULL;
-    public $handler = NULL;
-    public $action = NULL;
-    public $mod_rewrite_on = FALSE;
+    public $handler = null;
+    public $action = null;
+    public $format = null;
 
+    private $url_params = array();       # array of path params parsed from URI
+    private $params = array();           # array of URL params following handler/action
+    private $query_params = array();     # associative array of query string params
     private $valid_formats = array('html', 'ajax');
-    private $params = array();
 
     #
     # Constructor
     #
     public function __construct() {
-        $this->params = array_merge($_GET, $_POST);
+        if ( ! isset($_SERVER["REQUEST_URI"]) ) {
+            throw new NeechyRequestError('$_SERVER["REQUEST_URI"] not found.', 500);
+        }
+
+        $this->uri = $_SERVER["REQUEST_URI"];
+        $this->url_params = $this->parse_url($this->uri);
+        $this->query_params = array_merge($_GET, $_POST);
         $this->format = $this->set_format();
-        $this->page = $this->set_page();
-        $this->handler = $this->set_handler();
-        $this->action = $this->set_action();
-        $this->mod_rewrite_on = array_key_exists('HTTP_MOD_REWRITE', $_SERVER);
+        $this->handler = (count($this->url_params) > 0) ? $this->url_params[0] : DEFAULT_HANDLER;
+        $this->action = (count($this->url_params) > 1) ? $this->url_params[1] : null;
+
+        if ( count($this->url_params) > 2 ) {
+            $this->params = array_slice($this->url_params, 2);
+        }
     }
 
     #
@@ -55,36 +63,12 @@ class NeechyRequest {
     #
     # Public Methods
     #
-    public function is($handler, $page=NULL) {
-        if ( $page ) {
-            return ($this->handler == strtolower($handler)) &&
-                ($this->page == $page);
-        }
-        else {
-            return ($this->handler == strtolower($handler));
-        }
+    public function param($index, $default=null) {
+        return (isset($this->params[$index])) ? trim($this->params[$index]) : $default;
     }
 
-    public function page_is($value) {
-        if ( is_null($this->page) ) {
-            return FALSE;
-        }
-        else {
-            return strtolower($this->page) == strtolower($value);
-        }
-    }
-
-    public function action_is($value) {
-        if ( is_null($this->action) ) {
-            return FALSE;
-        }
-        else {
-            return $this->action == $value;
-        }
-    }
-
-    public function param($key, $default=null) {
-        return (isset($this->params[$key])) ? trim($this->params[$key]) : $default;
+    public function query($key, $default=null) {
+        return (isset($this->query_params[$key])) ? trim($this->query_params[$key]) : $default;
     }
 
     public function post($key, $default=null) {
@@ -98,22 +82,31 @@ class NeechyRequest {
     #
     # Private Methods
     #
+    private function parse_url($url) {
+        if ( substr_count($url, '?') > 0 ) {
+            $url_part = explode('?', $url);
+            $url = $url_part[0];
+        }
+
+        if ( substr_count($url, '/') < 1 ) {
+            return array();
+        }
+        else {
+            $url_params = explode('/', $url);
+            $url_params = array_slice($url_params, 1);
+
+            $last_index = count($url_params) - 1;
+            if ( trim($url_params[$last_index]) == '' ) {
+                unset($url_params[$last_index]);
+            }
+
+            $url_params = array_map('urldecode', $url_params);
+            return $url_params;
+        }
+    }
+
     private function set_format() {
         $format = $this->param('format');
         return (in_array($format, $this->valid_formats)) ? $format : 'html';
-    }
-
-    private function set_page() {
-        return $this->param('page', self::DEFAULT_PAGE);
-    }
-
-    private function set_handler() {
-        $handler = $this->param('handler');
-        return (! is_null($handler)) ? strtolower($handler) : self::DEFAULT_HANDLER;
-    }
-
-    private function set_action() {
-        $action = $this->param('action');
-        return (! is_null($action)) ? strtolower($action) : null;
     }
 }

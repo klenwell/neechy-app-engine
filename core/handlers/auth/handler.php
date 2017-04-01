@@ -19,7 +19,7 @@ class AuthHandler extends NeechyHandler {
     # Public Methods
     #
     public function handle() {
-        if ( $this->request->action_is('login') ) {
+        if ( $this->purpose_is('login') ) {
             $login = new LoginValidator($this->request);
             if ( $login->successful() ) {
                 $this->t->flash('You have been logged in.', 'success');
@@ -33,7 +33,7 @@ class AuthHandler extends NeechyHandler {
             }
             $this->t->data('alert', 'logging in');
         }
-        elseif ( $this->request->action_is('signup') ) {
+        elseif ( $this->purpose_is('signup') ) {
             $validator = new SignUpValidator($this->request);
             if ( $validator->is_valid() ) {
                 $user = User::register(
@@ -51,7 +51,7 @@ class AuthHandler extends NeechyHandler {
                 $content = $this->render_view('login');
             }
         }
-        elseif ( $this->request->page_is('logout') ) {
+        elseif ( $this->purpose_is('logout') ) {
             $this->t->flash('You have been logged out.', 'success');
             User::logout_current();
             $content = $this->render_view('login');

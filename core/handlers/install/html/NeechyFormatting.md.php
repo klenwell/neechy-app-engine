@@ -37,9 +37,11 @@ The headers you see above.
 
     <http://github.com/>
 
-    [[http://github.com github.com]] (WikkaWiki syntax coming soon!)
+    [[http://github.com github.com]]
 
-    NeechyFormatting (WikkaWiki syntax coming soon!)
+    [[home Home Page]]
+
+    [[home]]
 
 ### Produces:
 
@@ -47,9 +49,11 @@ The headers you see above.
 
 <http://github.com/>
 
-[[http://github.com github.com]] (WikkaWiki syntax coming soon!)
+[[http://github.com github.com]]
 
-NeechyFormatting (WikkaWiki syntax coming soon!)
+[[home Home Page]]
+
+[[home]]
 
 
 ## Code

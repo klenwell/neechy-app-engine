@@ -3,18 +3,15 @@
 require_once('../core/handlers/page/php/helper.php');
 
 $t = $this;   # templater object
-
-$t->append_to_head($t->css_link('themes/bootstrap/css/editor.css'));
-
 $page_helper = new PageHelper($t->request);
+$page = $t->data('page');
 
+$t->append_to_head($t->css_link('/themes/bootstrap/css/editor.css'));
 
 ?>
       <!-- Tabs -->
       <div id="page-header">
-        <ul id="page-tabs" class="nav nav-tabs">
-          <?php echo $page_helper->build_page_tab_menu($t->data('page-title')); ?>
-        </ul>
+        <?php echo $page_helper->build_page_tab_menu($page); ?>
       </div>
 
       <!-- Tab Panes -->
@@ -22,10 +19,10 @@ $page_helper = new PageHelper($t->request);
         <div class="tab-content">
           <div class="tab-pane editor" id="editor">
             <div id="neechy-editor">
-              <?php echo $t->open_form('', 'post', array('class' => 'save-page')); ?>
+              <?php echo $page_helper->open_form('', 'post', array('class' => 'save-page')); ?>
 
                 <?php # Preview Panel ?>
-                <?php if ( $t->data('action') == 'preview' ): ?>
+                <?php if ( $t->data('purpose') == 'preview' ): ?>
                 <div id="wmd-preview" class="wmd-panel wmd-preview well">
                   <?php echo $t->data('preview') ?>
                 </div>
@@ -44,14 +41,14 @@ $page_helper = new PageHelper($t->request);
                 <?php endif; ?>
 
                 <div class="actions">
-                  <?php if ( $t->data('action') == 'preview' ): ?>
-                  <input type="submit" class="btn btn-primary edit" name="action" value="edit" />
+                  <?php if ( $t->data('purpose') == 'preview' ): ?>
+                  <input type="submit" class="btn btn-primary edit" name="purpose" value="edit" />
                   <?php else: ?>
-                  <input type="submit" class="btn btn-primary preview" name="action" value="preview" />
+                  <input type="submit" class="btn btn-primary preview" name="purpose" value="preview" />
                   <?php endif; ?>
-                  <input type="submit" class="btn btn-info save" name="action" value="save" />
+                  <input type="submit" class="btn btn-info save" name="purpose" value="save" />
                 </div>
-              <?php echo $t->close_form(); ?>
+              <?php echo $page_helper->close_form(); ?>
             </div>
           </div>
         </div>

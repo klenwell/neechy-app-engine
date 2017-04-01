@@ -28,20 +28,42 @@ class NeechyModelTest extends PHPUnit_Framework_TestCase {
     /**
      * Tests
      */
-    public function testFindById() {
+    public function testCount() {
         $neechy = new NeechyModel();
-        $foo_rows = $neechy->find_by_column_value('neech', 'foo');
-        $record = $neechy->find_by_id($foo_rows[0]->field('id'));
-        $this->assertEquals($foo_rows[0]->field('id'), $record->field('id'));
+        $this->assertEquals(3, $neechy->count());
     }
 
-    public function testFindByColumnValue() {
+    public function testFindByIdAsInstanceAndStaticMethod() {
+        # Instance Method
+        $neechy = new NeechyModel();
+        $instance_rows = $neechy->find_by_column_value('neech', 'foo');
+        $record = $neechy->find_by_id($instance_rows[0]->field('id'));
+        $this->assertEquals($instance_rows[0]->field('id'), $record->field('id'));
+
+        # Static Method
+        $static_rows = NeechyModel::find_by_column_value('neech', 'foo');
+        $record = $neechy->find_by_id($static_rows[0]->field('id'));
+        $this->assertEquals($static_rows[0]->field('id'), $record->field('id'));
+
+        $this->assertEquals($instance_rows, $static_rows);
+    }
+
+    public function testFindByColumnValueAsInstanceMethod() {
         $neechy = new NeechyModel();
         $rows = $neechy->find_by_column_value('neech', 'foo');
         $this->assertCount(1, $rows);
         $this->assertEquals('foo', $rows[0]->field('neech'));
 
         $rows = $neechy->find_by_column_value('neech', 'value not in table');
+        $this->assertCount(0, $rows);
+    }
+
+    public function testFindByColumnValueAsStaticMethod() {
+        $rows = NeechyModel::find_by_column_value('neech', 'foo');
+        $this->assertCount(1, $rows);
+        $this->assertEquals('foo', $rows[0]->field('neech'));
+
+        $rows = NeechyModel::find_by_column_value('neech', 'value not in table');
         $this->assertCount(0, $rows);
     }
 

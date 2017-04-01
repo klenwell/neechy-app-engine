@@ -8,6 +8,7 @@
 require_once('../core/neechy/constants.php');
 require_once('../core/neechy/templater.php');
 require_once('../core/neechy/path.php');
+require_once('../core/neechy/response.php');
 require_once('../core/neechy/errors.php');
 require_once('../core/models/page.php');
 
@@ -18,16 +19,14 @@ class NeechyHandler {
     # Properties
     #
     public $request = null;
-    public $page = null;
     public $t = null;
     public $is_console = false;
 
     #
     # Constructor
     #
-    public function __construct($request=null, $page=null) {
+    public function __construct($request=null) {
         $this->request = $request;
-        $this->page = $page;
         $this->t = NeechyTemplater::load();
         $this->t->data('handler', get_class($this));
     }
@@ -74,7 +73,6 @@ class NeechyHandler {
         else {
             # Render web page
             $templater = NeechyTemplater::load();
-            $templater->page = $this->page;
             $templater->set('content', $content);
             $body = $templater->render();
         }
@@ -83,13 +81,20 @@ class NeechyHandler {
     }
 
     protected function html_path() {
-        return NeechyPath::join(NEECHY_HANDLER_CORE_PATH, $this->folder_name(), 'html');
+        # Source: http://stackoverflow.com/q/3014254/1093087
+        $reflector = new ReflectionClass(get_class($this));
+        $handler_dir_path = dirname($reflector->getFileName());
+        return NeechyPath::join($handler_dir_path, 'html');
     }
 
     protected function folder_name() {
         $class_name = get_class($this);
         $folder_name = str_replace('Handler', '', $class_name);
         return strtolower($folder_name);
+    }
+
+    protected function purpose_is($purpose) {
+        return $this->request->post('purpose') == $purpose;
     }
 
     #
