@@ -2,11 +2,13 @@
 
 [Neechy wiki platform](https://github.com/klenwell/neechy-app-engine) tailored for [Google PHP App Engine runtime environment](https://cloud.google.com/appengine/docs/php/).
 
-A demo version of the site is available here:
+**Note: Due to a sudden rise in Cloud SQL costs, the demo version of the site has been disabled.**
+
+The demo version of the site ~~is~~ was available here:
 
 - https://neechy-demo.appspot.com/
 
-But, be advised, this project is still very early in its development.
+Be advised, this project is ~~still very early in its~~ no longer under active development.
 
 
 ## Installation
